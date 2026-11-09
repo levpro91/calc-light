@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Расчёт освещения</title>
+<meta name="theme-color" content="#0a58ca">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-512.png">
+<link rel="apple-touch-icon" href="icon-512.png">
+<style>
+  body{font-family:sans-serif;max-width:540px;margin:30px auto;padding:0 16px;color:#222}
+  label{display:block;margin-top:12px;font-size:14px;color:#333}
+  input, select{width:100%;padding:10px;margin-top:4px;font-size:16px;box-sizing:border-box;border:1px solid #ccc;border-radius:4px}
+  select{font-size:14px;line-height:1.4}
+  .hint{font-size:12px;color:#777;margin-top:4px;line-height:1.4}
+  button{width:100%;padding:12px;font-size:16px;margin-top:12px;cursor:pointer;background:#0a58ca;color:#fff;border:none;border-radius:4px}
+  button:hover{background:#084298}
+  button.save{background:#198754}
+  button.save:hover{background:#146c43}
+  button.secondary{background:#6c757d}
+  button.secondary:hover{background:#5a6268}
+  .quick{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+  .quick button{width:auto;padding:6px 10px;font-size:12px;margin-top:0;background:#e9ecef;color:#333;border:1px solid #ccc}
+  .quick button:hover{background:#d6d9dc}
+  .res{margin-top:20px;padding:16px;background:#f4f6f8;border-radius:8px;font-size:15px;line-height:1.8}
+  .res b{color:#0a58ca;font-size:17px}
+  .res .total{background:#d1e7dd;padding:14px;border-radius:6px;margin:0 0 14px 0;border-left:5px solid #198754;font-size:16px}
+  .res .total b{color:#146c43;font-size:24px;display:block;margin-top:6px}
+  .res .recommend{background:#fff3cd;padding:12px;border-radius:6px;margin:10px 0;border-left:4px solid #ffc107;font-size:15px}
+  .res .recommend b{color:#856404;font-size:19px}
+  .res .filter{background:#f8d7da;padding:12px;border-radius:6px;margin:10px 0;border-left:4px solid #dc3545;font-size:15px}
+  .res .filter b{color:#842029;font-size:19px}
+  .flex{display:flex;gap:10px}
+  .flex > div{flex:1}
+  hr{border:none;border-top:1px solid #ddd;margin:20px 0}
+  #splitBlock{display:none;margin-top:16px;padding-top:12px;border-top:1px dashed #ccc}
+  #installBtn{display:none;background:#0a58ca;margin-top:12px;font-size:14px;padding:10px}
+</style>
+</head>
+<body>
+  <h2>Расчёт освещения</h2>
+
+  <button id="installBtn" onclick="installPWA()">📲 Установить приложение</button>
+
+  <div class="flex">
+    <div><label>Ширина a (м)</label><input id="a" type="number" step="0.1" placeholder="5"></div>
+    <div><label>Длина b (м)</label><input id="b" type="number" step="0.1" placeholder="8"></div>
+  </div>
+  <div class="flex">
+    <div><label>Высота h (м)</label><input id="h" type="number" step="0.1" placeholder="3"></div>
+    <div>
+      <label>Освещённость E (лк)</label>
+      <input id="E" type="number" step="10" min="1" max="700" placeholder="300">
+      <div class="hint">Диапазон: 1–700 лк</div>
+    </div>
+  </div>
+
+  <label>Тип светильника</label>
+  <select id="type">
+    <option value="potol">Потолочные</option>
+    <option value="podves">Подвесные</option>
+  </select>
+
+  <label>Коэффициент отражения</label>
+  <select id="refl"></select>
+  <div class="hint">
+    💡 Если стены и пол светлые — выбирай первый вариант.<br>
+    Если пол тёмный — второй.<br>
+    Два «белых» и два «серых» потолка отличаются цветом стен и пола.
+  </div>
+
+  <button onclick="calcTotal()">1. Рассчитать общий поток</button>
+
+  <div id="splitBlock">
+    <div style="font-weight:bold;font-size:15px;margin-top:16px;color:#0a58ca">2. Распределение по лампам / линиям</div>
+
+    <label>Что распределяем?</label>
+    <select id="splitMode" onchange="toggleSplitMode()">
+      <option value="lamps">По количеству ламп (шт.)</option>
+      <option value="lines">По длине световых линий (м)</option>
+    </select>
+
+    <div id="blockLamps">
+      <label>Количество ламп (шт.)</label>
+      <input id="lampCount" type="number" step="1" placeholder="например 12">
+    </div>
+
+    <div id="blockLines" style="display:none">
+      <label>Длина световых линий (м погонных)</label>
+      <input id="lineLength" type="number" step="0.1" placeholder="например 10">
+    </div>
+
+    <label>Коэффициент потерь на рассеивателе / фильтре, %</label>
+    <input id="lossPercent" type="number" step="1" min="0" max="99" placeholder="0 = без потерь, 20 = теряется 20%">
+    <div class="hint">
+      Сколько света <b>теряется</b> на экране (в процентах).<br>
+      Например: матовый рассеиватель — 20%, сетка — 40%, плотный фильтр — 60%.
+    </div>
+    <div class="quick">
+      <button onclick="setLoss(0)">Без потерь (0%)</button>
+      <button onclick="setLoss(10)">Прозрачный (10%)</button>
+      <button onclick="setLoss(20)">Матовый (20%)</button>
+      <button onclick="setLoss(40)">Сетка (40%)</button>
+      <button onclick="setLoss(60)">Плотный (60%)</button>
+    </div>
+
+    <button class="secondary" onclick="calcSplit()">2. Распределить поток</button>
+  </div>
+
+  <button id="saveBtn" class="save" onclick="saveResult()" style="display:none">💾 Сохранить результат в файл</button>
+
+  <div id="res" class="res"></div>
+
+<script>
+const data = {
+  potol: {
+    "70_50_30": [0.26,0.28,0.34,0.38,0.40,0.43,0.46,0.49,0.52,0.54,0.56,0.58,0.59,0.60,0.62,0.63,0.64,0.66],
+    "70_30_10": [0.25,0.27,0.32,0.36,0.38,0.40,0.42,0.44,0.47,0.48,0.50,0.52,0.54,0.55,0.57,0.58,0.60,0.61],
+    "50_30_10": [0.2,0.23,0.27,0.31,0.33,0.35,0.37,0.39,0.41,0.42,0.44,0.46,0.47,0.49,0.51,0.52,0.53,0.55],
+    "50_10_10": [0.19,0.21,0.25,0.28,0.30,0.32,0.34,0.36,0.38,0.39,0.41,0.42,0.44,0.45,0.47,0.48,0.50,0.51],
+    "30_10_10": [0.17,0.19,0.22,0.24,0.26,0.28,0.30,0.32,0.34,0.35,0.37,0.38,0.40,0.41,0.43,0.44,0.46,0.47]
+  },
+  podves: {
+    "70_50_30": [0.19,0.24,0.27,0.31,0.34,0.37,0.40,0.43,0.46,0.48,0.50,0.52,0.54,0.55,0.57,0.58,0.60,0.61],
+    "70_30_10": [0.18,0.22,0.26,0.29,0.32,0.35,0.37,0.40,0.43,0.44,0.46,0.48,0.50,0.51,0.53,0.54,0.56,0.57],
+    "50_30_10": [0.15,0.18,0.22,0.25,0.28,0.31,0.33,0.36,0.38,0.40,0.42,0.44,0.46,0.47,0.49,0.50,0.52,0.53],
+    "50_10_10": [0.14,0.17,0.21,0.24,0.27,0.29,0.32,0.34,0.36,0.38,0.40,0.42,0.43,0.45,0.47,0.48,0.50,0.51],
+    "30_10_10": [0.11,0.14,0.16,0.18,0.21,0.24,0.26,0.28,0.30,0.32,0.34,0.36,0.37,0.39,0.41,0.42,0.44,0.45]
+  }
+};
+
+const indices = [0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 3, 3.5, 4, 5];
+
+const selectType = document.getElementById('type');
+const selectRefl = document.getElementById('refl');
+const saveBtn = document.getElementById('saveBtn');
+const resDiv = document.getElementById('res');
+
+let lastTotal = null;
+let lastSplit = null;
+
+const reflLabels = {
+  "70_50_30": "Потолок 70% (белый) · Стены 50% (светлые) · Пол 30% (светлый)",
+  "70_30_10": "Потолок 70% (белый) · Стены 30% (средние) · Пол 10% (тёмный)",
+  "50_30_10": "Потолок 50% (серый) · Стены 30% (средние) · Пол 10% (тёмный)",
+  "50_10_10": "Потолок 50% (серый) · Стены 10% (тёмные) · Пол 10% (тёмный)",
+  "30_10_10": "Потолок 30% (тёмный) · Стены 10% (тёмные) · Пол 10% (тёмный)"
+};
+
+function updateReflOptions() {
+  const type = selectType.value;
+  selectRefl.innerHTML = '';
+  for (const key in data[type]) {
+    const opt = document.createElement('option');
+    opt.value = key;
+    opt.textContent = reflLabels[key];
+    selectRefl.appendChild(opt);
+  }
+}
+selectType.addEventListener('change', updateReflOptions);
+updateReflOptions();
+
+function toggleSplitMode() {
+  const mode = document.getElementById('splitMode').value;
+  document.getElementById('blockLamps').style.display = mode === 'lamps' ? 'block' : 'none';
+  document.getElementById('blockLines').style.display = mode === 'lines' ? 'block' : 'none';
+  lastSplit = null;
+}
+
+function setLoss(v) {
+  document.getElementById('lossPercent').value = v;
+}
+
+function interp(x, xs, ys) {
+  if (x <= xs[0]) return ys[0];
+  if (x >= xs[xs.length - 1]) return ys[ys.length - 1];
+  for (let i = 0; i < xs.length - 1; i++) {
+    if (x >= xs[i] && x <= xs[i + 1]) {
+      const t = (x - xs[i]) / (xs[i + 1] - xs[i]);
+      return ys[i] + t * (ys[i + 1] - ys[i]);
+    }
+  }
+}
+
+function calcTotal() {
+  const a = +document.getElementById('a').value;
+  const b = +document.getElementById('b').value;
+  const h = +document.getElementById('h').value;
+  const E = +document.getElementById('E').value;
+  const type = selectType.value;
+  const refl = selectRefl.value;
+
+  if (!a || !b || !h || !E) {
+    resDiv.textContent = 'Заполни размеры помещения и освещённость';
+    saveBtn.style.display = 'none';
+    return;
+  }
+
+  if (E > 700) {
+    resDiv.innerHTML = '<p style="color:#c00">Освещённость E не может быть больше 700 лк. Максимум — 700.</p>';
+    saveBtn.style.display = 'none';
+    return;
+  }
+
+  const S = a * b;
+  const I = (a * b) / (h * (a + b));
+  const uoyArray = data[type][refl];
+  const uoy = interp(I, indices, uoyArray);
+
+  if (uoy === 0) {
+    resDiv.textContent = 'Ошибка: коэффициент uoy равен 0';
+    saveBtn.style.display = 'none';
+    return;
+  }
+
+  const NC = (E * 1.25 * S) / uoy;
+
+  lastTotal = { a, b, h, E, type, refl, S, I, uoy, NC };
+  lastSplit = null;
+
+  let html = 
+    '<div class="total">' +
+    'Общий требуемый световой поток для помещения:<br>' +
+    '<b>' + NC.toFixed(0) + ' лм</b>' +
+    '</div>' +
+    'Площадь S = <b>' + S.toFixed(2) + ' м²</b><br>' +
+    'Индекс помещения I = <b>' + I.toFixed(2) + '</b><br>' +
+    'Коэффициент uoy = <b>' + uoy.toFixed(3) + '</b>';
+
+  resDiv.innerHTML = html;
+
+  document.getElementById('splitBlock').style.display = 'block';
+  saveBtn.style.display = 'block';
+}
+
+function calcSplit() {
+  if (!lastTotal) {
+    resDiv.innerHTML = '<p style="color:#c00">Сначала нажми «1. Рассчитать общий поток»</p>';
+    return;
+  }
+
+  const { S, I, uoy, NC, type, refl, a, b, h, E } = lastTotal;
+  const mode = document.getElementById('splitMode').value;
+
+  let lossPercent = +document.getElementById('lossPercent').value;
+  if (isNaN(lossPercent) || lossPercent < 0) lossPercent = 0;
+  if (lossPercent >= 100) {
+    resDiv.innerHTML = '<p style="color:#c00">Потери не могут быть 100% и более. Введи 0–99%.</p>';
+    saveBtn.style.display = 'none';
+    return;
+  }
+
+  const tauPercent = 100 - lossPercent;
+  const tau = tauPercent / 100;
+
+  const NC_effective = NC / tau;
+
+  let splitInfo = null;
+  let splitHtml = '';
+
+  let filterHtml = '';
+  if (lossPercent > 0) {
+    filterHtml = '<div class="filter">' +
+      '🔻 <b>Потери на рассеивателе/фильтре:</b> ' + lossPercent.toFixed(0) + '%<br>' +
+      'Проходит света: <b>' + tauPercent.toFixed(0) + '%</b><br>' +
+      'Требуемый поток с учётом потерь: <b>' + NC_effective.toFixed(0) + ' лм</b><br>' +
+      '<span style="font-size:13px;color:#842029">' + NC.toFixed(0) + ' лм ÷ ' + tau.toFixed(2) + ' = ' + NC_effective.toFixed(0) + ' лм</span>' +
+      '</div>';
+  } else {
+    filterHtml = '<div class="hint" style="margin:8px 0">✅ Потерь нет (0%) — фильтр не учитывается.</div>';
+  }
+
+  if (mode === 'lamps') {
+    const lampCount = +document.getElementById('lampCount').value;
+    if (lampCount > 0) {
+      const perLamp = NC_effective / lampCount;
+      splitInfo = { mode: 'lamps', lampCount, perLamp, lossPercent, tauPercent, NC_effective };
+      splitHtml = '<div class="recommend">' +
+        '👉 <b>Требуемый поток на 1 лампу' + (lossPercent > 0 ? ' (с учётом потерь)' : '') + ':</b><br>' +
+        '<b>' + perLamp.toFixed(0) + ' лм</b><br>' +
+        '<span style="font-size:13px;color:#856404">' + NC_effective.toFixed(0) + ' лм ÷ ' + lampCount + ' шт. = ' + perLamp.toFixed(0) + ' лм</span>' +
+        '</div>';
+    }
+  } else {
+    const lineLength = +document.getElementById('lineLength').value;
+    if (lineLength > 0) {
+      const perMeter = NC_effective / lineLength;
+      splitInfo = { mode: 'lines', lineLength, perMeter, lossPercent, tauPercent, NC_effective };
+      splitHtml = '<div class="recommend">' +
+        '👉 <b>Требуемый поток на 1 метр линии' + (lossPercent > 0 ? ' (с учётом потерь)' : '') + ':</b><br>' +
+        '<b>' + perMeter.toFixed(0) + ' лм/м</b><br>' +
+        '<span style="font-size:13px;color:#856404">' + NC_effective.toFixed(0) + ' лм ÷ ' + lineLength + ' м = ' + perMeter.toFixed(0) + ' лм/м</span>' +
+        '</div>';
+    }
+  }
+
+  if (!splitInfo) {
+    splitHtml = '<span style="font-size:13px;color:#888">Укажи количество ламп или длину линии.</span>';
+  }
+
+  lastSplit = { ...lastTotal, splitInfo };
+
+  resDiv.innerHTML =
+    '<div class="total">' +
+    'Общий требуемый световой поток для помещения:<br>' +
+    '<b>' + NC.toFixed(0) + ' лм</b>' +
+    '</div>' +
+    'Площадь S = <b>' + S.toFixed(2) + ' м²</b><br>' +
+    'Индекс помещения I = <b>' + I.toFixed(2) + '</b><br>' +
+    'Коэффициент uoy = <b>' + uoy.toFixed(3) + '</b>' +
+    filterHtml +
+    splitHtml;
+
+  saveBtn.style.display = 'block';
+}
+
+function saveResult() {
+  const r = lastSplit || lastTotal;
+  if (!r) return;
+
+  const typeName = r.type === 'potol' ? 'Потолочные' : 'Подвесные';
+  const reflName = reflLabels[r.refl];
+  const date = new Date().toLocaleString('ru-RU');
+
+  let text = '';
+  text += '=== РЕЗУЛЬТАТ РАСЧЁТА ОСВЕЩЕНИЯ ===\n';
+  text += 'Дата расчёта: ' + date + '\n\n';
+
+  text += '--- ИСХОДНЫЕ ДАННЫЕ ---\n';
+  text += 'Ширина a: ' + r.a + ' м\n';
+  text += 'Длина b: ' + r.b + ' м\n';
+  text += 'Высота h: ' + r.h + ' м\n';
+  text += 'Освещённость E: ' + r.E + ' лк\n';
+  text += 'Тип светильника: ' + typeName + '\n';
+  text += 'Коэффициент отражения: ' + reflName + '\n';
+  text += '\n';
+
+  text += '--- РЕЗУЛЬТАТЫ ---\n';
+  text += 'Общий требуемый световой поток: ' + r.NC.toFixed(0) + ' лм\n';
+  text += 'Площадь помещения S: ' + r.S.toFixed(2) + ' м²\n';
+  text += 'Индекс помещения I: ' + r.I.toFixed(2) + '\n';
+  text += 'Коэффициент uoy: ' + r.uoy.toFixed(3) + '\n';
+
+  if (r.splitInfo) {
+    text += '\n--- ПОТЕРИ НА ФИЛЬТРЕ / РАССЕИВАТЕЛЕ ---\n';
+    text += 'Коэффициент потерь: ' + r.splitInfo.lossPercent.toFixed(0) + '%\n';
+    text += 'Проходит света: ' + r.splitInfo.tauPercent.toFixed(0) + '%\n';
+    text += 'Требуемый поток с учётом потерь: ' + r.splitInfo.NC_effective.toFixed(0) + ' лм\n';
+
+    text += '\n--- РАСПРЕДЕЛЕНИЕ ПОТОКА ---\n';
+    if (r.splitInfo.mode === 'lamps') {
+      text += 'Способ: по количеству ламп\n';
+      text += 'Количество ламп: ' + r.splitInfo.lampCount + ' шт.\n';
+      text += 'Требуемый поток на 1 лампу: ' + r.splitInfo.perLamp.toFixed(0) + ' лм\n';
+    } else {
+      text += 'Способ: по длине световых линий\n';
+      text += 'Длина линии: ' + r.splitInfo.lineLength + ' м\n';
+      text += 'Требуемый поток на 1 метр линии: ' + r.splitInfo.perMeter.toFixed(0) + ' лм/м\n';
+    }
+  } else {
+    text += '\n--- РАСПРЕДЕЛЕНИЕ ПОТОКА ---\n';
+    text += 'Не выполнено (шаг 2 пропущен)\n';
+  }
+
+  text += '\n--- ИСПОЛЬЗОВАННЫЕ ФОРМУЛЫ ---\n';
+  text += 'S = a · b\n';
+  text += 'I = (a · b) / (h · (a + b))\n';
+  text += 'NC = (E · 1.25 · S) / uoy\n';
+  text += 'NC_effective = NC / (1 - потери/100)\n';
+  text += 'Поток на 1 лампу = NC_effective / количество ламп\n';
+  text += 'Поток на 1 м линии = NC_effective / длина линии\n';
+
+  const d = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  const filename = 'osveschenie_' + d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()) +
+                   '_' + pad(d.getHours()) + '-' + pad(d.getMinutes()) + '.txt';
+
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
+// === PWA-логика ===
+let deferredPrompt;
+const installBtn = document.getElementById('installBtn');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  installBtn.style.display = 'block';
+});
+
+function installPWA() {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then((choice) => {
+    if (choice.outcome === 'accepted') {
+      installBtn.style.display = 'none';
+    }
+    deferredPrompt = null;
+  });
+}
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(reg => console.log('SW зарегистрирован'))
+      .catch(err => console.log('SW ошибка:', err));
+  });
+}
+</script>
+</body>
+</html>
