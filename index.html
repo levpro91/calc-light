@@ -35,18 +35,20 @@
   <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()" title="Переключить тему">🌙</button>
   <h2>Расчёт освещения</h2>
   <button id="installBtn" onclick="installPWA()">📲 Установить приложение</button>
+
   <div class="flex">
-    <div><label>Ширина a (м)</label><input id="a" type="number" step="0.1" placeholder="5"></div>
-    <div><label>Длина b (м)</label><input id="b" type="number" step="0.1" placeholder="8"></div>
+    <div><label>Ширина A (м)</label><input id="a" type="number" step="0.1" placeholder="Например, 5.0"></div>
+    <div><label>Длина B (м)</label><input id="b" type="number" step="0.1" placeholder="Например, 8.0"></div>
   </div>
   <div class="flex">
-    <div><label>Высота h (м)</label><input id="h" type="number" step="0.1" placeholder="3"></div>
+    <div><label>Высота H (м)</label><input id="h" type="number" step="0.1" placeholder="Например, 3.0"></div>
     <div>
       <label>Освещённость E (лк)</label>
       <input id="E" type="number" step="10" min="1" max="700" placeholder="300">
       <div class="hint">Диапазон: 1–700 лк</div>
     </div>
   </div>
+
   <label>Тип помещения (автоподстановка E)</label>
   <select id="roomType" onchange="applyRoomE()">
     <option value="">— выбери помещение —</option>
@@ -92,15 +94,19 @@
     </optgroup>
   </select>
   <div class="hint">Выбери помещение — калькулятор подставит среднее значение E. Можно поправить вручную.</div>
+
   <label>Тип светильника</label>
   <select id="type">
     <option value="potol">Потолочные</option>
     <option value="podves">Подвесные</option>
   </select>
+
   <label>Коэффициент отражения</label>
   <select id="refl"></select>
   <div class="hint">💡 Если стены и пол светлые — выбирай первый вариант.<br>Если пол тёмный — второй.<br>Два «белых» и два «серых» потолка отличаются цветом стен и пола.</div>
+
   <button onclick="calcTotal()">1. Рассчитать общий поток</button>
+
   <div id="splitBlock">
     <div style="font-weight:bold;font-size:15px;margin-top:16px;color:var(--btn)">2. Распределение по лампам / линиям</div>
     <label>Что распределяем?</label>
@@ -110,11 +116,11 @@
     </select>
     <div id="blockLamps">
       <label>Количество ламп (шт.)</label>
-      <input id="lampCount" type="number" step="1" placeholder="например 12">
+      <input id="lampCount" type="number" step="1" placeholder="Например, 12">
     </div>
     <div id="blockLines" style="display:none">
       <label>Длина световых линий (м погонных)</label>
-      <input id="lineLength" type="number" step="0.1" placeholder="например 10">
+      <input id="lineLength" type="number" step="0.1" placeholder="Например, 10">
     </div>
     <label>Коэффициент потерь на рассеивателе / фильтре, %</label>
     <input id="lossPercent" type="number" step="1" min="0" max="99" placeholder="0 = без потерь, 20 = теряется 20%">
@@ -128,8 +134,10 @@
     </div>
     <button class="secondary" onclick="calcSplit()">2. Распределить поток</button>
   </div>
+
   <button id="saveBtn" class="save" onclick="saveResult()" style="display:none">💾 Сохранить результат в файл</button>
   <div id="res" class="res"></div>
+
   <div id="journalBlock">
     <div class="log-header">
       <h3>📋 Журнал расчётов</h3>
@@ -140,7 +148,8 @@
     </div>
     <div id="journalList"></div>
   </div>
-  <script>
+
+<script>
 const data = {
   potol: {
     "70_50_30": [0.26,0.28,0.34,0.38,0.40,0.43,0.46,0.49,0.52,0.54,0.56,0.58,0.59,0.60,0.62,0.63,0.64,0.66],
@@ -259,7 +268,7 @@ function calcSplit() {
   saveBtn.style.display = 'block';
   addToJournal(lastSplit);
 }
-    let journal = JSON.parse(localStorage.getItem('calcJournal') || '[]');
+let journal = JSON.parse(localStorage.getItem('calcJournal') || '[]');
 function addToJournal(result) {
   const isDuplicate = journal.some(item => item.a === result.a && item.b === result.b && item.h === result.h && item.E === result.E && item.type === result.type && item.refl === result.refl && item.lampCount === (result.splitInfo?.lampCount || null) && item.lineLength === (result.splitInfo?.lineLength || null) && item.lossPercent === (result.splitInfo?.lossPercent || 0));
   if (isDuplicate) return;
