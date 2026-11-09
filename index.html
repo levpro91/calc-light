@@ -99,6 +99,53 @@
     </div>
   </div>
 
+  <!-- НОВЫЙ БЛОК: Выбор помещения -->
+  <label>Тип помещения (автоподстановка E)</label>
+  <select id="roomType" onchange="applyRoomE()">
+    <option value="">— выбери помещение —</option>
+    <optgroup label="Прихожая / Коридор">
+      <option value="110">Холл-прихожая (100–120)</option>
+      <option value="110">Холл более 10 м² (100–120)</option>
+      <option value="75">Коридор проходной (50–100)</option>
+    </optgroup>
+    <optgroup label="Гостиная / Столовая">
+      <option value="225">Гостиная (200–250)</option>
+      <option value="175">Столовая — общая (150–200)</option>
+      <option value="275">Столовая — над столом (250–300)</option>
+    </optgroup>
+    <optgroup label="Кухня">
+      <option value="225">Кухня — общая (200–250)</option>
+      <option value="275">Кухня — рабочий стол (250–300)</option>
+      <option value="375">Кухня — рабочий стол макс (300–500)</option>
+    </optgroup>
+    <optgroup label="Кабинет">
+      <option value="175">Кабинет — общая (150–200)</option>
+      <option value="275">Кабинет — рабочий стол (250–300)</option>
+      <option value="375">Кабинет — рабочий стол макс (300–500)</option>
+    </optgroup>
+    <optgroup label="Спальня / Детская">
+      <option value="135">Спальня (120–150)</option>
+      <option value="225">Детская — общая (200–250)</option>
+      <option value="400">Детская — рабочий стол (300–500)</option>
+    </optgroup>
+    <optgroup label="Ванная / Санузел">
+      <option value="250">Ванная более 8–10 м² (200–300)</option>
+      <option value="175">Санузел гостевой (150–200)</option>
+    </optgroup>
+    <optgroup label="Специальные помещения">
+      <option value="135">Лестница в интерьере (120–150)</option>
+      <option value="175">Бассейн (150–200)</option>
+      <option value="135">Бойлерная (120–150)</option>
+      <option value="75">Винный погреб (30–120)</option>
+      <option value="150">Бильярдная — общая (150)</option>
+      <option value="650">Бильярдная — над столом (500–800)</option>
+      <option value="40">Сауна, Хамам (30–50)</option>
+      <option value="250">Гардеробная (200–300)</option>
+      <option value="50">Подвал (50)</option>
+    </optgroup>
+  </select>
+  <div class="hint">Выбери помещение — калькулятор подставит среднее значение E. Можно поправить вручную.</div>
+
   <label>Тип светильника</label>
   <select id="type">
     <option value="potol">Потолочные</option>
@@ -215,6 +262,14 @@ function updateReflOptions() {
 }
 selectType.addEventListener('change', updateReflOptions);
 updateReflOptions();
+
+// НОВАЯ ФУНКЦИЯ: Автоподстановка E из таблицы
+function applyRoomE() {
+  const val = document.getElementById('roomType').value;
+  if (val) {
+    document.getElementById('E').value = val;
+  }
+}
 
 function toggleSplitMode() {
   const mode = document.getElementById('splitMode').value;
@@ -369,7 +424,6 @@ function calcSplit() {
 
   saveBtn.style.display = 'block';
   
-  // Автоматически сохраняем в журнал при распределении
   addToJournal(lastSplit);
 }
 
@@ -401,7 +455,7 @@ function addToJournal(result) {
   };
 
   journal.unshift(newEntry);
-  if (journal.length > 20) journal.pop(); // Максимум 20 записей
+  if (journal.length > 20) journal.pop();
   
   localStorage.setItem('calcJournal', JSON.stringify(journal));
   renderJournal();
@@ -457,172 +511,3 @@ function downloadJournal() {
   if (journal.length === 0) return;
   
   let text = '=== ЖУРНАЛ РАСЧЁТОВ ОСВЕЩЕНИЯ ===\n';
-  text += 'Всего записей: ' + journal.length + '\n\n';
-
-  journal.forEach((item, index) => {
-    const typeName = item.type === 'potol' ? 'Потолочные' : 'Подвесные';
-    const reflName = reflLabels[item.refl];
-    
-    text += `--- Запись №${index + 1} (${item.date}) ---\n`;
-    text += `Размеры: ${item.a} × ${item.b} × ${item.h} м | Площадь: ${item.S.toFixed(2)} м²\n`;
-    text += `Освещённость E: ${item.E} лк\n`;
-    text += `Тип: ${typeName} | Отражение: ${reflName}\n`;
-    text += `Индекс I: ${item.I.toFixed(2)} | uoy: ${item.uoy.toFixed(3)}\n`;
-    text += `Требуемый поток: ${item.NC.toFixed(0)} лм\n`;
-    
-    if (item.lossPercent > 0) {
-      text += `Потери на фильтре: ${item.lossPercent}% (проходит ${100 - item.lossPercent}%)\n`;
-      text += `С учётом потерь: ${item.NC_effective.toFixed(0)} лм\n`;
-    }
-    
-    if (item.lampCount) {
-      text += `Распределение: ${item.lampCount} ламп → ${item.perLamp.toFixed(0)} лм на лампу\n`;
-    } else if (item.lineLength) {
-      text += `Распределение: ${item.lineLength} м линии → ${item.perMeter.toFixed(0)} лм/м\n`;
-    }
-    text += '\n';
-  });
-
-  const d = new Date();
-  const pad = n => String(n).padStart(2, '0');
-  const filename = 'journal_osveschenie_' + d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()) + '.txt';
-
-  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = filename;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
-}
-
-// === СОХРАНЕНИЕ В ФАЙЛ ===
-function saveResult() {
-  const r = lastSplit || lastTotal;
-  if (!r) return;
-
-  const typeName = r.type === 'potol' ? 'Потолочные' : 'Подвесные';
-  const reflName = reflLabels[r.refl];
-  const date = new Date().toLocaleString('ru-RU');
-
-  let text = '';
-  text += '=== РЕЗУЛЬТАТ РАСЧЁТА ОСВЕЩЕНИЯ ===\n';
-  text += 'Дата расчёта: ' + date + '\n\n';
-
-  text += '--- ИСХОДНЫЕ ДАННЫЕ ---\n';
-  text += 'Ширина a: ' + r.a + ' м\n';
-  text += 'Длина b: ' + r.b + ' м\n';
-  text += 'Высота h: ' + r.h + ' м\n';
-  text += 'Освещённость E: ' + r.E + ' лк\n';
-  text += 'Тип светильника: ' + typeName + '\n';
-  text += 'Коэффициент отражения: ' + reflName + '\n';
-  text += '\n';
-
-  text += '--- РЕЗУЛЬТАТЫ ---\n';
-  text += 'Общий требуемый световой поток: ' + r.NC.toFixed(0) + ' лм\n';
-  text += 'Площадь помещения S: ' + r.S.toFixed(2) + ' м²\n';
-  text += 'Индекс помещения I: ' + r.I.toFixed(2) + '\n';
-  text += 'Коэффициент uoy: ' + r.uoy.toFixed(3) + '\n';
-
-  if (r.splitInfo) {
-    text += '\n--- ПОТЕРИ НА ФИЛЬТРЕ / РАССЕИВАТЕЛЕ ---\n';
-    text += 'Коэффициент потерь: ' + r.splitInfo.lossPercent.toFixed(0) + '%\n';
-    text += 'Проходит света: ' + r.splitInfo.tauPercent.toFixed(0) + '%\n';
-    text += 'Требуемый поток с учётом потерь: ' + r.splitInfo.NC_effective.toFixed(0) + ' лм\n';
-
-    text += '\n--- РАСПРЕДЕЛЕНИЕ ПОТОКА ---\n';
-    if (r.splitInfo.mode === 'lamps') {
-      text += 'Способ: по количеству ламп\n';
-      text += 'Количество ламп: ' + r.splitInfo.lampCount + ' шт.\n';
-      text += 'Требуемый поток на 1 лампу: ' + r.splitInfo.perLamp.toFixed(0) + ' лм\n';
-    } else {
-      text += 'Способ: по длине световых линий\n';
-      text += 'Длина линии: ' + r.splitInfo.lineLength + ' м\n';
-      text += 'Требуемый поток на 1 метр линии: ' + r.splitInfo.perMeter.toFixed(0) + ' лм/м\n';
-    }
-  } else {
-    text += '\n--- РАСПРЕДЕЛЕНИЕ ПОТОКА ---\n';
-    text += 'Не выполнено (шаг 2 пропущен)\n';
-  }
-
-  text += '\n--- ИСПОЛЬЗОВАННЫЕ ФОРМУЛЫ ---\n';
-  text += 'S = a · b\n';
-  text += 'I = (a · b) / (h · (a + b))\n';
-  text += 'NC = (E · 1.25 · S) / uoy\n';
-  text += 'NC_effective = NC / (1 - потери/100)\n';
-  text += 'Поток на 1 лампу = NC_effective / количество ламп\n';
-  text += 'Поток на 1 м линии = NC_effective / длина линии\n';
-
-  const d = new Date();
-  const pad = n => String(n).padStart(2, '0');
-  const filename = 'osveschenie_' + d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()) +
-                   '_' + pad(d.getHours()) + '-' + pad(d.getMinutes()) + '.txt';
-
-  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = filename;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
-}
-
-// === ПЕРЕКЛЮЧЕНИЕ ТЕМЫ ===
-function toggleTheme() {
-  const body = document.body;
-  const btn = document.getElementById('themeBtn');
-  if (body.classList.contains('dark')) {
-    body.classList.remove('dark');
-    btn.textContent = '🌙';
-    localStorage.setItem('theme', 'light');
-  } else {
-    body.classList.add('dark');
-    btn.textContent = '☀️';
-    localStorage.setItem('theme', 'dark');
-  }
-}
-
-(function() {
-  const saved = localStorage.getItem('theme');
-  if (saved === 'dark') {
-    document.body.classList.add('dark');
-    document.getElementById('themeBtn').textContent = '☀️';
-  }
-  renderJournal(); // Инициализация журнала при загрузке
-})();
-
-// === PWA ===
-let deferredPrompt;
-const installBtn = document.getElementById('installBtn');
-
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  installBtn.style.display = 'block';
-});
-
-function installPWA() {
-  if (!deferredPrompt) return;
-  deferredPrompt.prompt();
-  deferredPrompt.userChoice.then((choice) => {
-    if (choice.outcome === 'accepted') {
-      installBtn.style.display = 'none';
-    }
-    deferredPrompt = null;
-  });
-}
-
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(reg => console.log('SW зарегистрирован'))
-      .catch(err => console.log('SW ошибка:', err));
-  });
-}
-</script>
-</body>
-</html>
