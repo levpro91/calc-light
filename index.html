@@ -10,13 +10,13 @@
 <link rel="apple-touch-icon" href="icon-512.png">
 <style>
   :root {
-    --bg: #f4f6f8; --text: #222; --label: #333; --input-bg: #ffffff; --input-border: #ccc;
+    --bg: #f4f6f8; --text: #222; --label: #333; --input-bg: #fff; --input-border: #ccc;
     --hint: #777; --btn: #0a58ca; --btn-hover: #084298; --btn-save: #198754; --btn-save-hover: #146c43;
     --btn-secondary: #6c757d; --btn-secondary-hover: #5a6268; --quick-bg: #e9ecef; --quick-text: #333;
-    --quick-border: #ccc; --quick-hover: #d6d9dc; --res-bg: #ffffff; --res-text: #222; --res-b: #0a58ca;
+    --quick-border: #ccc; --quick-hover: #d6d9dc; --res-bg: #fff; --res-text: #222; --res-b: #0a58ca;
     --total-bg: #d1e7dd; --total-b: #146c43; --recommend-bg: #fff3cd; --recommend-border: #ffc107;
     --recommend-b: #856404; --filter-bg: #f8d7da; --filter-border: #dc3545; --filter-b: #842029;
-    --hr: #ddd; --shadow: none; --log-bg: #eef2f6; --log-item-bg: #ffffff; --log-item-border: #ddd;
+    --hr: #ddd; --shadow: none; --log-bg: #eef2f6; --log-item-bg: #fff; --log-item-border: #ddd;
     --danger: #dc3545; --danger-hover: #bb2d3b;
   }
   body.dark {
@@ -29,9 +29,9 @@
     --hr: #333; --shadow: 0 0 0 1px #333; --log-bg: #1a1a1a; --log-item-bg: #222; --log-item-border: #333;
     --danger: #ef4444; --danger-hover: #dc2626;
   }
-  body{font-family:sans-serif;max-width:540px;margin:30px auto;padding:0 16px;background:var(--bg);color:var(--text);transition:background 0.3s, color 0.3s}
+  body{font-family:sans-serif;max-width:540px;margin:30px auto;padding:0 16px;background:var(--bg);color:var(--text);transition:background .3s,color .3s}
   label{display:block;margin-top:12px;font-size:14px;color:var(--label)}
-  input, select{width:100%;padding:10px;margin-top:4px;font-size:16px;box-sizing:border-box;border:1px solid var(--input-border);border-radius:4px;background:var(--input-bg);color:var(--text)}
+  input,select{width:100%;padding:10px;margin-top:4px;font-size:16px;box-sizing:border-box;border:1px solid var(--input-border);border-radius:4px;background:var(--input-bg);color:var(--text)}
   select{font-size:14px;line-height:1.4}
   .hint{font-size:12px;color:var(--hint);margin-top:4px;line-height:1.4}
   button{width:100%;padding:12px;font-size:16px;margin-top:12px;cursor:pointer;background:var(--btn);color:#fff;border:none;border-radius:4px}
@@ -56,8 +56,6 @@
   hr{border:none;border-top:1px solid var(--hr);margin:20px 0}
   #splitBlock{display:none;margin-top:16px;padding-top:12px;border-top:1px dashed var(--hr)}
   #installBtn{display:none;background:var(--btn);margin-top:12px;font-size:14px;padding:10px}
-  
-  /* Журнал */
   #journalBlock{display:none;margin-top:30px;padding:16px;background:var(--log-bg);border-radius:8px}
   .log-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:10px}
   .log-header h3{margin:0;font-size:16px;color:var(--text)}
@@ -66,24 +64,19 @@
   .log-actions button:hover{background:var(--danger-hover)}
   .log-actions button.download{background:var(--btn)}
   .log-actions button.download:hover{background:var(--btn-hover)}
-  
   .log-item{background:var(--log-item-bg);border:1px solid var(--log-item-border);border-radius:6px;padding:12px;margin-bottom:10px;position:relative;font-size:13px;line-height:1.5}
   .log-item b{font-size:14px}
   .log-item .log-date{font-size:11px;color:var(--hint);margin-bottom:4px}
   .log-item .delete-btn{position:absolute;top:8px;right:8px;background:transparent;color:var(--danger);border:none;width:auto;padding:4px 8px;font-size:16px;cursor:pointer;margin:0}
   .log-item .delete-btn:hover{color:var(--danger-hover);background:transparent}
-
-  /* Переключатель темы */
-  .theme-toggle{position:fixed;top:16px;right:16px;width:48px;height:48px;border-radius:50%;background:var(--input-bg);border:1px solid var(--input-border);color:var(--text);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:1000;box-shadow:0 2px 8px rgba(0,0,0,0.15);transition:background 0.3s, border 0.3s;padding:0;margin:0}
+  .theme-toggle{position:fixed;top:16px;right:16px;width:48px;height:48px;border-radius:50%;background:var(--input-bg);border:1px solid var(--input-border);color:var(--text);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:1000;box-shadow:0 2px 8px rgba(0,0,0,0.15);transition:background .3s,border .3s;padding:0;margin:0}
   .theme-toggle:hover{transform:scale(1.08)}
   body.dark .theme-toggle{box-shadow:0 2px 8px rgba(0,0,0,0.5)}
 </style>
 </head>
 <body>
   <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()" title="Переключить тему">🌙</button>
-
   <h2>Расчёт освещения</h2>
-
   <button id="installBtn" onclick="installPWA()">📲 Установить приложение</button>
 
   <div class="flex">
@@ -99,7 +92,6 @@
     </div>
   </div>
 
-  <!-- НОВЫЙ БЛОК: Выбор помещения -->
   <label>Тип помещения (автоподстановка E)</label>
   <select id="roomType" onchange="applyRoomE()">
     <option value="">— выбери помещение —</option>
@@ -164,23 +156,19 @@
 
   <div id="splitBlock">
     <div style="font-weight:bold;font-size:15px;margin-top:16px;color:var(--btn)">2. Распределение по лампам / линиям</div>
-
     <label>Что распределяем?</label>
     <select id="splitMode" onchange="toggleSplitMode()">
       <option value="lamps">По количеству ламп (шт.)</option>
       <option value="lines">По длине световых линий (м)</option>
     </select>
-
     <div id="blockLamps">
       <label>Количество ламп (шт.)</label>
       <input id="lampCount" type="number" step="1" placeholder="например 12">
     </div>
-
     <div id="blockLines" style="display:none">
       <label>Длина световых линий (м погонных)</label>
       <input id="lineLength" type="number" step="0.1" placeholder="например 10">
     </div>
-
     <label>Коэффициент потерь на рассеивателе / фильтре, %</label>
     <input id="lossPercent" type="number" step="1" min="0" max="99" placeholder="0 = без потерь, 20 = теряется 20%">
     <div class="hint">
@@ -194,15 +182,12 @@
       <button onclick="setLoss(40)">Сетка (40%)</button>
       <button onclick="setLoss(60)">Плотный (60%)</button>
     </div>
-
     <button class="secondary" onclick="calcSplit()">2. Распределить поток</button>
   </div>
 
   <button id="saveBtn" class="save" onclick="saveResult()" style="display:none">💾 Сохранить результат в файл</button>
-
   <div id="res" class="res"></div>
 
-  <!-- Журнал -->
   <div id="journalBlock">
     <div class="log-header">
       <h3>📋 Журнал расчётов</h3>
@@ -233,12 +218,10 @@ const data = {
 };
 
 const indices = [0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 3, 3.5, 4, 5];
-
 const selectType = document.getElementById('type');
 const selectRefl = document.getElementById('refl');
 const saveBtn = document.getElementById('saveBtn');
 const resDiv = document.getElementById('res');
-
 let lastTotal = null;
 let lastSplit = null;
 
@@ -263,12 +246,9 @@ function updateReflOptions() {
 selectType.addEventListener('change', updateReflOptions);
 updateReflOptions();
 
-// НОВАЯ ФУНКЦИЯ: Автоподстановка E из таблицы
 function applyRoomE() {
   const val = document.getElementById('roomType').value;
-  if (val) {
-    document.getElementById('E').value = val;
-  }
+  if (val) document.getElementById('E').value = val;
 }
 
 function toggleSplitMode() {
@@ -278,9 +258,7 @@ function toggleSplitMode() {
   lastSplit = null;
 }
 
-function setLoss(v) {
-  document.getElementById('lossPercent').value = v;
-}
+function setLoss(v) { document.getElementById('lossPercent').value = v; }
 
 function interp(x, xs, ys) {
   if (x <= xs[0]) return ys[0];
@@ -325,21 +303,10 @@ function calcTotal() {
   }
 
   const NC = (E * 1.25 * S) / uoy;
-
   lastTotal = { a, b, h, E, type, refl, S, I, uoy, NC };
   lastSplit = null;
 
-  let html = 
-    '<div class="total">' +
-    'Общий требуемый световой поток для помещения:<br>' +
-    '<b>' + NC.toFixed(0) + ' лм</b>' +
-    '</div>' +
-    'Площадь S = <b>' + S.toFixed(2) + ' м²</b><br>' +
-    'Индекс помещения I = <b>' + I.toFixed(2) + '</b><br>' +
-    'Коэффициент uoy = <b>' + uoy.toFixed(3) + '</b>';
-
-  resDiv.innerHTML = html;
-
+  resDiv.innerHTML = '<div class="total">Общий требуемый световой поток для помещения:<br><b>' + NC.toFixed(0) + ' лм</b></div>Площадь S = <b>' + S.toFixed(2) + ' м²</b><br>Индекс помещения I = <b>' + I.toFixed(2) + '</b><br>Коэффициент uoy = <b>' + uoy.toFixed(3) + '</b>';
   document.getElementById('splitBlock').style.display = 'block';
   saveBtn.style.display = 'block';
 }
@@ -352,9 +319,9 @@ function calcSplit() {
 
   const { S, I, uoy, NC, type, refl, a, b, h, E } = lastTotal;
   const mode = document.getElementById('splitMode').value;
-
   let lossPercent = +document.getElementById('lossPercent').value;
   if (isNaN(lossPercent) || lossPercent < 0) lossPercent = 0;
+
   if (lossPercent >= 100) {
     resDiv.innerHTML = '<p style="color:#ef4444">Потери не могут быть 100% и более. Введи 0–99%.</p>';
     saveBtn.style.display = 'none';
@@ -363,71 +330,38 @@ function calcSplit() {
 
   const tauPercent = 100 - lossPercent;
   const tau = tauPercent / 100;
-
   const NC_effective = NC / tau;
-
   let splitInfo = null;
   let splitHtml = '';
 
-  let filterHtml = '';
-  if (lossPercent > 0) {
-    filterHtml = '<div class="filter">' +
-      '🔻 <b>Потери на рассеивателе/фильтре:</b> ' + lossPercent.toFixed(0) + '%<br>' +
-      'Проходит света: <b>' + tauPercent.toFixed(0) + '%</b><br>' +
-      'Требуемый поток с учётом потерь: <b>' + NC_effective.toFixed(0) + ' лм</b><br>' +
-      '<span style="font-size:13px;opacity:0.8">' + NC.toFixed(0) + ' лм ÷ ' + tau.toFixed(2) + ' = ' + NC_effective.toFixed(0) + ' лм</span>' +
-      '</div>';
-  } else {
-    filterHtml = '<div class="hint" style="margin:8px 0">✅ Потерь нет (0%) — фильтр не учитывается.</div>';
-  }
+  let filterHtml = lossPercent > 0 
+    ? '<div class="filter">🔻 <b>Потери на рассеивателе/фильтре:</b> ' + lossPercent.toFixed(0) + '%<br>Проходит света: <b>' + tauPercent.toFixed(0) + '%</b><br>Требуемый поток с учётом потерь: <b>' + NC_effective.toFixed(0) + ' лм</b><br><span style="font-size:13px;opacity:0.8">' + NC.toFixed(0) + ' лм ÷ ' + tau.toFixed(2) + ' = ' + NC_effective.toFixed(0) + ' лм</span></div>'
+    : '<div class="hint" style="margin:8px 0">✅ Потерь нет (0%) — фильтр не учитывается.</div>';
 
   if (mode === 'lamps') {
     const lampCount = +document.getElementById('lampCount').value;
     if (lampCount > 0) {
       const perLamp = NC_effective / lampCount;
       splitInfo = { mode: 'lamps', lampCount, perLamp, lossPercent, tauPercent, NC_effective };
-      splitHtml = '<div class="recommend">' +
-        '👉 <b>Требуемый поток на 1 лампу' + (lossPercent > 0 ? ' (с учётом потерь)' : '') + ':</b><br>' +
-        '<b>' + perLamp.toFixed(0) + ' лм</b><br>' +
-        '<span style="font-size:13px;opacity:0.8">' + NC_effective.toFixed(0) + ' лм ÷ ' + lampCount + ' шт. = ' + perLamp.toFixed(0) + ' лм</span>' +
-        '</div>';
+      splitHtml = '<div class="recommend">👉 <b>Требуемый поток на 1 лампу' + (lossPercent > 0 ? ' (с учётом потерь)' : '') + ':</b><br><b>' + perLamp.toFixed(0) + ' лм</b><br><span style="font-size:13px;opacity:0.8">' + NC_effective.toFixed(0) + ' лм ÷ ' + lampCount + ' шт. = ' + perLamp.toFixed(0) + ' лм</span></div>';
     }
   } else {
     const lineLength = +document.getElementById('lineLength').value;
     if (lineLength > 0) {
       const perMeter = NC_effective / lineLength;
       splitInfo = { mode: 'lines', lineLength, perMeter, lossPercent, tauPercent, NC_effective };
-      splitHtml = '<div class="recommend">' +
-        '👉 <b>Требуемый поток на 1 метр линии' + (lossPercent > 0 ? ' (с учётом потерь)' : '') + ':</b><br>' +
-        '<b>' + perMeter.toFixed(0) + ' лм/м</b><br>' +
-        '<span style="font-size:13px;opacity:0.8">' + NC_effective.toFixed(0) + ' лм ÷ ' + lineLength + ' м = ' + perMeter.toFixed(0) + ' лм/м</span>' +
-        '</div>';
+      splitHtml = '<div class="recommend">👉 <b>Требуемый поток на 1 метр линии' + (lossPercent > 0 ? ' (с учётом потерь)' : '') + ':</b><br><b>' + perMeter.toFixed(0) + ' лм/м</b><br><span style="font-size:13px;opacity:0.8">' + NC_effective.toFixed(0) + ' лм ÷ ' + lineLength + ' м = ' + perMeter.toFixed(0) + ' лм/м</span></div>';
     }
   }
 
-  if (!splitInfo) {
-    splitHtml = '<span style="font-size:13px;opacity:0.7">Укажи количество ламп или длину линии.</span>';
-  }
-
+  if (!splitInfo) splitHtml = '<span style="font-size:13px;opacity:0.7">Укажи количество ламп или длину линии.</span>';
   lastSplit = { ...lastTotal, splitInfo };
 
-  resDiv.innerHTML =
-    '<div class="total">' +
-    'Общий требуемый световой поток для помещения:<br>' +
-    '<b>' + NC.toFixed(0) + ' лм</b>' +
-    '</div>' +
-    'Площадь S = <b>' + S.toFixed(2) + ' м²</b><br>' +
-    'Индекс помещения I = <b>' + I.toFixed(2) + '</b><br>' +
-    'Коэффициент uoy = <b>' + uoy.toFixed(3) + '</b>' +
-    filterHtml +
-    splitHtml;
-
+  resDiv.innerHTML = '<div class="total">Общий требуемый световой поток для помещения:<br><b>' + NC.toFixed(0) + ' лм</b></div>Площадь S = <b>' + S.toFixed(2) + ' м²</b><br>Индекс помещения I = <b>' + I.toFixed(2) + '</b><br>Коэффициент uoy = <b>' + uoy.toFixed(3) + '</b>' + filterHtml + splitHtml;
   saveBtn.style.display = 'block';
-  
   addToJournal(lastSplit);
 }
 
-// === ЖУРНАЛ ===
 let journal = JSON.parse(localStorage.getItem('calcJournal') || '[]');
 
 function addToJournal(result) {
@@ -441,22 +375,16 @@ function addToJournal(result) {
   if (isDuplicate) return;
 
   const newEntry = {
-    id: Date.now(),
-    date: new Date().toLocaleString('ru-RU'),
-    a: result.a, b: result.b, h: result.h, E: result.E,
-    type: result.type, refl: result.refl,
+    id: Date.now(), date: new Date().toLocaleString('ru-RU'),
+    a: result.a, b: result.b, h: result.h, E: result.E, type: result.type, refl: result.refl,
     S: result.S, I: result.I, uoy: result.uoy, NC: result.NC,
-    lossPercent: result.splitInfo?.lossPercent || 0,
-    NC_effective: result.splitInfo?.NC_effective || result.NC,
-    lampCount: result.splitInfo?.lampCount || null,
-    perLamp: result.splitInfo?.perLamp || null,
-    lineLength: result.splitInfo?.lineLength || null,
-    perMeter: result.splitInfo?.perMeter || null
+    lossPercent: result.splitInfo?.lossPercent || 0, NC_effective: result.splitInfo?.NC_effective || result.NC,
+    lampCount: result.splitInfo?.lampCount || null, perLamp: result.splitInfo?.perLamp || null,
+    lineLength: result.splitInfo?.lineLength || null, perMeter: result.splitInfo?.perMeter || null
   };
 
   journal.unshift(newEntry);
   if (journal.length > 20) journal.pop();
-  
   localStorage.setItem('calcJournal', JSON.stringify(journal));
   renderJournal();
 }
@@ -464,24 +392,13 @@ function addToJournal(result) {
 function renderJournal() {
   const block = document.getElementById('journalBlock');
   const list = document.getElementById('journalList');
-
-  if (journal.length === 0) {
-    block.style.display = 'none';
-    return;
-  }
+  if (journal.length === 0) { block.style.display = 'none'; return; }
   block.style.display = 'block';
 
   list.innerHTML = journal.map(item => {
     const typeName = item.type === 'potol' ? 'Потолочные' : 'Подвесные';
     const reflShort = item.refl.replace(/_/g, '/');
-    
-    let splitText = '';
-    if (item.lampCount) {
-      splitText = `👉 ${item.lampCount} ламп × ${Math.round(item.perLamp)} лм`;
-    } else if (item.lineLength) {
-      splitText = `👉 ${item.lineLength} м × ${Math.round(item.perMeter)} лм/м`;
-    }
-
+    let splitText = item.lampCount ? `👉 ${item.lampCount} ламп × ${Math.round(item.perLamp)} лм` : (item.lineLength ? `👉 ${item.lineLength} м × ${Math.round(item.perMeter)} лм/м` : '');
     return `<div class="log-item">
       <button class="delete-btn" onclick="deleteEntry(${item.id})" title="Удалить">✕</button>
       <div class="log-date">${item.date}</div>
@@ -509,5 +426,15 @@ function clearJournal() {
 
 function downloadJournal() {
   if (journal.length === 0) return;
-  
-  let text = '=== ЖУРНАЛ РАСЧЁТОВ ОСВЕЩЕНИЯ ===\n';
+  let text = '=== ЖУРНАЛ РАСЧЁТОВ ОСВЕЩЕНИЯ ===\nВсего записей: ' + journal.length + '\n\n';
+  journal.forEach((item, index) => {
+    const typeName = item.type === 'potol' ? 'Потолочные' : 'Подвесные';
+    const reflName = reflLabels[item.refl];
+    text += `--- Запись №${index + 1} (${item.date}) ---\n`;
+    text += `Размеры: ${item.a} × ${item.b} × ${item.h} м | Площадь: ${item.S.toFixed(2)} м²\n`;
+    text += `Освещённость E: ${item.E} лк\n`;
+    text += `Тип: ${typeName} | Отражение: ${reflName}\n`;
+    text += `Индекс I: ${item.I.toFixed(2)} | uoy: ${item.uoy.toFixed(3)}\n`;
+    text += `Требуемый поток: ${item.NC.toFixed(0)} лм\n`;
+    if (item.lossPercent > 0) {
+      text += `Потери на фильтре: ${item.lossPercent}% (про
