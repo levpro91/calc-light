@@ -49,12 +49,19 @@
     нажмите <b>«Поделиться»</b> (квадрат со стрелкой) и выберите <b>«На экран „Домой“»</b>
   </div>
 
+  <!-- Выбор единиц измерения -->
+  <label>Единицы измерения размеров</label>
+  <select id="unit" onchange="updateUnitPlaceholders()">
+    <option value="m">Метры (м)</option>
+    <option value="cm">Сантиметры (см)</option>
+  </select>
+
   <div class="flex">
-    <div><label>Ширина A (м)</label><input id="a" type="number" step="0.1" placeholder="Например, 5.0"></div>
-    <div><label>Длина B (м)</label><input id="b" type="number" step="0.1" placeholder="Например, 8.0"></div>
+    <div><label id="label-a">Ширина A (м)</label><input id="a" type="number" step="0.1" placeholder="Например, 5.0"></div>
+    <div><label id="label-b">Длина B (м)</label><input id="b" type="number" step="0.1" placeholder="Например, 8.0"></div>
   </div>
   <div class="flex">
-    <div><label>Высота H (м)</label><input id="h" type="number" step="0.1" placeholder="Например, 3.0"></div>
+    <div><label id="label-h">Высота H (м)</label><input id="h" type="number" step="0.1" placeholder="Например, 3.0"></div>
     <div>
       <label>Освещённость E (лк)</label>
       <input id="E" type="number" step="10" min="1" max="700" placeholder="300">
@@ -205,6 +212,26 @@ function updateReflOptions() {
 }
 selectType.addEventListener('change', updateReflOptions);
 updateReflOptions();
+
+function updateUnitPlaceholders() {
+  const unit = document.getElementById('unit').value;
+  const isCm = unit === 'cm';
+  
+  document.getElementById('label-a').textContent = 'Ширина A ' + (isCm ? '(см)' : '(м)');
+  document.getElementById('label-b').textContent = 'Длина B ' + (isCm ? '(см)' : '(м)');
+  document.getElementById('label-h').textContent = 'Высота H ' + (isCm ? '(см)' : '(м)');
+
+  if (isCm) {
+    document.getElementById('a').placeholder = "Например, 500";
+    document.getElementById('b').placeholder = "Например, 800";
+    document.getElementById('h').placeholder = "Например, 300";
+  } else {
+    document.getElementById('a').placeholder = "Например, 5.0";
+    document.getElementById('b').placeholder = "Например, 8.0";
+    document.getElementById('h').placeholder = "Например, 3.0";
+  }
+}
+
 function applyRoomE() {
   const val = document.getElementById('roomType').value;
   if (val) document.getElementById('E').value = val;
@@ -227,29 +254,42 @@ function interp(x, xs, ys) {
   }
 }
 function calcTotal() {
-  const a = +document.getElementById('a').value;
-  const b = +document.getElementById('b').value;
-  const h = +document.getElementById('h').value;
+  const unit = document.getElementById('unit').value;
+  let a = +document.getElementById('a').value;
+  let b = +document.getElementById('b').value;
+  let h = +document.getElementById('h').value;
   const E = +document.getElementById('E').value;
   const type = selectType.value;
   const refl = selectRefl.value;
+
   if (!a || !b || !h || !E) { resDiv.textContent = 'Заполни размеры помещения и освещённость'; saveBtn.style.display = 'none'; return; }
   if (E > 700) { resDiv.innerHTML = '<p style="color:#ef4444">Освещённость E не может быть больше 700 лк. Максимум — 700.</p>'; saveBtn.style.display = 'none'; return; }
+
+  // Переводим в метры для расчёта, если выбраны сантиметры
+  if (unit === 'cm') {
+    a = a / 100;
+    b = b / 100;
+    h = h / 100;
+  }
+
   const S = a * b;
   const I = (a * b) / (h * (a + b));
   const uoyArray = data[type][refl];
   const uoy = interp(I, indices, uoyArray);
+
   if (uoy === 0) { resDiv.textContent = 'Ошибка: коэффициент uoy равен 0'; saveBtn.style.display = 'none'; return; }
   const NC = (E * 1.25 * S) / uoy;
-  lastTotal = { a, b, h, E, type, refl, S, I, uoy, NC };
+
+  lastTotal = { a, b, h, E, type, refl, S, I, uoy, NC, unit };
   lastSplit = null;
+  
   resDiv.innerHTML = '<div class="total">Общий требуемый световой поток для помещения:<br><b>' + NC.toFixed(0) + ' лм</b></div>Площадь S = <b>' + S.toFixed(2) + ' м²</b><br>Индекс помещения I = <b>' + I.toFixed(2) + '</b><br>Коэффициент uoy = <b>' + uoy.toFixed(3) + '</b>';
   document.getElementById('splitBlock').style.display = 'block';
   saveBtn.style.display = 'block';
 }
 function calcSplit() {
   if (!lastTotal) { resDiv.innerHTML = '<p style="color:#ef4444">Сначала нажми «1. Рассчитать общий поток»</p>'; return; }
-  const { S, I, uoy, NC, type, refl, a, b, h, E } = lastTotal;
+  const { S, I, uoy, NC, type, refl, a, b, h, E, unit } = lastTotal;
   const mode = document.getElementById('splitMode').value;
   let lossPercent = +document.getElementById('lossPercent').value;
   if (isNaN(lossPercent) || lossPercent < 0) lossPercent = 0;
@@ -289,6 +329,7 @@ function addToJournal(result) {
     id: Date.now(), date: new Date().toLocaleString('ru-RU'),
     a: result.a, b: result.b, h: result.h, E: result.E, type: result.type, refl: result.refl,
     S: result.S, I: result.I, uoy: result.uoy, NC: result.NC,
+    unit: result.unit,
     lossPercent: result.splitInfo?.lossPercent || 0, NC_effective: result.splitInfo?.NC_effective || result.NC,
     lampCount: result.splitInfo?.lampCount || null, perLamp: result.splitInfo?.perLamp || null,
     lineLength: result.splitInfo?.lineLength || null, perMeter: result.splitInfo?.perMeter || null
@@ -306,11 +347,16 @@ function renderJournal() {
   list.innerHTML = journal.map(item => {
     const typeName = item.type === 'potol' ? 'Потолочные' : 'Подвесные';
     const reflShort = item.refl.replace(/_/g, '/');
+    const dispA = item.unit === 'cm' ? (item.a * 100).toFixed(0) : item.a;
+    const dispB = item.unit === 'cm' ? (item.b * 100).toFixed(0) : item.b;
+    const dispH = item.unit === 'cm' ? (item.h * 100).toFixed(0) : item.h;
+    const unitLabel = item.unit === 'cm' ? 'см' : 'м';
+    
     let splitText = item.lampCount ? `👉 ${item.lampCount} ламп × ${Math.round(item.perLamp)} лм` : (item.lineLength ? `👉 ${item.lineLength} м × ${Math.round(item.perMeter)} лм/м` : '');
     return `<div class="log-item" onclick="loadFromJournal(${item.id})">
       <button class="delete-btn" onclick="event.stopPropagation(); deleteEntry(${item.id})" title="Удалить">✕</button>
       <div class="log-date">${item.date}</div>
-      <b>${item.S.toFixed(1)} м²</b> · ${item.E} лк · ${typeName} · Отражение ${reflShort}%<br>
+      <b>${dispA}×${dispB}×${dispH} ${unitLabel}</b> · ${item.E} лк · ${typeName}<br>
       Требуемый поток: <b>${Math.round(item.NC)} лм</b><br>
       ${item.lossPercent > 0 ? `Потери ${item.lossPercent}% → с учётом: ${Math.round(item.NC_effective)} лм<br>` : ''}
       ${splitText}
@@ -321,27 +367,30 @@ function renderJournal() {
 function loadFromJournal(id) {
   const item = journal.find(x => x.id === id);
   if (!item) return;
-  // Заполняем поля
-  document.getElementById('a').value = item.a;
-  document.getElementById('b').value = item.b;
-  document.getElementById('h').value = item.h;
+  
+  document.getElementById('unit').value = item.unit || 'm';
+  updateUnitPlaceholders();
+  
+  document.getElementById('a').value = item.unit === 'cm' ? (item.a * 100).toFixed(1) : item.a;
+  document.getElementById('b').value = item.unit === 'cm' ? (item.b * 100).toFixed(1) : item.b;
+  document.getElementById('h').value = item.unit === 'cm' ? (item.h * 100).toFixed(1) : item.h;
   document.getElementById('E').value = item.E;
-  // Тип светильника (сначала ставим, потом обновляем список отражений)
+  
   document.getElementById('type').value = item.type;
   updateReflOptions();
   document.getElementById('refl').value = item.refl;
-  // Восстанавливаем режим распределения
+  
   const mode = item.lampCount ? 'lamps' : (item.lineLength ? 'lines' : 'lamps');
   document.getElementById('splitMode').value = mode;
   toggleSplitMode();
   if (item.lampCount) document.getElementById('lampCount').value = item.lampCount;
   if (item.lineLength) document.getElementById('lineLength').value = item.lineLength;
   document.getElementById('lossPercent').value = item.lossPercent || 0;
-  // Пересчитываем
+  
   calcTotal();
   if (mode === 'lamps' && item.lampCount) calcSplit();
   else if (mode === 'lines' && item.lineLength) calcSplit();
-  // Прокрутка наверх, чтобы увидеть результат
+  
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 function deleteEntry(id) {
@@ -362,8 +411,13 @@ function downloadJournal() {
   journal.forEach((item, index) => {
     const typeName = item.type === 'potol' ? 'Потолочные' : 'Подвесные';
     const reflName = reflLabels[item.refl];
+    const unitLabel = item.unit === 'cm' ? 'см' : 'м';
+    const dispA = item.unit === 'cm' ? (item.a * 100).toFixed(0) : item.a;
+    const dispB = item.unit === 'cm' ? (item.b * 100).toFixed(0) : item.b;
+    const dispH = item.unit === 'cm' ? (item.h * 100).toFixed(0) : item.h;
+
     text += `--- Запись №${index + 1} (${item.date}) ---\n`;
-    text += `Размеры: ${item.a} × ${item.b} × ${item.h} м | Площадь: ${item.S.toFixed(2)} м²\n`;
+    text += `Размеры: ${dispA} × ${dispB} × ${dispH} ${unitLabel} | Площадь: ${item.S.toFixed(2)} м²\n`;
     text += `Освещённость E: ${item.E} лк\n`;
     text += `Тип: ${typeName} | Отражение: ${reflName}\n`;
     text += `Индекс I: ${item.I.toFixed(2)} | uoy: ${item.uoy.toFixed(3)}\n`;
@@ -395,11 +449,16 @@ function saveResult() {
   const typeName = r.type === 'potol' ? 'Потолочные' : 'Подвесные';
   const reflName = reflLabels[r.refl];
   const date = new Date().toLocaleString('ru-RU');
+  const unitLabel = r.unit === 'cm' ? 'см' : 'м';
+  const dispA = r.unit === 'cm' ? (r.a * 100).toFixed(0) : r.a;
+  const dispB = r.unit === 'cm' ? (r.b * 100).toFixed(0) : r.b;
+  const dispH = r.unit === 'cm' ? (r.h * 100).toFixed(0) : r.h;
+
   let text = '';
   text += '=== РЕЗУЛЬТАТ РАСЧЁТА ОСВЕЩЕНИЯ ===\n';
   text += 'Дата расчёта: ' + date + '\n\n';
   text += '--- ИСХОДНЫЕ ДАННЫЕ ---\n';
-  text += 'Ширина a: ' + r.a + ' м\nДлина b: ' + r.b + ' м\nВысота h: ' + r.h + ' м\nОсвещённость E: ' + r.E + ' лк\nТип светильника: ' + typeName + '\nКоэффициент отражения: ' + reflName + '\n\n';
+  text += 'Ширина a: ' + dispA + ' ' + unitLabel + '\nДлина b: ' + dispB + ' ' + unitLabel + '\nВысота h: ' + dispH + ' ' + unitLabel + '\nОсвещённость E: ' + r.E + ' лк\nТип светильника: ' + typeName + '\nКоэффициент отражения: ' + reflName + '\n\n';
   text += '--- РЕЗУЛЬТАТЫ ---\n';
   text += 'Общий требуемый световой поток: ' + r.NC.toFixed(0) + ' лм\nПлощадь помещения S: ' + r.S.toFixed(2) + ' м²\nИндекс помещения I: ' + r.I.toFixed(2) + '\nКоэффициент uoy: ' + r.uoy.toFixed(3) + '\n';
   if (r.splitInfo) {
@@ -441,6 +500,8 @@ function toggleTheme() {
   const saved = localStorage.getItem('theme');
   if (saved === 'dark') { document.body.classList.add('dark'); document.getElementById('themeBtn').textContent = '☀️'; }
   renderJournal();
+  updateUnitPlaceholders(); // Инициализация заголовков при загрузке
+  
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
   const isStandalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
   const hintClosed = localStorage.getItem('iosHintClosed');
