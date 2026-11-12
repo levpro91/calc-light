@@ -9,8 +9,8 @@
 <link rel="icon" href="icon-512.png">
 <link rel="apple-touch-icon" href="icon-512.png">
 <style>
-  :root { --bg:#f4f6f8; --text:#222; --label:#333; --input-bg:#fff; --input-border:#ccc; --hint:#777; --btn:#0a58ca; --btn-hover:#084298; --btn-save:#198754; --btn-save-hover:#146c43; --btn-secondary:#6c757d; --btn-secondary-hover:#5a6268; --quick-bg:#e9ecef; --quick-text:#333; --quick-border:#ccc; --quick-hover:#d6d9dc; --res-bg:#fff; --res-text:#222; --res-b:#0a58ca; --total-bg:#d1e7dd; --total-b:#146c43; --recommend-bg:#fff3cd; --recommend-border:#ffc107; --recommend-b:#856404; --filter-bg:#f8d7da; --filter-border:#dc3545; --filter-b:#842029; --hr:#ddd; --shadow:none; --log-bg:#eef2f6; --log-item-bg:#fff; --log-item-border:#ddd; --danger:#dc3545; --danger-hover:#bb2d3b; }
-  body.dark { --bg:#121212; --text:#e0e0e0; --label:#b0b0b0; --input-bg:#1e1e1e; --input-border:#333; --hint:#888; --btn:#3b82f6; --btn-hover:#2563eb; --btn-save:#16a34a; --btn-save-hover:#15803d; --btn-secondary:#4b5563; --btn-secondary-hover:#374151; --quick-bg:#2a2a2a; --quick-text:#e0e0e0; --quick-border:#444; --quick-hover:#3a3a3a; --res-bg:#1e1e1e; --res-text:#e0e0e0; --res-b:#60a5fa; --total-bg:#14532d; --total-b:#86efac; --recommend-bg:#422006; --recommend-border:#eab308; --recommend-b:#fde047; --filter-bg:#450a0a; --filter-border:#ef4444; --filter-b:#fca5a5; --hr:#333; --shadow:0 0 0 1px #333; --log-bg:#1a1a1a; --log-item-bg:#222; --log-item-border:#333; --danger:#ef4444; --danger-hover:#dc2626; }
+  :root { --bg:#f4f6f8; --text:#222; --label:#333; --input-bg:#fff; --input-border:#ccc; --hint:#777; --btn:#0a58ca; --btn-hover:#084298; --btn-save:#198754; --btn-save-hover:#146c43; --btn-secondary:#6c757d; --btn-secondary-hover:#5a6268; --quick-bg:#e9ecef; --quick-text:#333; --quick-border:#ccc; --quick-hover:#d6d9dc; --res-bg:#fff; --res-text:#222; --res-b:#0a58ca; --total-bg:#d1e7dd; --total-b:#146c43; --recommend-bg:#fff3cd; --recommend-border:#ffc107; --recommend-b:#856404; --filter-bg:#f8d7da; --filter-border:#dc3545; --filter-b:#842029; --hr:#ddd; --shadow:none; --log-bg:#eef2f6; --log-item-bg:#fff; --log-item-border:#ddd; --log-item-hover:#e0e7ff; --danger:#dc3545; --danger-hover:#bb2d3b; --ios-hint-bg:#0a58ca; }
+  body.dark { --bg:#121212; --text:#e0e0e0; --label:#b0b0b0; --input-bg:#1e1e1e; --input-border:#333; --hint:#888; --btn:#3b82f6; --btn-hover:#2563eb; --btn-save:#16a34a; --btn-save-hover:#15803d; --btn-secondary:#4b5563; --btn-secondary-hover:#374151; --quick-bg:#2a2a2a; --quick-text:#e0e0e0; --quick-border:#444; --quick-hover:#3a3a3a; --res-bg:#1e1e1e; --res-text:#e0e0e0; --res-b:#60a5fa; --total-bg:#14532d; --total-b:#86efac; --recommend-bg:#422006; --recommend-border:#eab308; --recommend-b:#fde047; --filter-bg:#450a0a; --filter-border:#ef4444; --filter-b:#fca5a5; --hr:#333; --shadow:0 0 0 1px #333; --log-bg:#1a1a1a; --log-item-bg:#222; --log-item-border:#333; --log-item-hover:#2d2d2d; --danger:#ef4444; --danger-hover:#dc2626; --ios-hint-bg:#2563eb; }
   body{font-family:sans-serif;max-width:540px;margin:30px auto;padding:0 16px;background:var(--bg);color:var(--text);transition:background .3s,color .3s}
   label{display:block;margin-top:12px;font-size:14px;color:var(--label)}
   input,select{width:100%;padding:10px;margin-top:4px;font-size:16px;box-sizing:border-box;border:1px solid var(--input-border);border-radius:4px;background:var(--input-bg);color:var(--text)}
@@ -26,15 +26,28 @@
   #splitBlock{display:none;margin-top:16px;padding-top:12px;border-top:1px dashed var(--hr)} #installBtn{display:none;background:var(--btn);margin-top:12px;font-size:14px;padding:10px}
   #journalBlock{display:none;margin-top:30px;padding:16px;background:var(--log-bg);border-radius:8px} .log-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:10px} .log-header h3{margin:0;font-size:16px;color:var(--text)} .log-actions{display:flex;gap:6px}
   .log-actions button{width:auto;padding:6px 10px;font-size:12px;margin-top:0;background:var(--danger);border:none} .log-actions button:hover{background:var(--danger-hover)} .log-actions button.download{background:var(--btn)} .log-actions button.download:hover{background:var(--btn-hover)}
-  .log-item{background:var(--log-item-bg);border:1px solid var(--log-item-border);border-radius:6px;padding:12px;margin-bottom:10px;position:relative;font-size:13px;line-height:1.5} .log-item b{font-size:14px} .log-item .log-date{font-size:11px;color:var(--hint);margin-bottom:4px}
-  .log-item .delete-btn{position:absolute;top:8px;right:8px;background:transparent;color:var(--danger);border:none;width:auto;padding:4px 8px;font-size:16px;cursor:pointer;margin:0} .log-item .delete-btn:hover{color:var(--danger-hover);background:transparent}
+  .log-item{background:var(--log-item-bg);border:1px solid var(--log-item-border);border-radius:6px;padding:12px;margin-bottom:10px;position:relative;font-size:13px;line-height:1.5;cursor:pointer;transition:background .2s,transform .1s}
+  .log-item:hover{background:var(--log-item-hover)} .log-item:active{transform:scale(0.99)}
+  .log-item b{font-size:14px} .log-item .log-date{font-size:11px;color:var(--hint);margin-bottom:4px}
+  .log-item .delete-btn{position:absolute;top:8px;right:8px;background:transparent;color:var(--danger);border:none;width:auto;padding:4px 8px;font-size:16px;cursor:pointer;margin:0;z-index:2} .log-item .delete-btn:hover{color:var(--danger-hover);background:transparent}
+  .log-item .load-hint{font-size:11px;color:var(--hint);margin-top:6px;font-style:italic}
   .theme-toggle{position:fixed;top:16px;right:16px;width:48px;height:48px;border-radius:50%;background:var(--input-bg);border:1px solid var(--input-border);color:var(--text);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:1000;box-shadow:0 2px 8px rgba(0,0,0,0.15);transition:background .3s,border .3s;padding:0;margin:0} .theme-toggle:hover{transform:scale(1.08)} body.dark .theme-toggle{box-shadow:0 2px 8px rgba(0,0,0,0.5)}
+  #iosHint { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--ios-hint-bg); color: #fff; padding: 14px 16px; text-align: center; font-size: 14px; z-index: 2000; box-shadow: 0 -2px 10px rgba(0,0,0,0.2); border-radius: 12px 12px 0 0; animation: slideUp 0.4s ease-out; }
+  #iosHint b { color: #fff; text-decoration: underline; }
+  #iosHint .close-hint { position: absolute; top: 8px; right: 12px; font-size: 20px; cursor: pointer; opacity: 0.8; background: none; border: none; color: #fff; padding: 0; margin: 0; width: auto; }
+  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 </style>
 </head>
 <body>
   <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()" title="Переключить тему">🌙</button>
   <h2>Расчёт освещения</h2>
   <button id="installBtn" onclick="installPWA()">📲 Установить приложение</button>
+
+  <div id="iosHint">
+    <button class="close-hint" onclick="closeIosHint()">✕</button>
+    Чтобы установить приложение:<br>
+    нажмите <b>«Поделиться»</b> (квадрат со стрелкой) и выберите <b>«На экран „Домой“»</b>
+  </div>
 
   <div class="flex">
     <div><label>Ширина A (м)</label><input id="a" type="number" step="0.1" placeholder="Например, 5.0"></div>
@@ -294,15 +307,42 @@ function renderJournal() {
     const typeName = item.type === 'potol' ? 'Потолочные' : 'Подвесные';
     const reflShort = item.refl.replace(/_/g, '/');
     let splitText = item.lampCount ? `👉 ${item.lampCount} ламп × ${Math.round(item.perLamp)} лм` : (item.lineLength ? `👉 ${item.lineLength} м × ${Math.round(item.perMeter)} лм/м` : '');
-    return `<div class="log-item">
-      <button class="delete-btn" onclick="deleteEntry(${item.id})" title="Удалить">✕</button>
+    return `<div class="log-item" onclick="loadFromJournal(${item.id})">
+      <button class="delete-btn" onclick="event.stopPropagation(); deleteEntry(${item.id})" title="Удалить">✕</button>
       <div class="log-date">${item.date}</div>
       <b>${item.S.toFixed(1)} м²</b> · ${item.E} лк · ${typeName} · Отражение ${reflShort}%<br>
       Требуемый поток: <b>${Math.round(item.NC)} лм</b><br>
       ${item.lossPercent > 0 ? `Потери ${item.lossPercent}% → с учётом: ${Math.round(item.NC_effective)} лм<br>` : ''}
       ${splitText}
+      <div class="load-hint">🔄 Нажмите, чтобы загрузить расчёт</div>
     </div>`;
   }).join('');
+}
+function loadFromJournal(id) {
+  const item = journal.find(x => x.id === id);
+  if (!item) return;
+  // Заполняем поля
+  document.getElementById('a').value = item.a;
+  document.getElementById('b').value = item.b;
+  document.getElementById('h').value = item.h;
+  document.getElementById('E').value = item.E;
+  // Тип светильника (сначала ставим, потом обновляем список отражений)
+  document.getElementById('type').value = item.type;
+  updateReflOptions();
+  document.getElementById('refl').value = item.refl;
+  // Восстанавливаем режим распределения
+  const mode = item.lampCount ? 'lamps' : (item.lineLength ? 'lines' : 'lamps');
+  document.getElementById('splitMode').value = mode;
+  toggleSplitMode();
+  if (item.lampCount) document.getElementById('lampCount').value = item.lampCount;
+  if (item.lineLength) document.getElementById('lineLength').value = item.lineLength;
+  document.getElementById('lossPercent').value = item.lossPercent || 0;
+  // Пересчитываем
+  calcTotal();
+  if (mode === 'lamps' && item.lampCount) calcSplit();
+  else if (mode === 'lines' && item.lineLength) calcSplit();
+  // Прокрутка наверх, чтобы увидеть результат
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 function deleteEntry(id) {
   journal = journal.filter(item => item.id !== id);
@@ -401,7 +441,18 @@ function toggleTheme() {
   const saved = localStorage.getItem('theme');
   if (saved === 'dark') { document.body.classList.add('dark'); document.getElementById('themeBtn').textContent = '☀️'; }
   renderJournal();
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const isStandalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+  const hintClosed = localStorage.getItem('iosHintClosed');
+  const iosHintEl = document.getElementById('iosHint');
+  if (isIOS && !isStandalone && !hintClosed) {
+    setTimeout(() => { iosHintEl.style.display = 'block'; }, 1500);
+  }
 })();
+function closeIosHint() {
+  document.getElementById('iosHint').style.display = 'none';
+  localStorage.setItem('iosHintClosed', 'true');
+}
 let deferredPrompt;
 const installBtn = document.getElementById('installBtn');
 window.addEventListener('beforeinstallprompt', (e) => {
