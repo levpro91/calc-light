@@ -265,7 +265,6 @@ function calcTotal() {
   if (!a || !b || !h || !E) { resDiv.textContent = 'Заполни размеры помещения и освещённость'; saveBtn.style.display = 'none'; return; }
   if (E > 700) { resDiv.innerHTML = '<p style="color:#ef4444">Освещённость E не может быть больше 700 лк. Максимум — 700.</p>'; saveBtn.style.display = 'none'; return; }
 
-  // Переводим в метры для расчёта, если выбраны сантиметры
   if (unit === 'cm') {
     a = a / 100;
     b = b / 100;
@@ -405,6 +404,41 @@ function clearJournal() {
     renderJournal();
   }
 }
+
+// === УЛУЧШЕННОЕ СОХРАНЕНИЕ (Web Share API + BOM) ===
+function createFileAndShare(text, filename, title) {
+  // Добавляем BOM (Byte Order Mark) для правильной кодировки кириллицы в старых приложениях
+  const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
+  const blob = new Blob([bom, text], { type: 'text/plain;charset=utf-8' });
+  const file = new File([blob], filename, { type: 'text/plain' });
+
+  // Проверяем, поддерживает ли устройство Web Share API для файлов (мобильные телефоны)
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    navigator.share({
+      files: [file],
+      title: title,
+      text: 'Файл с расчётом освещения'
+    }).catch(err => {
+      console.log('Ошибка при отправке:', err);
+      fallbackDownload(blob, filename);
+    });
+  } else {
+    // Если не поддерживает (ПК или старые браузеры) — скачиваем как обычно
+    fallbackDownload(blob, filename);
+  }
+}
+
+function fallbackDownload(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
 function downloadJournal() {
   if (journal.length === 0) return;
   let text = '=== ЖУРНАЛ РАСЧЁТОВ ОСВЕЩЕНИЯ ===\nВсего записей: ' + journal.length + '\n\n';
@@ -433,16 +467,10 @@ function downloadJournal() {
   const d = new Date();
   const pad = n => String(n).padStart(2, '0');
   const filename = 'journal_osveschenie_' + d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()) + '.txt';
-  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = filename;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
+  
+  createFileAndShare(text, filename, 'Журнал расчётов');
 }
+
 function saveResult() {
   const r = lastSplit || lastTotal;
   if (!r) return;
@@ -477,16 +505,10 @@ function saveResult() {
   const d = new Date();
   const pad = n => String(n).padStart(2, '0');
   const filename = 'osveschenie_' + d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()) + '_' + pad(d.getHours()) + '-' + pad(d.getMinutes()) + '.txt';
-  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = filename;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
+  
+  createFileAndShare(text, filename, 'Результат расчёта освещения');
 }
+
 function toggleTheme() {
   const body = document.body;
   const btn = document.getElementById('themeBtn');
@@ -500,7 +522,7 @@ function toggleTheme() {
   const saved = localStorage.getItem('theme');
   if (saved === 'dark') { document.body.classList.add('dark'); document.getElementById('themeBtn').textContent = '☀️'; }
   renderJournal();
-  updateUnitPlaceholders(); // Инициализация заголовков при загрузке
+  updateUnitPlaceholders();
   
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
   const isStandalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
