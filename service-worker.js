@@ -1,4 +1,4 @@
-const CACHE_NAME = 'calc-osveschenie-v11';
+const CACHE_NAME = 'calc-osveschenie-v12';
 const FILES = [
   './index.html',
   './manifest.json',
