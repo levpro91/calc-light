@@ -90,13 +90,23 @@
   .pro-kpi{padding:13px;border-radius:11px;background:#142f45;border:1px solid #28516a}
   .pro-kpi span{display:block;font-size:11px;color:#9bb4c9}
   .pro-kpi strong{display:block;font-size:21px;color:#55d0dd;margin-top:3px}
+  .reflection-help{margin-top:10px;padding:14px;border:1px solid #29465f;border-radius:12px;background:#0e2032;color:#dce9f5;font-size:13px;line-height:1.5}
+  .reflection-help-title{font-weight:800;color:#55c9d8;margin-bottom:10px}
+  .reflection-levels{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .reflection-level{display:flex;align-items:center;gap:9px;min-width:0}
+  .reflection-swatch{width:30px;height:30px;flex:0 0 30px;border-radius:8px;border:1px solid #60758a;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+  .reflection-70{background:#f4f2e9}.reflection-50{background:#c9c7bb}.reflection-30{background:#77766f}.reflection-10{background:#292b30}
+  .reflection-level b,.reflection-level small{display:block}
+  .reflection-level b{font-size:12px;color:#e8f1fb}
+  .reflection-level small{font-size:11px;color:#9fb4c8;line-height:1.35}
+  .reflection-help p{margin:12px 0 5px;color:#c5d5e5}
+  .reflection-disclaimer{display:block;color:#8fa6bc;font-size:11px;line-height:1.45}
   .pro-note{font-size:12px;color:#a7bbce;margin-top:12px}
   .pro-next ul{padding-left:20px;color:#d2dfeb;line-height:1.8;font-size:13px}
   .pro-next .hint{margin-bottom:0}
   @media(max-width:520px){body{padding:14px 13px 36px}.app-hero{padding-top:54px}.pro-grid{grid-template-columns:1fr 1fr}.pro-card{padding:15px}.res{padding:15px}}
 
 </style>
-<link rel="stylesheet" href="calc-light-refresh.css">
 </head>
 <body>
   <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()" title="Переключить тему">🌙</button>
@@ -130,13 +140,18 @@
     <div><label id="label-b">Длина B (м)</label><input id="b" type="number" step="0.1" placeholder="Например, 8.0"></div>
   </div>
   <div class="flex">
-    <div><label id="label-h">Высота H (м)</label><input id="h" type="number" step="0.1" placeholder="Например, 3.0"></div>
+    <div><label id="label-h">Высота помещения H (м)</label><input id="h" type="number" step="0.1" placeholder="Например, 3.0"></div>
     <div>
       <label>Освещённость E (лк)</label>
       <input id="E" type="number" step="10" min="1" max="700" placeholder="300">
       <div class="hint">Диапазон: 1–700 лк</div>
     </div>
   </div>
+  <div class="flex">
+    <div><label for="workPlane">Рабочая плоскость от пола (м)</label><input id="workPlane" type="number" min="0" step="0.05" value="0.8"></div>
+    <div><label for="fixtureDrop">Опуск светильника от потолка (м)</label><input id="fixtureDrop" type="number" min="0" step="0.05" value="0"></div>
+  </div>
+  <div class="hint">Эти два значения задаются в метрах независимо от выбранных единиц размеров комнаты. Для пола как рабочей поверхности укажи 0 м.</div>
 
   <label>Тип помещения (автоподстановка E)</label>
   <select id="roomType" onchange="applyRoomE()">
@@ -192,7 +207,17 @@
 
   <label>Коэффициент отражения</label>
   <select id="refl"></select>
-  <div class="hint">💡 Выбери сочетание коэффициентов отражения потолка, стен и пола. Доступны все 7 сочетаний из исходной таблицы для каждого типа светильника.</div>
+  <div class="reflection-help" role="note">
+    <div class="reflection-help-title">Как выбрать по цвету отделки</div>
+    <div class="reflection-levels">
+      <div class="reflection-level"><span class="reflection-swatch reflection-70"></span><span><b>70% — очень светлое</b><small>Белый, молочный, почти белый</small></span></div>
+      <div class="reflection-level"><span class="reflection-swatch reflection-50"></span><span><b>50% — светлое</b><small>Светло-бежевый, пастельный, светло-серый</small></span></div>
+      <div class="reflection-level"><span class="reflection-swatch reflection-30"></span><span><b>30% — среднее</b><small>Серый, цветное дерево, насыщенные оттенки</small></span></div>
+      <div class="reflection-level"><span class="reflection-swatch reflection-10"></span><span><b>10% — тёмное</b><small>Графит, тёмное дерево, тёмно-коричневый</small></span></div>
+    </div>
+    <p>Порядок значений: <b>потолок / стены / пол</b>. Ориентируйся на ближайший вариант отделки. Если сомневаешься между двумя, выбери более тёмный — это даст более осторожную оценку.</p>
+    <small class="reflection-disclaimer">Это ориентиры, а не точное измерение: фактическое отражение зависит от материала, фактуры и блеска поверхности.</small>
+  </div>
 
   <button onclick="calcTotal()">1. Рассчитать общий поток</button>
 
@@ -324,13 +349,13 @@ for (const fixtureType of Object.keys(data)) {
   }
 }
 const reflLabels = {
-  "70_50_30": "Потолок 70% · Стены 50% · Пол 30%",
-  "70_50_10": "Потолок 70% · Стены 50% · Пол 10%",
-  "70_30_30": "Потолок 70% · Стены 30% · Пол 30%",
-  "70_30_10": "Потолок 70% · Стены 30% · Пол 10%",
-  "50_50_10": "Потолок 50% · Стены 50% · Пол 10%",
-  "50_30_10": "Потолок 50% · Стены 30% · Пол 10%",
-  "30_10_10": "Потолок 30% · Стены 10% · Пол 10%"
+  "70_50_30": "70 / 50 / 30 — белый потолок, светлые стены, пол средней светлоты",
+  "70_50_10": "70 / 50 / 10 — белый потолок, светлые стены, тёмный пол",
+  "70_30_30": "70 / 30 / 30 — белый потолок, стены среднего тона, пол средней светлоты",
+  "70_30_10": "70 / 30 / 10 — белый потолок, стены среднего тона, тёмный пол",
+  "50_50_10": "50 / 50 / 10 — светлый потолок, светлые стены, тёмный пол",
+  "50_30_10": "50 / 30 / 10 — светлый потолок, стены среднего тона, тёмный пол",
+  "30_10_10": "30 / 10 / 10 — тёмный потолок, тёмные стены и тёмный пол"
 };
 const selectType = document.getElementById('type');
 const selectRefl = document.getElementById('refl');
@@ -398,10 +423,12 @@ function calcTotal() {
   let b = +document.getElementById('b').value;
   let h = +document.getElementById('h').value;
   const E = +document.getElementById('E').value;
+  const workPlane = Number(document.getElementById('workPlane').value);
+  const fixtureDrop = Number(document.getElementById('fixtureDrop').value);
   const type = selectType.value;
   const refl = selectRefl.value;
 
-  const values = [a, b, h, E];
+  const values = [a, b, h, E, workPlane, fixtureDrop];
   if (values.some(value => !Number.isFinite(value))) {
     resDiv.textContent = 'Проверь введённые значения: используй только корректные числа.';
     saveBtn.style.display = 'none';
@@ -410,8 +437,8 @@ function calcTotal() {
     lastSplit = null;
     return;
   }
-  if (values.some(value => value <= 0)) {
-    resDiv.textContent = 'Размеры помещения и освещённость должны быть больше нуля.';
+  if ([a, b, h, E].some(value => value <= 0) || workPlane < 0 || fixtureDrop < 0) {
+    resDiv.textContent = 'Размеры помещения и освещённость должны быть больше нуля; рабочая плоскость и опуск светильника не могут быть отрицательными.';
     saveBtn.style.display = 'none';
     document.getElementById('splitBlock').style.display = 'none';
     lastTotal = null;
@@ -434,7 +461,16 @@ function calcTotal() {
   }
 
   const S = a * b;
-  const I = (a * b) / (h * (a + b));
+  const hCalc = h - workPlane - fixtureDrop;
+  if (hCalc <= 0) {
+    resDiv.textContent = 'Расчётная высота должна быть больше нуля: высота комнаты минус рабочая плоскость и опуск светильника.';
+    saveBtn.style.display = 'none';
+    document.getElementById('splitBlock').style.display = 'none';
+    lastTotal = null;
+    lastSplit = null;
+    return;
+  }
+  const I = (a * b) / (hCalc * (a + b));
   const uoyArray = data[type][refl];
   if (!uoyArray || uoyArray.length !== indices.length) {
     resDiv.textContent = 'Ошибка таблицы коэффициентов. Проверь данные расчёта.';
@@ -464,16 +500,16 @@ function calcTotal() {
     return;
   }
 
-  lastTotal = { a, b, h, E, type, refl, S, I, uoy, NC, unit };
+  lastTotal = { a, b, h, hCalc, workPlane, fixtureDrop, E, type, refl, S, I, uoy, NC, unit };
   lastSplit = null;
   
-  resDiv.innerHTML = '<div class="total">Общий требуемый световой поток для помещения:<br><b>' + NC.toFixed(0) + ' лм</b></div>Площадь S = <b>' + S.toFixed(2) + ' м²</b><br>Индекс помещения I = <b>' + I.toFixed(2) + '</b><br>Коэффициент uoy = <b>' + uoy.toFixed(3) + '</b>';
+  resDiv.innerHTML = '<div class="total">Общий требуемый световой поток для помещения:<br><b>' + NC.toFixed(0) + ' лм</b></div>Площадь S = <b>' + S.toFixed(2) + ' м²</b><br>Расчётная высота над рабочей плоскостью = <b>' + hCalc.toFixed(2) + ' м</b><br>Индекс помещения I = <b>' + I.toFixed(2) + '</b><br>Коэффициент uoy = <b>' + uoy.toFixed(3) + '</b>';
   document.getElementById('splitBlock').style.display = 'block';
   saveBtn.style.display = 'block';
 }
 function calcSplit() {
   if (!lastTotal) { resDiv.innerHTML = '<p style="color:#ef4444">Сначала нажми «1. Рассчитать общий поток»</p>'; return; }
-  const { S, I, uoy, NC, type, refl, a, b, h, E, unit } = lastTotal;
+  const { S, I, uoy, NC, type, refl, a, b, h, hCalc, E, unit } = lastTotal;
   const mode = document.getElementById('splitMode').value;
   const lossInput = document.getElementById('lossPercent').value.trim();
   const lossPercent = lossInput === '' ? 0 : Number(lossInput);
@@ -508,7 +544,7 @@ function calcSplit() {
   }
   if (!splitInfo) splitHtml = '<span style="font-size:13px;opacity:0.7">Укажи количество ламп или длину линии.</span>';
   lastSplit = { ...lastTotal, splitInfo };
-  resDiv.innerHTML = '<div class="total">Общий требуемый световой поток для помещения:<br><b>' + NC.toFixed(0) + ' лм</b></div>Площадь S = <b>' + S.toFixed(2) + ' м²</b><br>Индекс помещения I = <b>' + I.toFixed(2) + '</b><br>Коэффициент uoy = <b>' + uoy.toFixed(3) + '</b>' + filterHtml + splitHtml;
+  resDiv.innerHTML = '<div class="total">Общий требуемый световой поток для помещения:<br><b>' + NC.toFixed(0) + ' лм</b></div>Площадь S = <b>' + S.toFixed(2) + ' м²</b><br>Расчётная высота над рабочей плоскостью = <b>' + hCalc.toFixed(2) + ' м</b><br>Индекс помещения I = <b>' + I.toFixed(2) + '</b><br>Коэффициент uoy = <b>' + uoy.toFixed(3) + '</b>' + filterHtml + splitHtml;
   saveBtn.style.display = 'block';
   addToJournal(lastSplit);
 }
@@ -521,11 +557,11 @@ try {
   journal = [];
 }
 function addToJournal(result) {
-  const isDuplicate = journal.some(item => item.a === result.a && item.b === result.b && item.h === result.h && item.E === result.E && item.type === result.type && item.refl === result.refl && item.lampCount === (result.splitInfo?.lampCount || null) && item.lineLength === (result.splitInfo?.lineLength || null) && item.lossPercent === (result.splitInfo?.lossPercent || 0));
+  const isDuplicate = journal.some(item => item.a === result.a && item.b === result.b && item.h === result.h && item.workPlane === result.workPlane && item.fixtureDrop === result.fixtureDrop && item.E === result.E && item.type === result.type && item.refl === result.refl && item.lampCount === (result.splitInfo?.lampCount || null) && item.lineLength === (result.splitInfo?.lineLength || null) && item.lossPercent === (result.splitInfo?.lossPercent || 0));
   if (isDuplicate) return;
   const newEntry = {
     id: Date.now(), date: new Date().toLocaleString('ru-RU'),
-    a: result.a, b: result.b, h: result.h, E: result.E, type: result.type, refl: result.refl,
+    a: result.a, b: result.b, h: result.h, workPlane: result.workPlane, fixtureDrop: result.fixtureDrop, hCalc: result.hCalc, E: result.E, type: result.type, refl: result.refl,
     S: result.S, I: result.I, uoy: result.uoy, NC: result.NC,
     unit: result.unit,
     lossPercent: result.splitInfo?.lossPercent || 0, NC_effective: result.splitInfo?.NC_effective || result.NC,
@@ -572,6 +608,8 @@ function loadFromJournal(id) {
   document.getElementById('a').value = item.unit === 'cm' ? (item.a * 100).toFixed(1) : item.a;
   document.getElementById('b').value = item.unit === 'cm' ? (item.b * 100).toFixed(1) : item.b;
   document.getElementById('h').value = item.unit === 'cm' ? (item.h * 100).toFixed(1) : item.h;
+  document.getElementById('workPlane').value = item.workPlane ?? 0;
+  document.getElementById('fixtureDrop').value = item.fixtureDrop ?? 0;
   document.getElementById('E').value = item.E;
   
   document.getElementById('type').value = item.type;
@@ -685,7 +723,7 @@ function saveResult() {
   text += '=== РЕЗУЛЬТАТ РАСЧЁТА ОСВЕЩЕНИЯ ===\n';
   text += 'Дата расчёта: ' + date + '\n\n';
   text += '--- ИСХОДНЫЕ ДАННЫЕ ---\n';
-  text += 'Ширина a: ' + dispA + ' ' + unitLabel + '\nДлина b: ' + dispB + ' ' + unitLabel + '\nВысота h: ' + dispH + ' ' + unitLabel + '\nОсвещённость E: ' + r.E + ' лк\nТип светильника: ' + typeName + '\nКоэффициент отражения: ' + reflName + '\n\n';
+  text += 'Ширина a: ' + dispA + ' ' + unitLabel + '\nДлина b: ' + dispB + ' ' + unitLabel + '\nВысота помещения H: ' + dispH + ' ' + unitLabel + '\nРабочая плоскость от пола: ' + (r.workPlane ?? 0) + ' м\nОпуск светильника от потолка: ' + (r.fixtureDrop ?? 0) + ' м\nРасчётная высота над рабочей плоскостью: ' + (r.hCalc ?? r.h).toFixed(2) + ' м\nОсвещённость E: ' + r.E + ' лк\nТип светильника: ' + typeName + '\nКоэффициент отражения: ' + reflName + '\n\n';
   text += '--- РЕЗУЛЬТАТЫ ---\n';
   text += 'Общий требуемый световой поток: ' + r.NC.toFixed(0) + ' лм\nПлощадь помещения S: ' + r.S.toFixed(2) + ' м²\nИндекс помещения I: ' + r.I.toFixed(2) + '\nКоэффициент uoy: ' + r.uoy.toFixed(3) + '\n';
   if (r.splitInfo) {
@@ -700,7 +738,7 @@ function saveResult() {
   } else {
     text += '\n--- РАСПРЕДЕЛЕНИЕ ПОТОКА ---\nНе выполнено (шаг 2 пропущен)\n';
   }
-  text += '\n--- ИСПОЛЬЗОВАННЫЕ ФОРМУЛЫ ---\nS = a · b\nI = (a · b) / (h · (a + b))\nNC = (E · 1.25 · S) / uoy\nNC_effective = NC / (1 - потери/100)\nПоток на 1 лампу = NC_effective / количество ламп\nПоток на 1 м линии = NC_effective / длина линии\n';
+  text += '\n--- ИСПОЛЬЗОВАННЫЕ ФОРМУЛЫ ---\nS = a · b\nhрасч = H − высота рабочей плоскости − опуск светильника\nI = (a · b) / (hрасч · (a + b))\nNC = (E · 1.25 · S) / uoy\nNC_effective = NC / (1 - потери/100)\nПоток на 1 лампу = NC_effective / количество ламп\nПоток на 1 м линии = NC_effective / длина линии\n';
   const d = new Date();
   const pad = n => String(n).padStart(2, '0');
   const filename = 'osveschenie_' + d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()) + '_' + pad(d.getHours()) + '-' + pad(d.getMinutes()) + '.txt';
@@ -723,9 +761,9 @@ function calcProfessional() {
   const mount=read('proMount'), E=read('proE'), eta=read('proUF'), MF=read('proMF'), flux=read('proFlux');
   const countInput=document.getElementById('proCount').value.trim();
   const count=countInput === '' ? null : Number(countInput);
-  const vals=[a,b,roomH,mount,E,eta,MF,flux];
+  const vals=[a,b,roomH,mount,E,eta,MF,flux,wp];
   const out=document.getElementById('proResult');
-  if(vals.some(v=>!Number.isFinite(v)) || vals.some(v=>v<=0) || !Number.isFinite(wp) || wp<0 || mount>roomH || wp>=mount || eta>1 || MF>1 || (count!==null && (!Number.isInteger(count)||count<1))) {
+  if(vals.some(v=>!Number.isFinite(v)) || [a,b,roomH,mount,E,eta,MF,flux].some(v=>v<=0) || wp<0 || mount>roomH || wp>=mount || eta>1 || MF>1 || (count!==null && (!Number.isInteger(count)||count<1))) {
     out.innerHTML='<div class="pro-note">Проверь данные: все размеры и освещённость должны быть положительными; рабочая плоскость должна быть ниже светильника, светильник — не выше потолка; η и MF должны быть не больше 1.</div>';
     return;
   }
@@ -733,9 +771,6 @@ function calcProfessional() {
   const total=(E*S)/(eta*MF);
   const required=Math.ceil(total/flux);
   const chosen=count===null?required:count;
-  const countWarning = chosen < required
-    ? `<div class="pro-warning" role="alert"><b>Недостаточное количество светильников.</b> Указано ${chosen} шт., расчётная потребность — ${required} шт. Оценочная освещённость ${Math.round((chosen*flux*eta*MF)/S)} лк ниже заданных ${E} лк. Увеличьте количество или выберите светильники с большим потоком.</div>`
-    : '';
   const actual=(chosen*flux*eta*MF)/S;
   const spacing=Math.sqrt(S/chosen);
   const norm=document.getElementById('proStandard').selectedOptions[0].textContent;
@@ -747,7 +782,6 @@ function calcProfessional() {
       <div class="pro-kpi"><span>Индекс помещения K</span><strong>${K.toFixed(2)}</strong></div>
       <div class="pro-kpi"><span>Оценка E при ${chosen} шт.</span><strong>${Math.round(actual)} лк</strong></div>
     </div>
-    ${countWarning}
     <div>Площадь: <b>${S.toFixed(2)} м²</b><br>Высота над рабочей плоскостью: <b>${hm.toFixed(2)} м</b><br>Суммарный поток установленных светильников: <b>${(chosen*flux).toLocaleString('ru-RU')} лм</b><br>Оценочный шаг размещения по площади: <b>${spacing.toFixed(2)} м</b><br>Нормативный контекст: <b>${norm}</b></div>
     <div class="pro-note">Оценка выполнена по упрощённой формуле Φ = E × S / (η × MF). Шаг размещения — ориентировочная оценка, не схема расстановки. Результат не подтверждает равномерность, ограничение UGR или соответствие нормативу. Для проектного заключения нужны данные IES/LDT, геометрия и проверка актуальных требований.</div>`;
 }
