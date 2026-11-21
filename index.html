@@ -6,7 +6,6 @@
 <title>Расчёт освещения</title>
 <meta name="theme-color" content="#081321">
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="calc-light-refresh.css">
 <link rel="icon" href="icon-512.png">
 <link rel="apple-touch-icon" href="icon-512.png">
 <style>
@@ -97,6 +96,7 @@
   @media(max-width:520px){body{padding:14px 13px 36px}.app-hero{padding-top:54px}.pro-grid{grid-template-columns:1fr 1fr}.pro-card{padding:15px}.res{padding:15px}}
 
 </style>
+<link rel="stylesheet" href="calc-light-refresh.css">
 </head>
 <body>
   <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()" title="Переключить тему">🌙</button>
@@ -723,9 +723,9 @@ function calcProfessional() {
   const mount=read('proMount'), E=read('proE'), eta=read('proUF'), MF=read('proMF'), flux=read('proFlux');
   const countInput=document.getElementById('proCount').value.trim();
   const count=countInput === '' ? null : Number(countInput);
-  const vals=[a,b,roomH,wp,mount,E,eta,MF,flux];
+  const vals=[a,b,roomH,mount,E,eta,MF,flux];
   const out=document.getElementById('proResult');
-  if(vals.some(v=>!Number.isFinite(v)) || vals.some(v=>v<=0) || wp<0 || mount>roomH || wp>=mount || eta>1 || MF>1 || (count!==null && (!Number.isInteger(count)||count<1))) {
+  if(vals.some(v=>!Number.isFinite(v)) || vals.some(v=>v<=0) || !Number.isFinite(wp) || wp<0 || mount>roomH || wp>=mount || eta>1 || MF>1 || (count!==null && (!Number.isInteger(count)||count<1))) {
     out.innerHTML='<div class="pro-note">Проверь данные: все размеры и освещённость должны быть положительными; рабочая плоскость должна быть ниже светильника, светильник — не выше потолка; η и MF должны быть не больше 1.</div>';
     return;
   }
@@ -733,6 +733,9 @@ function calcProfessional() {
   const total=(E*S)/(eta*MF);
   const required=Math.ceil(total/flux);
   const chosen=count===null?required:count;
+  const countWarning = chosen < required
+    ? `<div class="pro-warning" role="alert"><b>Недостаточное количество светильников.</b> Указано ${chosen} шт., расчётная потребность — ${required} шт. Оценочная освещённость ${Math.round((chosen*flux*eta*MF)/S)} лк ниже заданных ${E} лк. Увеличьте количество или выберите светильники с большим потоком.</div>`
+    : '';
   const actual=(chosen*flux*eta*MF)/S;
   const spacing=Math.sqrt(S/chosen);
   const norm=document.getElementById('proStandard').selectedOptions[0].textContent;
@@ -744,6 +747,7 @@ function calcProfessional() {
       <div class="pro-kpi"><span>Индекс помещения K</span><strong>${K.toFixed(2)}</strong></div>
       <div class="pro-kpi"><span>Оценка E при ${chosen} шт.</span><strong>${Math.round(actual)} лк</strong></div>
     </div>
+    ${countWarning}
     <div>Площадь: <b>${S.toFixed(2)} м²</b><br>Высота над рабочей плоскостью: <b>${hm.toFixed(2)} м</b><br>Суммарный поток установленных светильников: <b>${(chosen*flux).toLocaleString('ru-RU')} лм</b><br>Оценочный шаг размещения по площади: <b>${spacing.toFixed(2)} м</b><br>Нормативный контекст: <b>${norm}</b></div>
     <div class="pro-note">Оценка выполнена по упрощённой формуле Φ = E × S / (η × MF). Шаг размещения — ориентировочная оценка, не схема расстановки. Результат не подтверждает равномерность, ограничение UGR или соответствие нормативу. Для проектного заключения нужны данные IES/LDT, геометрия и проверка актуальных требований.</div>`;
 }

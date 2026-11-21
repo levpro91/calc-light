@@ -106,3 +106,8 @@ button:focus-visible{outline:3px solid rgba(57,210,255,.55);outline-offset:2px}
   #journalBlock{padding:12px}
 }
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+
+/* Предупреждение о недостаточном количестве светильников */
+.pro-warning{margin:12px 0;padding:12px 14px;border:1px solid #f0b94a;border-left:4px solid #f0b94a;border-radius:13px;background:#352d18;color:#ffe6a3;line-height:1.55}
+.pro-warning b{color:#ffdc80}
