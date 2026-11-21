@@ -123,7 +123,7 @@
 
   <label>Коэффициент отражения</label>
   <select id="refl"></select>
-  <div class="hint">💡 Если стены и пол светлые — выбирай первый вариант.<br>Если пол тёмный — второй.<br>Два «белых» и два «серых» потолка отличаются цветом стен и пола.</div>
+  <div class="hint">💡 Выбери сочетание коэффициентов отражения потолка, стен и пола. Доступны все 7 сочетаний из исходной таблицы для каждого типа светильника.</div>
 
   <button onclick="calcTotal()">1. Рассчитать общий поток</button>
 
@@ -172,34 +172,50 @@
 <script>
 const data = {
   potol: {
-    "70_50_30": [0.26,0.28,0.34,0.38,0.40,0.43,0.46,0.49,0.52,0.54,0.56,0.58,0.59,0.60,0.62,0.63,0.64,0.66],
-    "70_30_10": [0.25,0.27,0.32,0.36,0.38,0.40,0.42,0.44,0.47,0.48,0.50,0.52,0.54,0.55,0.57,0.58,0.60,0.61],
-    "50_30_10": [0.2,0.23,0.27,0.31,0.33,0.35,0.37,0.39,0.41,0.42,0.44,0.46,0.47,0.49,0.51,0.52,0.53,0.55],
-    "50_10_10": [0.19,0.21,0.25,0.28,0.30,0.32,0.34,0.36,0.38,0.39,0.41,0.42,0.44,0.45,0.47,0.48,0.50,0.51],
-    "30_10_10": [0.17,0.19,0.22,0.24,0.26,0.28,0.30,0.32,0.34,0.35,0.37,0.38,0.40,0.41,0.43,0.44,0.46,0.47]
+    "70_50_30": [0.26,0.30,0.34,0.38,0.40,0.43,0.46,0.48,0.54,0.57,0.60,0.62,0.64,0.68,0.70,0.72,0.75],
+    "70_50_10": [0.25,0.28,0.32,0.36,0.38,0.41,0.43,0.46,0.49,0.52,0.54,0.56,0.58,0.60,0.62,0.64,0.66],
+    "70_30_30": [0.20,0.24,0.28,0.31,0.34,0.37,0.39,0.42,0.47,0.51,0.54,0.57,0.59,0.63,0.66,0.68,0.72],
+    "70_30_10": [0.19,0.23,0.27,0.30,0.33,0.35,0.37,0.40,0.44,0.47,0.50,0.52,0.54,0.57,0.59,0.61,0.64],
+    "50_50_10": [0.17,0.20,0.22,0.24,0.26,0.28,0.30,0.32,0.34,0.36,0.38,0.39,0.40,0.42,0.43,0.45,0.46],
+    "50_30_10": [0.13,0.16,0.19,0.21,0.23,0.25,0.26,0.28,0.31,0.33,0.35,0.37,0.38,0.40,0.41,0.42,0.44],
+    "30_10_10": [0.06,0.08,0.10,0.11,0.12,0.13,0.14,0.15,0.17,0.18,0.19,0.20,0.21,0.22,0.23,0.24,0.25]
   },
   podves: {
-    "70_50_30": [0.19,0.24,0.27,0.31,0.34,0.37,0.40,0.43,0.46,0.48,0.50,0.52,0.54,0.55,0.57,0.58,0.60,0.61],
-    "70_30_10": [0.18,0.22,0.26,0.29,0.32,0.35,0.37,0.40,0.43,0.44,0.46,0.48,0.50,0.51,0.53,0.54,0.56,0.57],
-    "50_30_10": [0.15,0.18,0.22,0.25,0.28,0.31,0.33,0.36,0.38,0.40,0.42,0.44,0.46,0.47,0.49,0.50,0.52,0.53],
-    "50_10_10": [0.14,0.17,0.21,0.24,0.27,0.29,0.32,0.34,0.36,0.38,0.40,0.42,0.43,0.45,0.47,0.48,0.50,0.51],
-    "30_10_10": [0.11,0.14,0.16,0.18,0.21,0.24,0.26,0.28,0.30,0.32,0.34,0.36,0.37,0.39,0.41,0.42,0.44,0.45]
+    "70_50_30": [0.19,0.24,0.27,0.31,0.34,0.37,0.40,0.43,0.48,0.52,0.55,0.58,0.60,0.64,0.67,0.69,0.73],
+    "70_50_10": [0.18,0.22,0.26,0.29,0.32,0.35,0.37,0.41,0.44,0.48,0.50,0.52,0.54,0.57,0.60,0.61,0.64],
+    "70_30_30": [0.15,0.18,0.22,0.25,0.28,0.32,0.34,0.38,0.42,0.46,0.50,0.53,0.55,0.59,0.62,0.65,0.69],
+    "70_30_10": [0.14,0.18,0.21,0.25,0.28,0.30,0.33,0.36,0.40,0.43,0.46,0.49,0.51,0.54,0.56,0.58,0.62],
+    "50_50_10": [0.11,0.14,0.16,0.18,0.20,0.22,0.24,0.26,0.29,0.31,0.33,0.35,0.36,0.39,0.40,0.42,0.44],
+    "50_30_10": [0.09,0.11,0.13,0.16,0.18,0.20,0.21,0.24,0.26,0.29,0.31,0.33,0.34,0.36,0.39,0.40,0.42],
+    "30_10_10": [0.04,0.05,0.06,0.07,0.08,0.09,0.11,0.12,0.14,0.15,0.16,0.17,0.18,0.20,0.21,0.22,0.24]
   }
 };
-const indices = [0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 3, 3.5, 4, 5];
+const indices = [0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5, 3.0, 3.5, 4.0, 5.0];
+
+// Контроль соответствия: 17 индексов и 17 коэффициентов в каждом столбце таблицы.
+for (const fixtureType of Object.keys(data)) {
+  for (const [reflectionKey, values] of Object.entries(data[fixtureType])) {
+    if (values.length !== indices.length) {
+      throw new Error(`Таблица коэффициентов ${fixtureType}/${reflectionKey}: ожидалось ${indices.length} значений, получено ${values.length}`);
+    }
+  }
+}
+const reflLabels = {
+  "70_50_30": "Потолок 70% · Стены 50% · Пол 30%",
+  "70_50_10": "Потолок 70% · Стены 50% · Пол 10%",
+  "70_30_30": "Потолок 70% · Стены 30% · Пол 30%",
+  "70_30_10": "Потолок 70% · Стены 30% · Пол 10%",
+  "50_50_10": "Потолок 50% · Стены 50% · Пол 10%",
+  "50_30_10": "Потолок 50% · Стены 30% · Пол 10%",
+  "30_10_10": "Потолок 30% · Стены 10% · Пол 10%"
+};
 const selectType = document.getElementById('type');
 const selectRefl = document.getElementById('refl');
 const saveBtn = document.getElementById('saveBtn');
 const resDiv = document.getElementById('res');
 let lastTotal = null;
 let lastSplit = null;
-const reflLabels = {
-  "70_50_30": "Потолок 70% (белый) · Стены 50% (светлые) · Пол 30% (светлый)",
-  "70_30_10": "Потолок 70% (белый) · Стены 30% (средние) · Пол 10% (тёмный)",
-  "50_30_10": "Потолок 50% (серый) · Стены 30% (средние) · Пол 10% (тёмный)",
-  "50_10_10": "Потолок 50% (серый) · Стены 10% (тёмные) · Пол 10% (тёмный)",
-  "30_10_10": "Потолок 30% (тёмный) · Стены 10% (тёмные) · Пол 10% (тёмный)"
-};
+
 function updateReflOptions() {
   const type = selectType.value;
   selectRefl.innerHTML = '';
@@ -262,8 +278,31 @@ function calcTotal() {
   const type = selectType.value;
   const refl = selectRefl.value;
 
-  if (!a || !b || !h || !E) { resDiv.textContent = 'Заполни размеры помещения и освещённость'; saveBtn.style.display = 'none'; return; }
-  if (E > 700) { resDiv.innerHTML = '<p style="color:#ef4444">Освещённость E не может быть больше 700 лк. Максимум — 700.</p>'; saveBtn.style.display = 'none'; return; }
+  const values = [a, b, h, E];
+  if (values.some(value => !Number.isFinite(value))) {
+    resDiv.textContent = 'Проверь введённые значения: используй только корректные числа.';
+    saveBtn.style.display = 'none';
+    document.getElementById('splitBlock').style.display = 'none';
+    lastTotal = null;
+    lastSplit = null;
+    return;
+  }
+  if (values.some(value => value <= 0)) {
+    resDiv.textContent = 'Размеры помещения и освещённость должны быть больше нуля.';
+    saveBtn.style.display = 'none';
+    document.getElementById('splitBlock').style.display = 'none';
+    lastTotal = null;
+    lastSplit = null;
+    return;
+  }
+  if (E > 700) {
+    resDiv.textContent = 'Освещённость E не может быть больше 700 лк. Максимум — 700.';
+    saveBtn.style.display = 'none';
+    document.getElementById('splitBlock').style.display = 'none';
+    lastTotal = null;
+    lastSplit = null;
+    return;
+  }
 
   if (unit === 'cm') {
     a = a / 100;
@@ -274,10 +313,33 @@ function calcTotal() {
   const S = a * b;
   const I = (a * b) / (h * (a + b));
   const uoyArray = data[type][refl];
+  if (!uoyArray || uoyArray.length !== indices.length) {
+    resDiv.textContent = 'Ошибка таблицы коэффициентов. Проверь данные расчёта.';
+    saveBtn.style.display = 'none';
+    document.getElementById('splitBlock').style.display = 'none';
+    lastTotal = null;
+    lastSplit = null;
+    return;
+  }
   const uoy = interp(I, indices, uoyArray);
 
-  if (uoy === 0) { resDiv.textContent = 'Ошибка: коэффициент uoy равен 0'; saveBtn.style.display = 'none'; return; }
+  if (!Number.isFinite(S) || !Number.isFinite(I) || !Number.isFinite(uoy) || uoy <= 0) {
+    resDiv.textContent = 'Не удалось выполнить расчёт. Проверь размеры помещения.';
+    saveBtn.style.display = 'none';
+    document.getElementById('splitBlock').style.display = 'none';
+    lastTotal = null;
+    lastSplit = null;
+    return;
+  }
   const NC = (E * 1.25 * S) / uoy;
+  if (!Number.isFinite(NC)) {
+    resDiv.textContent = 'Результат выходит за допустимый числовой диапазон. Проверь размеры помещения.';
+    saveBtn.style.display = 'none';
+    document.getElementById('splitBlock').style.display = 'none';
+    lastTotal = null;
+    lastSplit = null;
+    return;
+  }
 
   lastTotal = { a, b, h, E, type, refl, S, I, uoy, NC, unit };
   lastSplit = null;
@@ -290,9 +352,14 @@ function calcSplit() {
   if (!lastTotal) { resDiv.innerHTML = '<p style="color:#ef4444">Сначала нажми «1. Рассчитать общий поток»</p>'; return; }
   const { S, I, uoy, NC, type, refl, a, b, h, E, unit } = lastTotal;
   const mode = document.getElementById('splitMode').value;
-  let lossPercent = +document.getElementById('lossPercent').value;
-  if (isNaN(lossPercent) || lossPercent < 0) lossPercent = 0;
-  if (lossPercent >= 100) { resDiv.innerHTML = '<p style="color:#ef4444">Потери не могут быть 100% и более. Введи 0–99%.</p>'; saveBtn.style.display = 'none'; return; }
+  const lossInput = document.getElementById('lossPercent').value.trim();
+  const lossPercent = lossInput === '' ? 0 : Number(lossInput);
+  if (!Number.isFinite(lossPercent) || lossPercent < 0 || lossPercent >= 100) {
+    resDiv.textContent = 'Потери должны быть в диапазоне от 0 до 99%.';
+    saveBtn.style.display = 'none';
+    lastSplit = null;
+    return;
+  }
   const tauPercent = 100 - lossPercent;
   const tau = tauPercent / 100;
   const NC_effective = NC / tau;
@@ -300,15 +367,17 @@ function calcSplit() {
   let splitHtml = '';
   let filterHtml = lossPercent > 0 ? '<div class="filter">🔻 <b>Потери на рассеивателе/фильтре:</b> ' + lossPercent.toFixed(0) + '%<br>Проходит света: <b>' + tauPercent.toFixed(0) + '%</b><br>Требуемый поток с учётом потерь: <b>' + NC_effective.toFixed(0) + ' лм</b><br><span style="font-size:13px;opacity:0.8">' + NC.toFixed(0) + ' лм ÷ ' + tau.toFixed(2) + ' = ' + NC_effective.toFixed(0) + ' лм</span></div>' : '<div class="hint" style="margin:8px 0">✅ Потерь нет (0%) — фильтр не учитывается.</div>';
   if (mode === 'lamps') {
-    const lampCount = +document.getElementById('lampCount').value;
-    if (lampCount > 0) {
+    const lampInput = document.getElementById('lampCount').value.trim();
+    const lampCount = lampInput === '' ? NaN : Number(lampInput);
+    if (Number.isInteger(lampCount) && lampCount > 0) {
       const perLamp = NC_effective / lampCount;
       splitInfo = { mode: 'lamps', lampCount, perLamp, lossPercent, tauPercent, NC_effective };
       splitHtml = '<div class="recommend">👉 <b>Требуемый поток на 1 лампу' + (lossPercent > 0 ? ' (с учётом потерь)' : '') + ':</b><br><b>' + perLamp.toFixed(0) + ' лм</b><br><span style="font-size:13px;opacity:0.8">' + NC_effective.toFixed(0) + ' лм ÷ ' + lampCount + ' шт. = ' + perLamp.toFixed(0) + ' лм</span></div>';
     }
   } else {
-    const lineLength = +document.getElementById('lineLength').value;
-    if (lineLength > 0) {
+    const lineInput = document.getElementById('lineLength').value.trim();
+    const lineLength = lineInput === '' ? NaN : Number(lineInput);
+    if (Number.isFinite(lineLength) && lineLength > 0) {
       const perMeter = NC_effective / lineLength;
       splitInfo = { mode: 'lines', lineLength, perMeter, lossPercent, tauPercent, NC_effective };
       splitHtml = '<div class="recommend">👉 <b>Требуемый поток на 1 метр линии' + (lossPercent > 0 ? ' (с учётом потерь)' : '') + ':</b><br><b>' + perMeter.toFixed(0) + ' лм/м</b><br><span style="font-size:13px;opacity:0.8">' + NC_effective.toFixed(0) + ' лм ÷ ' + lineLength + ' м = ' + perMeter.toFixed(0) + ' лм/м</span></div>';
@@ -320,7 +389,14 @@ function calcSplit() {
   saveBtn.style.display = 'block';
   addToJournal(lastSplit);
 }
-let journal = JSON.parse(localStorage.getItem('calcJournal') || '[]');
+let journal = [];
+try {
+  const storedJournal = JSON.parse(localStorage.getItem('calcJournal') || '[]');
+  journal = Array.isArray(storedJournal) ? storedJournal : [];
+} catch (error) {
+  console.warn('Не удалось прочитать журнал расчётов:', error);
+  journal = [];
+}
 function addToJournal(result) {
   const isDuplicate = journal.some(item => item.a === result.a && item.b === result.b && item.h === result.h && item.E === result.E && item.type === result.type && item.refl === result.refl && item.lampCount === (result.splitInfo?.lampCount || null) && item.lineLength === (result.splitInfo?.lineLength || null) && item.lossPercent === (result.splitInfo?.lossPercent || 0));
   if (isDuplicate) return;
