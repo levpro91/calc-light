@@ -147,11 +147,19 @@
       <div class="hint">Диапазон: 1–700 лк</div>
     </div>
   </div>
-  <div class="flex">
-    <div><label for="workPlane">Рабочая плоскость от пола (м)</label><input id="workPlane" type="number" min="0" step="0.05" value="0.8"></div>
-    <div><label for="fixtureDrop">Опуск светильника от потолка (м)</label><input id="fixtureDrop" type="number" min="0" step="0.05" value="0"></div>
-  </div>
-  <div class="hint">Эти два значения задаются в метрах независимо от выбранных единиц размеров комнаты. Для пола как рабочей поверхности укажи 0 м.</div>
+  <label for="type">Тип светильника</label>
+  <select id="type">
+    <option value="potol">Потолочный</option>
+    <option value="podves">Подвесной</option>
+  </select>
+
+  <label for="fixtureDrop">Опуск светильника от потолка (м)</label>
+  <input id="fixtureDrop" type="number" min="0" step="0.05" value="0" disabled aria-describedby="fixtureDropHint">
+  <div class="hint" id="fixtureDropHint">Поле станет доступно после выбора подвесного светильника. Для потолочного светильника опуск принимается равным 0 м.</div>
+
+  <label for="workPlane">Рабочая плоскость от пола (м)</label>
+  <input id="workPlane" type="number" min="0" step="0.05" value="0.8">
+  <div class="hint">Значение задаётся в метрах независимо от выбранных единиц размеров комнаты. Для пола как рабочей поверхности укажи 0 м.</div>
 
   <label>Тип помещения (автоподстановка E)</label>
   <select id="roomType" onchange="applyRoomE()">
@@ -198,12 +206,6 @@
     </optgroup>
   </select>
   <div class="hint">Выбери помещение — калькулятор подставит среднее значение E. Можно поправить вручную.</div>
-
-  <label>Тип светильника</label>
-  <select id="type">
-    <option value="potol">Потолочные</option>
-    <option value="podves">Подвесные</option>
-  </select>
 
   <label>Коэффициент отражения</label>
   <select id="refl"></select>
@@ -366,6 +368,7 @@ let lastSplit = null;
 
 function updateReflOptions() {
   const type = selectType.value;
+  const previousReflection = selectRefl.value;
   selectRefl.innerHTML = '';
   for (const key in data[type]) {
     const opt = document.createElement('option');
@@ -373,9 +376,25 @@ function updateReflOptions() {
     opt.textContent = reflLabels[key];
     selectRefl.appendChild(opt);
   }
+  // Сохраняем выбранное отражение при переключении типа светильника.
+  if (previousReflection && data[type][previousReflection]) {
+    selectRefl.value = previousReflection;
+  }
 }
-selectType.addEventListener('change', updateReflOptions);
+function updateFixtureDropState() {
+  const dropInput = document.getElementById('fixtureDrop');
+  const isSuspended = selectType.value === 'podves';
+  dropInput.disabled = !isSuspended;
+  document.getElementById('fixtureDropHint').textContent = isSuspended
+    ? 'Укажи расстояние от потолка до светящейся части светильника. Значение задаётся в метрах.'
+    : 'Поле доступно только для подвесного светильника. Для потолочного светильника опуск принимается равным 0 м.';
+}
+selectType.addEventListener('change', () => {
+  updateReflOptions();
+  updateFixtureDropState();
+});
 updateReflOptions();
+updateFixtureDropState();
 
 function updateUnitPlaceholders() {
   const unit = document.getElementById('unit').value;
@@ -406,10 +425,14 @@ function toggleSplitMode() {
   document.getElementById('blockLines').style.display = mode === 'lines' ? 'block' : 'none';
   lastSplit = null;
 }
-function setLoss(v) { document.getElementById('lossPercent').value = v; }
+function setLoss(v) {
+  document.getElementById('lossPercent').value = v;
+  invalidateHouseholdResult('Параметры распределения изменены. Повторно выполни расчёт.');
+}
 function interp(x, xs, ys) {
-  if (x <= xs[0]) return ys[0];
-  if (x >= xs[xs.length - 1]) return ys[ys.length - 1];
+  if (x < xs[0] || x > xs[xs.length - 1]) return NaN;
+  if (x === xs[0]) return ys[0];
+  if (x === xs[xs.length - 1]) return ys[ys.length - 1];
   for (let i = 0; i < xs.length - 1; i++) {
     if (x >= xs[i] && x <= xs[i + 1]) {
       const t = (x - xs[i]) / (xs[i + 1] - xs[i]);
@@ -424,8 +447,18 @@ function calcTotal() {
   let h = +document.getElementById('h').value;
   const E = +document.getElementById('E').value;
   const workPlane = Number(document.getElementById('workPlane').value);
-  const fixtureDrop = Number(document.getElementById('fixtureDrop').value);
   const type = selectType.value;
+  const fixtureDropInput = document.getElementById('fixtureDrop').value.trim();
+  if (type === 'podves' && fixtureDropInput === '') {
+    resDiv.textContent = 'Укажи опуск подвесного светильника от потолка. Если светильник почти вплотную к потолку, введи 0 м.';
+    saveBtn.style.display = 'none';
+    document.getElementById('splitBlock').style.display = 'none';
+    lastTotal = null;
+    lastSplit = null;
+    return;
+  }
+  const enteredFixtureDrop = fixtureDropInput === '' ? 0 : Number(fixtureDropInput);
+  const fixtureDrop = type === 'podves' ? enteredFixtureDrop : 0;
   const refl = selectRefl.value;
 
   const values = [a, b, h, E, workPlane, fixtureDrop];
@@ -471,6 +504,14 @@ function calcTotal() {
     return;
   }
   const I = (a * b) / (hCalc * (a + b));
+  if (I < indices[0] || I > indices[indices.length - 1]) {
+    resDiv.textContent = `Индекс помещения I = ${I.toFixed(2)} находится за пределами таблицы (${indices[0].toFixed(1)}–${indices[indices.length - 1].toFixed(1)}). Расчёт остановлен: не следует автоматически подставлять крайний коэффициент.`;
+    saveBtn.style.display = 'none';
+    document.getElementById('splitBlock').style.display = 'none';
+    lastTotal = null;
+    lastSplit = null;
+    return;
+  }
   const uoyArray = data[type][refl];
   if (!uoyArray || uoyArray.length !== indices.length) {
     resDiv.textContent = 'Ошибка таблицы коэффициентов. Проверь данные расчёта.';
@@ -609,11 +650,12 @@ function loadFromJournal(id) {
   document.getElementById('b').value = item.unit === 'cm' ? (item.b * 100).toFixed(1) : item.b;
   document.getElementById('h').value = item.unit === 'cm' ? (item.h * 100).toFixed(1) : item.h;
   document.getElementById('workPlane').value = item.workPlane ?? 0;
-  document.getElementById('fixtureDrop').value = item.fixtureDrop ?? 0;
   document.getElementById('E').value = item.E;
   
   document.getElementById('type').value = item.type;
   updateReflOptions();
+  updateFixtureDropState();
+  document.getElementById('fixtureDrop').value = item.fixtureDrop ?? 0;
   document.getElementById('refl').value = item.refl;
   
   const mode = item.lampCount ? 'lamps' : (item.lineLength ? 'lines' : 'lamps');
@@ -689,6 +731,9 @@ function downloadJournal() {
 
     text += `--- Запись №${index + 1} (${item.date}) ---\n`;
     text += `Размеры: ${dispA} × ${dispB} × ${dispH} ${unitLabel} | Площадь: ${item.S.toFixed(2)} м²\n`;
+    text += `Рабочая плоскость от пола: ${Number(item.workPlane ?? 0).toFixed(2)} м\n`;
+    text += `Опуск светильника от потолка: ${Number(item.fixtureDrop ?? 0).toFixed(2)} м\n`;
+    text += `Расчётная высота над рабочей плоскостью: ${Number(item.hCalc ?? (item.h - (item.workPlane ?? 0) - (item.fixtureDrop ?? 0))).toFixed(2)} м\n`;
     text += `Освещённость E: ${item.E} лк\n`;
     text += `Тип: ${typeName} | Отражение: ${reflName}\n`;
     text += `Индекс I: ${item.I.toFixed(2)} | uoy: ${item.uoy.toFixed(3)}\n`;
@@ -774,6 +819,9 @@ function calcProfessional() {
   const actual=(chosen*flux*eta*MF)/S;
   const spacing=Math.sqrt(S/chosen);
   const norm=document.getElementById('proStandard').selectedOptions[0].textContent;
+  const countWarning = chosen < required
+    ? `<div class="pro-note" role="alert" style="border-left:4px solid #ef4444;padding-left:10px;color:#fecaca"><b>Недостаточно светильников.</b> Указано ${chosen} шт., требуется не менее ${required} шт. Оценочная освещённость составит ${Math.round(actual)} лк вместо ${Math.round(E)} лк (недостаток ${Math.max(0, E - actual).toFixed(0)} лк).</div>`
+    : `<div class="pro-note" role="status" style="border-left:4px solid #22c55e;padding-left:10px">Количество ${chosen} шт. обеспечивает расчётную оценку ${Math.round(actual)} лк при заданных η и MF.</div>`;
   out.innerHTML=`
     <div class="section-kicker">РЕЗУЛЬТАТ ПРЕДВАРИТЕЛЬНОГО РАСЧЁТА</div>
     <div class="pro-kpis">
@@ -782,9 +830,29 @@ function calcProfessional() {
       <div class="pro-kpi"><span>Индекс помещения K</span><strong>${K.toFixed(2)}</strong></div>
       <div class="pro-kpi"><span>Оценка E при ${chosen} шт.</span><strong>${Math.round(actual)} лк</strong></div>
     </div>
+    ${countWarning}
     <div>Площадь: <b>${S.toFixed(2)} м²</b><br>Высота над рабочей плоскостью: <b>${hm.toFixed(2)} м</b><br>Суммарный поток установленных светильников: <b>${(chosen*flux).toLocaleString('ru-RU')} лм</b><br>Оценочный шаг размещения по площади: <b>${spacing.toFixed(2)} м</b><br>Нормативный контекст: <b>${norm}</b></div>
     <div class="pro-note">Оценка выполнена по упрощённой формуле Φ = E × S / (η × MF). Шаг размещения — ориентировочная оценка, не схема расстановки. Результат не подтверждает равномерность, ограничение UGR или соответствие нормативу. Для проектного заключения нужны данные IES/LDT, геометрия и проверка актуальных требований.</div>`;
 }
+function invalidateHouseholdResult(message = 'Исходные данные изменены. Нажми «1. Рассчитать общий поток», чтобы получить актуальный результат.') {
+  lastTotal = null;
+  lastSplit = null;
+  saveBtn.style.display = 'none';
+  document.getElementById('splitBlock').style.display = 'none';
+  resDiv.textContent = message;
+}
+function invalidateProfessionalResult() {
+  document.getElementById('proResult').innerHTML = '<div class="result-placeholder">Параметры изменены. Запусти расчёт повторно, чтобы увидеть актуальный результат.</div>';
+}
+// Любое изменение расчётного поля аннулирует предыдущий результат, чтобы его нельзя было сохранить или распределить повторно.
+document.querySelectorAll('#householdPanel input, #householdPanel select').forEach(element => {
+  const eventName = element.tagName === 'SELECT' ? 'change' : 'input';
+  element.addEventListener(eventName, () => invalidateHouseholdResult());
+});
+document.querySelectorAll('#professionalPanel input, #professionalPanel select').forEach(element => {
+  const eventName = element.tagName === 'SELECT' ? 'change' : 'input';
+  element.addEventListener(eventName, invalidateProfessionalResult);
+});
 (function restoreAppMode(){try{setAppMode(localStorage.getItem('calcMode')==='professional'?'professional':'household');}catch(e){setAppMode('household');}})();
 
 function toggleTheme() {
