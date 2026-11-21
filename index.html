@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Расчёт освещения</title>
-<meta name="theme-color" content="#0a58ca">
+<meta name="theme-color" content="#081321">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-512.png">
 <link rel="apple-touch-icon" href="icon-512.png">
@@ -36,11 +36,78 @@
   #iosHint b { color: #fff; text-decoration: underline; }
   #iosHint .close-hint { position: absolute; top: 8px; right: 12px; font-size: 20px; cursor: pointer; opacity: 0.8; background: none; border: none; color: #fff; padding: 0; margin: 0; width: auto; }
   @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+  /* Обновлённая визуальная система */
+  :root {
+    --bg:#081321; --text:#e8f1fb; --label:#c2d1e2; --input-bg:#101f31; --input-border:#2b4058;
+    --hint:#91a7bd; --btn:#16a6c7; --btn-hover:#0785a4; --btn-save:#0d9b83; --btn-save-hover:#087b69;
+    --btn-secondary:#263c55; --btn-secondary-hover:#34516f; --quick-bg:#142a3e; --quick-text:#cceaf2;
+    --quick-border:#2d526a; --quick-hover:#1c3b53; --res-bg:#102238; --res-text:#e8f1fb; --res-b:#35c4dc;
+    --total-bg:#103b45; --total-b:#20c4b0; --recommend-bg:#392f1d; --recommend-border:#d89b36;
+    --recommend-b:#ffd28a; --filter-bg:#3a2028; --filter-border:#df6476; --filter-b:#ffb2bd;
+    --hr:#263b50; --shadow:0 14px 34px rgba(0,0,0,.22); --log-bg:#0d1c2c; --log-item-bg:#13263a;
+    --log-item-border:#2a4058; --log-item-hover:#19344b; --danger:#e16a78; --danger-hover:#c84d60;
+    --ios-hint-bg:#087f9c;
+  }
+  body{max-width:760px;margin:0 auto;padding:24px 18px 48px;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+  body.dark{--bg:#050d17;--text:#e8f1fb;--label:#c2d1e2;--input-bg:#0d1a29;--input-border:#263b50;--hint:#8198af;--btn:#18a9c9;--btn-hover:#0785a4}
+  .app-hero{padding:22px 4px 16px}
+  .eyebrow,.section-kicker{font-size:10px;letter-spacing:.19em;font-weight:800;color:#42c5d7}
+  .app-hero h1{font-size:clamp(27px,6vw,38px);letter-spacing:-.04em;margin:8px 0 5px;color:#f4f8ff}
+  .app-hero p{margin:0;color:#91a7bd;font-size:14px}
+  .mode-switch{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:5px;background:#0d1d2e;border:1px solid #223951;border-radius:14px;margin:8px 0 22px}
+  .mode-tab{margin:0;width:auto;border-radius:10px;background:transparent;color:#9db2c8;padding:12px 8px;font-size:14px;font-weight:700}
+  .mode-tab:hover{background:#152b40}
+  .mode-tab.active{background:linear-gradient(135deg,#0e9fbd,#087c9f);color:white;box-shadow:0 5px 16px rgba(8,150,183,.25)}
+  .mode-panel{display:none}.mode-panel.active{display:block}
+  #householdPanel>label,#householdPanel .flex label{font-weight:650;color:#c5d5e6}
+  label{font-weight:600}
+  input,select{border-radius:10px;padding:13px 14px;border-width:1px;min-height:46px;outline:none;transition:border-color .18s,box-shadow .18s}
+  input:focus,select:focus{border-color:#25b9d1;box-shadow:0 0 0 3px rgba(37,185,209,.14)}
+  button{border-radius:10px;font-weight:700;min-height:46px;transition:transform .15s,background .15s,box-shadow .15s}
+  button:active{transform:translateY(1px)}
+  #householdPanel>button:not(.theme-toggle),#householdPanel #splitBlock>button{box-shadow:0 7px 18px rgba(5,145,180,.15)}
+  .quick{gap:8px}.quick button{border-radius:8px}
+  .res,#journalBlock,.pro-card,.panel-intro,.pro-result{border:1px solid #233b54;box-shadow:var(--shadow);border-radius:16px}
+  .res{padding:20px}
+  .res .total{border-radius:12px}
+  #journalBlock{padding:18px}
+  .log-item{border-radius:11px}
+  .theme-toggle{top:14px;right:14px;width:42px;height:42px;min-height:42px;border-radius:12px;background:#102238;border-color:#29435d}
+  .panel-intro{padding:20px;margin-bottom:14px;background:linear-gradient(135deg,#102c42,#102238)}
+  .panel-intro h2{font-size:22px;margin:8px 0;color:#f2f8ff}
+  .panel-intro p{color:#a9bdd1;line-height:1.6;margin:0;font-size:13px}
+  .pro-card{padding:18px;margin:12px 0;background:#0e1e30}
+  .pro-card h3{font-size:14px;letter-spacing:.02em;margin:0 0 12px;color:#55c9d8}
+  .pro-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px}
+  .pro-grid>div{min-width:0}
+  .pro-card label{font-size:12px}
+  .pro-card .hint{line-height:1.55;margin-top:10px}
+  .primary-action{background:linear-gradient(110deg,#13a8c5,#087f9e);box-shadow:0 9px 22px rgba(9,151,184,.2)}
+  .pro-result{padding:18px;margin-top:14px;background:#10263a;line-height:1.7}
+  .result-placeholder{color:#91a7bd;font-size:13px}
+  .pro-kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}
+  .pro-kpi{padding:13px;border-radius:11px;background:#142f45;border:1px solid #28516a}
+  .pro-kpi span{display:block;font-size:11px;color:#9bb4c9}
+  .pro-kpi strong{display:block;font-size:21px;color:#55d0dd;margin-top:3px}
+  .pro-note{font-size:12px;color:#a7bbce;margin-top:12px}
+  .pro-next ul{padding-left:20px;color:#d2dfeb;line-height:1.8;font-size:13px}
+  .pro-next .hint{margin-bottom:0}
+  @media(max-width:520px){body{padding:14px 13px 36px}.app-hero{padding-top:54px}.pro-grid{grid-template-columns:1fr 1fr}.pro-card{padding:15px}.res{padding:15px}}
+
 </style>
 </head>
 <body>
   <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()" title="Переключить тему">🌙</button>
-  <h2>Расчёт освещения</h2>
+  <header class="app-hero">
+    <div class="eyebrow">LIGHTING CALCULATOR</div>
+    <h1>Расчёт освещения</h1>
+    <p>Подбор светового потока для помещений</p>
+  </header>
+  <nav class="mode-switch" aria-label="Режим калькулятора">
+    <button type="button" id="householdModeBtn" class="mode-tab active" onclick="setAppMode('household')">Бытовой</button>
+    <button type="button" id="professionalModeBtn" class="mode-tab" onclick="setAppMode('professional')">Профессиональный</button>
+  </nav>
   <button id="installBtn" onclick="installPWA()">📲 Установить приложение</button>
 
   <div id="iosHint">
@@ -49,6 +116,7 @@
     нажмите <b>«Поделиться»</b> (квадрат со стрелкой) и выберите <b>«На экран „Домой“»</b>
   </div>
 
+  <main id="householdPanel" class="mode-panel active">
   <!-- Выбор единиц измерения -->
   <label>Единицы измерения размеров</label>
   <select id="unit" onchange="updateUnitPlaceholders()">
@@ -168,6 +236,60 @@
     </div>
     <div id="journalList"></div>
   </div>
+  </main>
+  <main id="professionalPanel" class="mode-panel">
+    <section class="panel-intro">
+      <div class="section-kicker">ИНЖЕНЕРНЫЙ РАСЧЁТ</div>
+      <h2>Профессиональный режим</h2>
+      <p>Предварительный расчёт методом коэффициента использования. Для точного проекта потребуются фотометрические файлы IES/LDT и проверка по выбранному нормативу.</p>
+    </section>
+    <section class="pro-card">
+      <h3>01 · Нормативная основа</h3>
+      <label for="proStandard">Система нормирования</label>
+      <select id="proStandard">
+        <option value="sp">Россия · СП 52.13330 / ГОСТ Р 55710</option>
+        <option value="en">Европа · EN 12464-1</option>
+        <option value="custom">Собственное проектное значение</option>
+      </select>
+      <div class="hint">Выбор фиксирует контекст проекта. Нормативную освещённость для конкретной задачи укажи в поле ниже и проверь по актуальной редакции документа.</div>
+    </section>
+    <section class="pro-card">
+      <h3>02 · Геометрия помещения</h3>
+      <div class="pro-grid">
+        <div><label for="proA">Ширина, м</label><input id="proA" type="number" min="0.1" step="0.1" value="5"></div>
+        <div><label for="proB">Длина, м</label><input id="proB" type="number" min="0.1" step="0.1" value="8"></div>
+        <div><label for="proH">Высота помещения, м</label><input id="proH" type="number" min="0.1" step="0.1" value="3"></div>
+        <div><label for="proWp">Рабочая плоскость, м</label><input id="proWp" type="number" min="0" step="0.05" value="0.8"></div>
+        <div><label for="proMount">Высота установки светильника, м</label><input id="proMount" type="number" min="0.1" step="0.1" value="3"></div>
+        <div><label for="proE">Требуемая освещённость, лк</label><input id="proE" type="number" min="1" step="10" value="300"></div>
+      </div>
+      <div class="hint">Высота установки задаётся от пола. Расчётный индекс использует расстояние от светильника до рабочей плоскости.</div>
+    </section>
+    <section class="pro-card">
+      <h3>03 · Светотехнические параметры</h3>
+      <div class="pro-grid">
+        <div><label for="proUF">Коэффициент использования (η)</label><input id="proUF" type="number" min="0.01" max="1" step="0.01" value="0.65"></div>
+        <div><label for="proMF">Коэффициент эксплуатации (MF)</label><input id="proMF" type="number" min="0.1" max="1" step="0.01" value="0.8"></div>
+        <div><label for="proFlux">Поток одного светильника, лм</label><input id="proFlux" type="number" min="1" step="100" value="4000"></div>
+        <div><label for="proCount">Количество светильников (если известно)</label><input id="proCount" type="number" min="1" step="1" placeholder="Автоподбор"></div>
+      </div>
+      <div class="hint">η вводится по фотометрическим данным/таблице производителя. MF учитывает снижение светового потока и загрязнение в течение эксплуатации.</div>
+    </section>
+    <button class="primary-action" type="button" onclick="calcProfessional()">Рассчитать профессиональный предварительный подбор</button>
+    <div id="proResult" class="pro-result" aria-live="polite">
+      <div class="result-placeholder">Заполни параметры и запусти расчёт — здесь появятся результаты.</div>
+    </div>
+    <section class="pro-card pro-next">
+      <h3>Следующий этап развития</h3>
+      <ul>
+        <li>Импорт фотометрии светильников IES/LDT</li>
+        <li>Точечный расчёт и карта освещённости</li>
+        <li>Проверка равномерности Emin/Eср и UGR при наличии данных</li>
+        <li>Схема размещения светильников и технический отчёт</li>
+      </ul>
+      <p class="hint">Эти функции пока не реализованы; текущий профессиональный режим выполняет только предварительную оценку светового потока.</p>
+    </section>
+  </main>
 
 <script>
 const data = {
@@ -584,6 +706,47 @@ function saveResult() {
   
   createFileAndShare(text, filename, 'Результат расчёта освещения');
 }
+
+
+function setAppMode(mode) {
+  const household = mode === 'household';
+  document.getElementById('householdPanel').classList.toggle('active', household);
+  document.getElementById('professionalPanel').classList.toggle('active', !household);
+  document.getElementById('householdModeBtn').classList.toggle('active', household);
+  document.getElementById('professionalModeBtn').classList.toggle('active', !household);
+  try { localStorage.setItem('calcMode', mode); } catch (e) {}
+}
+function calcProfessional() {
+  const read = id => Number(document.getElementById(id).value);
+  const a=read('proA'), b=read('proB'), roomH=read('proH'), wp=read('proWp');
+  const mount=read('proMount'), E=read('proE'), eta=read('proUF'), MF=read('proMF'), flux=read('proFlux');
+  const countInput=document.getElementById('proCount').value.trim();
+  const count=countInput === '' ? null : Number(countInput);
+  const vals=[a,b,roomH,wp,mount,E,eta,MF,flux];
+  const out=document.getElementById('proResult');
+  if(vals.some(v=>!Number.isFinite(v)) || vals.some(v=>v<=0) || wp<0 || mount>roomH || wp>=mount || eta>1 || MF>1 || (count!==null && (!Number.isInteger(count)||count<1))) {
+    out.innerHTML='<div class="pro-note">Проверь данные: все размеры и освещённость должны быть положительными; рабочая плоскость должна быть ниже светильника, светильник — не выше потолка; η и MF должны быть не больше 1.</div>';
+    return;
+  }
+  const S=a*b, hm=mount-wp, K=(a*b)/(hm*(a+b));
+  const total=(E*S)/(eta*MF);
+  const required=Math.ceil(total/flux);
+  const chosen=count===null?required:count;
+  const actual=(chosen*flux*eta*MF)/S;
+  const spacing=Math.sqrt(S/chosen);
+  const norm=document.getElementById('proStandard').selectedOptions[0].textContent;
+  out.innerHTML=`
+    <div class="section-kicker">РЕЗУЛЬТАТ ПРЕДВАРИТЕЛЬНОГО РАСЧЁТА</div>
+    <div class="pro-kpis">
+      <div class="pro-kpi"><span>Требуемый суммарный поток</span><strong>${Math.round(total).toLocaleString('ru-RU')} лм</strong></div>
+      <div class="pro-kpi"><span>Расчётное количество</span><strong>${required} шт.</strong></div>
+      <div class="pro-kpi"><span>Индекс помещения K</span><strong>${K.toFixed(2)}</strong></div>
+      <div class="pro-kpi"><span>Оценка E при ${chosen} шт.</span><strong>${Math.round(actual)} лк</strong></div>
+    </div>
+    <div>Площадь: <b>${S.toFixed(2)} м²</b><br>Высота над рабочей плоскостью: <b>${hm.toFixed(2)} м</b><br>Суммарный поток установленных светильников: <b>${(chosen*flux).toLocaleString('ru-RU')} лм</b><br>Оценочный шаг размещения по площади: <b>${spacing.toFixed(2)} м</b><br>Нормативный контекст: <b>${norm}</b></div>
+    <div class="pro-note">Оценка выполнена по упрощённой формуле Φ = E × S / (η × MF). Шаг размещения — ориентировочная оценка, не схема расстановки. Результат не подтверждает равномерность, ограничение UGR или соответствие нормативу. Для проектного заключения нужны данные IES/LDT, геометрия и проверка актуальных требований.</div>`;
+}
+(function restoreAppMode(){try{setAppMode(localStorage.getItem('calcMode')==='professional'?'professional':'household');}catch(e){setAppMode('household');}})();
 
 function toggleTheme() {
   const body = document.body;
