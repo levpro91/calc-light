@@ -1,4 +1,4 @@
-const CACHE_NAME = 'calc-osveschenie-v19';
+const CACHE_NAME = 'calc-osveschenie-v20';
 const APP_SHELL = [
   './',
   './index.html',
