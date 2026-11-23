@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Расчёт освещения</title>
+<title>袪邪褋褔褢褌 芯褋胁械褖械薪懈褟</title>
 <meta name="theme-color" content="#081321">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-512.png">
@@ -37,7 +37,7 @@
   #iosHint .close-hint { position: absolute; top: 8px; right: 12px; font-size: 20px; cursor: pointer; opacity: 0.8; background: none; border: none; color: #fff; padding: 0; margin: 0; width: auto; }
   @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-  /* Обновлённая визуальная система */
+  /* 袨斜薪芯胁谢褢薪薪邪褟 胁懈蟹褍邪谢褜薪邪褟 褋懈褋褌械屑邪 */
   :root {
     --bg:#081321; --text:#e8f1fb; --label:#c2d1e2; --input-bg:#101f31; --input-border:#2b4058;
     --hint:#91a7bd; --btn:#16a6c7; --btn-hover:#0785a4; --btn-save:#0d9b83; --btn-save-hover:#087b69;
@@ -55,11 +55,6 @@
   .eyebrow,.section-kicker{font-size:10px;letter-spacing:.19em;font-weight:800;color:#42c5d7}
   .app-hero h1{font-size:clamp(27px,6vw,38px);letter-spacing:-.04em;margin:8px 0 5px;color:#f4f8ff}
   .app-hero p{margin:0;color:#91a7bd;font-size:14px}
-  .mode-switch{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:5px;background:#0d1d2e;border:1px solid #223951;border-radius:14px;margin:8px 0 22px}
-  .mode-tab{margin:0;width:auto;border-radius:10px;background:transparent;color:#9db2c8;padding:12px 8px;font-size:14px;font-weight:700}
-  .mode-tab:hover{background:#152b40}
-  .mode-tab.active{background:linear-gradient(135deg,#0e9fbd,#087c9f);color:white;box-shadow:0 5px 16px rgba(8,150,183,.25)}
-  .mode-panel{display:none}.mode-panel.active{display:block}
   #householdPanel>label,#householdPanel .flex label{font-weight:650;color:#c5d5e6}
   label{font-weight:600}
   input,select{border-radius:10px;padding:13px 14px;border-width:1px;min-height:46px;outline:none;transition:border-color .18s,box-shadow .18s}
@@ -68,28 +63,12 @@
   button:active{transform:translateY(1px)}
   #householdPanel>button:not(.theme-toggle),#householdPanel #splitBlock>button{box-shadow:0 7px 18px rgba(5,145,180,.15)}
   .quick{gap:8px}.quick button{border-radius:8px}
-  .res,#journalBlock,.pro-card,.panel-intro,.pro-result{border:1px solid #233b54;box-shadow:var(--shadow);border-radius:16px}
+  .res,#journalBlock{border:1px solid #233b54;box-shadow:var(--shadow);border-radius:16px}
   .res{padding:20px}
   .res .total{border-radius:12px}
   #journalBlock{padding:18px}
   .log-item{border-radius:11px}
   .theme-toggle{top:14px;right:14px;width:42px;height:42px;min-height:42px;border-radius:12px;background:#102238;border-color:#29435d}
-  .panel-intro{padding:20px;margin-bottom:14px;background:linear-gradient(135deg,#102c42,#102238)}
-  .panel-intro h2{font-size:22px;margin:8px 0;color:#f2f8ff}
-  .panel-intro p{color:#a9bdd1;line-height:1.6;margin:0;font-size:13px}
-  .pro-card{padding:18px;margin:12px 0;background:#0e1e30}
-  .pro-card h3{font-size:14px;letter-spacing:.02em;margin:0 0 12px;color:#55c9d8}
-  .pro-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px}
-  .pro-grid>div{min-width:0}
-  .pro-card label{font-size:12px}
-  .pro-card .hint{line-height:1.55;margin-top:10px}
-  .primary-action{background:linear-gradient(110deg,#13a8c5,#087f9e);box-shadow:0 9px 22px rgba(9,151,184,.2)}
-  .pro-result{padding:18px;margin-top:14px;background:#10263a;line-height:1.7}
-  .result-placeholder{color:#91a7bd;font-size:13px}
-  .pro-kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}
-  .pro-kpi{padding:13px;border-radius:11px;background:#142f45;border:1px solid #28516a}
-  .pro-kpi span{display:block;font-size:11px;color:#9bb4c9}
-  .pro-kpi strong{display:block;font-size:21px;color:#55d0dd;margin-top:3px}
   .reflection-help{margin-top:10px;padding:14px;border:1px solid #29465f;border-radius:12px;background:#0e2032;color:#dce9f5;font-size:13px;line-height:1.5}
   .reflection-help-title{font-weight:800;color:#55c9d8;margin-bottom:10px}
   .reflection-levels{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -101,222 +80,162 @@
   .reflection-level small{font-size:11px;color:#9fb4c8;line-height:1.35}
   .reflection-help p{margin:12px 0 5px;color:#c5d5e5}
   .reflection-disclaimer{display:block;color:#8fa6bc;font-size:11px;line-height:1.45}
-  .pro-note{font-size:12px;color:#a7bbce;margin-top:12px}
-  .pro-next ul{padding-left:20px;color:#d2dfeb;line-height:1.8;font-size:13px}
-  .pro-next .hint{margin-bottom:0}
-  @media(max-width:520px){body{padding:14px 13px 36px}.app-hero{padding-top:54px}.pro-grid{grid-template-columns:1fr 1fr}.pro-card{padding:15px}.res{padding:15px}}
+  @media(max-width:520px){body{padding:14px 13px 36px}.app-hero{padding-top:54px}.res{padding:15px}}
 
 </style>
 </head>
 <body>
-  <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()" title="Переключить тему">🌙</button>
+  <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()" title="袩械褉械泻谢褞褔懈褌褜 褌械屑褍">馃寵</button>
   <header class="app-hero">
     <div class="eyebrow">LIGHTING CALCULATOR</div>
-    <h1>Расчёт освещения</h1>
-    <p>Подбор светового потока для помещений</p>
+    <h1>袪邪褋褔褢褌 芯褋胁械褖械薪懈褟</h1>
+    <p>袩芯写斜芯褉 褋胁械褌芯胁芯谐芯 锌芯褌芯泻邪 写谢褟 锌芯屑械褖械薪懈泄</p>
   </header>
-  <nav class="mode-switch" aria-label="Режим калькулятора">
-    <button type="button" id="householdModeBtn" class="mode-tab active" onclick="setAppMode('household')">Бытовой</button>
-    <button type="button" id="professionalModeBtn" class="mode-tab" onclick="setAppMode('professional')">Профессиональный</button>
-  </nav>
-  <button id="installBtn" onclick="installPWA()">📲 Установить приложение</button>
+<button id="installBtn" onclick="installPWA()">馃摬 校褋褌邪薪芯胁懈褌褜 锌褉懈谢芯卸械薪懈械</button>
 
   <div id="iosHint">
-    <button class="close-hint" onclick="closeIosHint()">✕</button>
-    Чтобы установить приложение:<br>
-    нажмите <b>«Поделиться»</b> (квадрат со стрелкой) и выберите <b>«На экран „Домой“»</b>
+    <button class="close-hint" onclick="closeIosHint()">鉁�</button>
+    效褌芯斜褘 褍褋褌邪薪芯胁懈褌褜 锌褉懈谢芯卸械薪懈械:<br>
+    薪邪卸屑懈褌械 <b>芦袩芯写械谢懈褌褜褋褟禄</b> (泻胁邪写褉邪褌 褋芯 褋褌褉械谢泻芯泄) 懈 胁褘斜械褉懈褌械 <b>芦袧邪 褝泻褉邪薪 鈥炐斝拘夹拘光€溌�</b>
   </div>
 
-  <main id="householdPanel" class="mode-panel active">
-  <!-- Выбор единиц измерения -->
-  <label>Единицы измерения размеров</label>
+  <main id="householdPanel">
+  <!-- 袙褘斜芯褉 械写懈薪懈褑 懈蟹屑械褉械薪懈褟 -->
+  <label>袝写懈薪懈褑褘 懈蟹屑械褉械薪懈褟 褉邪蟹屑械褉芯胁</label>
   <select id="unit" onchange="updateUnitPlaceholders()">
-    <option value="m">Метры (м)</option>
-    <option value="cm">Сантиметры (см)</option>
+    <option value="m">袦械褌褉褘 (屑)</option>
+    <option value="cm">小邪薪褌懈屑械褌褉褘 (褋屑)</option>
   </select>
 
   <div class="flex">
-    <div><label id="label-a">Ширина A (м)</label><input id="a" type="number" step="0.1" placeholder="Например, 5.0"></div>
-    <div><label id="label-b">Длина B (м)</label><input id="b" type="number" step="0.1" placeholder="Например, 8.0"></div>
+    <div><label id="label-a">楔懈褉懈薪邪 A (屑)</label><input id="a" type="number" step="0.1" placeholder="袧邪锌褉懈屑械褉, 5.0"></div>
+    <div><label id="label-b">袛谢懈薪邪 B (屑)</label><input id="b" type="number" step="0.1" placeholder="袧邪锌褉懈屑械褉, 8.0"></div>
   </div>
   <div class="flex">
-    <div><label id="label-h">Высота помещения H (м)</label><input id="h" type="number" step="0.1" placeholder="Например, 3.0"></div>
+    <div><label id="label-h">袙褘褋芯褌邪 锌芯屑械褖械薪懈褟 H (屑)</label><input id="h" type="number" step="0.1" placeholder="袧邪锌褉懈屑械褉, 3.0"></div>
     <div>
-      <label>Освещённость E (лк)</label>
+      <label>袨褋胁械褖褢薪薪芯褋褌褜 E (谢泻)</label>
       <input id="E" type="number" step="10" min="1" max="700" placeholder="300">
-      <div class="hint">Диапазон: 1–700 лк</div>
+      <div class="hint">袛懈邪锌邪蟹芯薪: 1鈥�700 谢泻</div>
     </div>
   </div>
-  <label for="type">Тип светильника</label>
+  <label for="type">孝懈锌 褋胁械褌懈谢褜薪懈泻邪</label>
   <select id="type">
-    <option value="potol">Потолочный</option>
-    <option value="podves">Подвесной</option>
+    <option value="potol">袩芯褌芯谢芯褔薪褘泄</option>
+    <option value="podves">袩芯写胁械褋薪芯泄</option>
   </select>
 
-  <label for="fixtureDrop">Опуск светильника от потолка (м)</label>
+  <label for="fixtureDrop">袨锌褍褋泻 褋胁械褌懈谢褜薪懈泻邪 芯褌 锌芯褌芯谢泻邪 (屑)</label>
   <input id="fixtureDrop" type="number" min="0" step="0.05" value="0" disabled aria-describedby="fixtureDropHint">
-  <div class="hint" id="fixtureDropHint">Поле станет доступно после выбора подвесного светильника. Для потолочного светильника опуск принимается равным 0 м.</div>
+  <div class="hint" id="fixtureDropHint">袩芯谢械 褋褌邪薪械褌 写芯褋褌褍锌薪芯 锌芯褋谢械 胁褘斜芯褉邪 锌芯写胁械褋薪芯谐芯 褋胁械褌懈谢褜薪懈泻邪. 袛谢褟 锌芯褌芯谢芯褔薪芯谐芯 褋胁械褌懈谢褜薪懈泻邪 芯锌褍褋泻 锌褉懈薪懈屑邪械褌褋褟 褉邪胁薪褘屑 0 屑.</div>
 
-  <label for="workPlane">Рабочая плоскость от пола (м)</label>
+  <label for="workPlane">袪邪斜芯褔邪褟 锌谢芯褋泻芯褋褌褜 芯褌 锌芯谢邪 (屑)</label>
   <input id="workPlane" type="number" min="0" step="0.05" value="0.8">
-  <div class="hint">Значение задаётся в метрах независимо от выбранных единиц размеров комнаты. Для пола как рабочей поверхности укажи 0 м.</div>
+  <div class="hint">袟薪邪褔械薪懈械 蟹邪写邪褢褌褋褟 胁 屑械褌褉邪褏 薪械蟹邪胁懈褋懈屑芯 芯褌 胁褘斜褉邪薪薪褘褏 械写懈薪懈褑 褉邪蟹屑械褉芯胁 泻芯屑薪邪褌褘. 袛谢褟 锌芯谢邪 泻邪泻 褉邪斜芯褔械泄 锌芯胁械褉褏薪芯褋褌懈 褍泻邪卸懈 0 屑.</div>
 
-  <label>Тип помещения (автоподстановка E)</label>
+  <label>孝懈锌 锌芯屑械褖械薪懈褟 (邪胁褌芯锌芯写褋褌邪薪芯胁泻邪 E)</label>
   <select id="roomType" onchange="applyRoomE()">
-    <option value="">— выбери помещение —</option>
-    <optgroup label="Прихожая / Коридор">
-      <option value="110">Холл-прихожая (100–120)</option>
-      <option value="110">Холл более 10 м² (100–120)</option>
-      <option value="75">Коридор проходной (50–100)</option>
+    <option value="">鈥� 胁褘斜械褉懈 锌芯屑械褖械薪懈械 鈥�</option>
+    <optgroup label="袩褉懈褏芯卸邪褟 / 袣芯褉懈写芯褉">
+      <option value="110">啸芯谢谢-锌褉懈褏芯卸邪褟 (100鈥�120)</option>
+      <option value="110">啸芯谢谢 斜芯谢械械 10 屑虏 (100鈥�120)</option>
+      <option value="75">袣芯褉懈写芯褉 锌褉芯褏芯写薪芯泄 (50鈥�100)</option>
     </optgroup>
-    <optgroup label="Гостиная / Столовая">
-      <option value="225">Гостиная (200–250)</option>
-      <option value="175">Столовая — общая (150–200)</option>
-      <option value="275">Столовая — над столом (250–300)</option>
+    <optgroup label="袚芯褋褌懈薪邪褟 / 小褌芯谢芯胁邪褟">
+      <option value="225">袚芯褋褌懈薪邪褟 (200鈥�250)</option>
+      <option value="175">小褌芯谢芯胁邪褟 鈥� 芯斜褖邪褟 (150鈥�200)</option>
+      <option value="275">小褌芯谢芯胁邪褟 鈥� 薪邪写 褋褌芯谢芯屑 (250鈥�300)</option>
     </optgroup>
-    <optgroup label="Кухня">
-      <option value="225">Кухня — общая (200–250)</option>
-      <option value="275">Кухня — рабочий стол (250–300)</option>
-      <option value="375">Кухня — рабочий стол макс (300–500)</option>
+    <optgroup label="袣褍褏薪褟">
+      <option value="225">袣褍褏薪褟 鈥� 芯斜褖邪褟 (200鈥�250)</option>
+      <option value="275">袣褍褏薪褟 鈥� 褉邪斜芯褔懈泄 褋褌芯谢 (250鈥�300)</option>
+      <option value="375">袣褍褏薪褟 鈥� 褉邪斜芯褔懈泄 褋褌芯谢 屑邪泻褋 (300鈥�500)</option>
     </optgroup>
-    <optgroup label="Кабинет">
-      <option value="175">Кабинет — общая (150–200)</option>
-      <option value="275">Кабинет — рабочий стол (250–300)</option>
-      <option value="375">Кабинет — рабочий стол макс (300–500)</option>
+    <optgroup label="袣邪斜懈薪械褌">
+      <option value="175">袣邪斜懈薪械褌 鈥� 芯斜褖邪褟 (150鈥�200)</option>
+      <option value="275">袣邪斜懈薪械褌 鈥� 褉邪斜芯褔懈泄 褋褌芯谢 (250鈥�300)</option>
+      <option value="375">袣邪斜懈薪械褌 鈥� 褉邪斜芯褔懈泄 褋褌芯谢 屑邪泻褋 (300鈥�500)</option>
     </optgroup>
-    <optgroup label="Спальня / Детская">
-      <option value="135">Спальня (120–150)</option>
-      <option value="225">Детская — общая (200–250)</option>
-      <option value="400">Детская — рабочий стол (300–500)</option>
+    <optgroup label="小锌邪谢褜薪褟 / 袛械褌褋泻邪褟">
+      <option value="135">小锌邪谢褜薪褟 (120鈥�150)</option>
+      <option value="225">袛械褌褋泻邪褟 鈥� 芯斜褖邪褟 (200鈥�250)</option>
+      <option value="400">袛械褌褋泻邪褟 鈥� 褉邪斜芯褔懈泄 褋褌芯谢 (300鈥�500)</option>
     </optgroup>
-    <optgroup label="Ванная / Санузел">
-      <option value="250">Ванная более 8–10 м² (200–300)</option>
-      <option value="175">Санузел гостевой (150–200)</option>
+    <optgroup label="袙邪薪薪邪褟 / 小邪薪褍蟹械谢">
+      <option value="250">袙邪薪薪邪褟 斜芯谢械械 8鈥�10 屑虏 (200鈥�300)</option>
+      <option value="175">小邪薪褍蟹械谢 谐芯褋褌械胁芯泄 (150鈥�200)</option>
     </optgroup>
-    <optgroup label="Специальные помещения">
-      <option value="135">Лестница в интерьере (120–150)</option>
-      <option value="175">Бассейн (150–200)</option>
-      <option value="135">Бойлерная (120–150)</option>
-      <option value="75">Винный погреб (30–120)</option>
-      <option value="150">Бильярдная — общая (150)</option>
-      <option value="650">Бильярдная — над столом (500–800)</option>
-      <option value="40">Сауна, Хамам (30–50)</option>
-      <option value="250">Гардеробная (200–300)</option>
-      <option value="50">Подвал (50)</option>
+    <optgroup label="小锌械褑懈邪谢褜薪褘械 锌芯屑械褖械薪懈褟">
+      <option value="135">袥械褋褌薪懈褑邪 胁 懈薪褌械褉褜械褉械 (120鈥�150)</option>
+      <option value="175">袘邪褋褋械泄薪 (150鈥�200)</option>
+      <option value="135">袘芯泄谢械褉薪邪褟 (120鈥�150)</option>
+      <option value="75">袙懈薪薪褘泄 锌芯谐褉械斜 (30鈥�120)</option>
+      <option value="150">袘懈谢褜褟褉写薪邪褟 鈥� 芯斜褖邪褟 (150)</option>
+      <option value="650">袘懈谢褜褟褉写薪邪褟 鈥� 薪邪写 褋褌芯谢芯屑 (500鈥�800)</option>
+      <option value="40">小邪褍薪邪, 啸邪屑邪屑 (30鈥�50)</option>
+      <option value="250">袚邪褉写械褉芯斜薪邪褟 (200鈥�300)</option>
+      <option value="50">袩芯写胁邪谢 (50)</option>
     </optgroup>
   </select>
-  <div class="hint">Выбери помещение — калькулятор подставит среднее значение E. Можно поправить вручную.</div>
+  <div class="hint">袙褘斜械褉懈 锌芯屑械褖械薪懈械 鈥� 泻邪谢褜泻褍谢褟褌芯褉 锌芯写褋褌邪胁懈褌 褋褉械写薪械械 蟹薪邪褔械薪懈械 E. 袦芯卸薪芯 锌芯锌褉邪胁懈褌褜 胁褉褍褔薪褍褞.</div>
 
-  <label>Коэффициент отражения</label>
+  <label>袣芯褝褎褎懈褑懈械薪褌 芯褌褉邪卸械薪懈褟</label>
   <select id="refl"></select>
   <div class="reflection-help" role="note">
-    <div class="reflection-help-title">Как выбрать по цвету отделки</div>
+    <div class="reflection-help-title">袣邪泻 胁褘斜褉邪褌褜 锌芯 褑胁械褌褍 芯褌写械谢泻懈</div>
     <div class="reflection-levels">
-      <div class="reflection-level"><span class="reflection-swatch reflection-70"></span><span><b>70% — очень светлое</b><small>Белый, молочный, почти белый</small></span></div>
-      <div class="reflection-level"><span class="reflection-swatch reflection-50"></span><span><b>50% — светлое</b><small>Светло-бежевый, пастельный, светло-серый</small></span></div>
-      <div class="reflection-level"><span class="reflection-swatch reflection-30"></span><span><b>30% — среднее</b><small>Серый, цветное дерево, насыщенные оттенки</small></span></div>
-      <div class="reflection-level"><span class="reflection-swatch reflection-10"></span><span><b>10% — тёмное</b><small>Графит, тёмное дерево, тёмно-коричневый</small></span></div>
+      <div class="reflection-level"><span class="reflection-swatch reflection-70"></span><span><b>70% 鈥� 芯褔械薪褜 褋胁械褌谢芯械</b><small>袘械谢褘泄, 屑芯谢芯褔薪褘泄, 锌芯褔褌懈 斜械谢褘泄</small></span></div>
+      <div class="reflection-level"><span class="reflection-swatch reflection-50"></span><span><b>50% 鈥� 褋胁械褌谢芯械</b><small>小胁械褌谢芯-斜械卸械胁褘泄, 锌邪褋褌械谢褜薪褘泄, 褋胁械褌谢芯-褋械褉褘泄</small></span></div>
+      <div class="reflection-level"><span class="reflection-swatch reflection-30"></span><span><b>30% 鈥� 褋褉械写薪械械</b><small>小械褉褘泄, 褑胁械褌薪芯械 写械褉械胁芯, 薪邪褋褘褖械薪薪褘械 芯褌褌械薪泻懈</small></span></div>
+      <div class="reflection-level"><span class="reflection-swatch reflection-10"></span><span><b>10% 鈥� 褌褢屑薪芯械</b><small>袚褉邪褎懈褌, 褌褢屑薪芯械 写械褉械胁芯, 褌褢屑薪芯-泻芯褉懈褔薪械胁褘泄</small></span></div>
     </div>
-    <p>Порядок значений: <b>потолок / стены / пол</b>. Ориентируйся на ближайший вариант отделки. Если сомневаешься между двумя, выбери более тёмный — это даст более осторожную оценку.</p>
-    <small class="reflection-disclaimer">Это ориентиры, а не точное измерение: фактическое отражение зависит от материала, фактуры и блеска поверхности.</small>
+    <p>袩芯褉褟写芯泻 蟹薪邪褔械薪懈泄: <b>锌芯褌芯谢芯泻 / 褋褌械薪褘 / 锌芯谢</b>. 袨褉懈械薪褌懈褉褍泄褋褟 薪邪 斜谢懈卸邪泄褕懈泄 胁邪褉懈邪薪褌 芯褌写械谢泻懈. 袝褋谢懈 褋芯屑薪械胁邪械褕褜褋褟 屑械卸写褍 写胁褍屑褟, 胁褘斜械褉懈 斜芯谢械械 褌褢屑薪褘泄 鈥� 褝褌芯 写邪褋褌 斜芯谢械械 芯褋褌芯褉芯卸薪褍褞 芯褑械薪泻褍.</p>
+    <small class="reflection-disclaimer">协褌芯 芯褉懈械薪褌懈褉褘, 邪 薪械 褌芯褔薪芯械 懈蟹屑械褉械薪懈械: 褎邪泻褌懈褔械褋泻芯械 芯褌褉邪卸械薪懈械 蟹邪胁懈褋懈褌 芯褌 屑邪褌械褉懈邪谢邪, 褎邪泻褌褍褉褘 懈 斜谢械褋泻邪 锌芯胁械褉褏薪芯褋褌懈.</small>
   </div>
 
-  <button onclick="calcTotal()">1. Рассчитать общий поток</button>
+  <button onclick="calcTotal()">1. 袪邪褋褋褔懈褌邪褌褜 芯斜褖懈泄 锌芯褌芯泻</button>
 
   <div id="splitBlock">
-    <div style="font-weight:bold;font-size:15px;margin-top:16px;color:var(--btn)">2. Распределение по лампам / линиям</div>
-    <label>Что распределяем?</label>
+    <div style="font-weight:bold;font-size:15px;margin-top:16px;color:var(--btn)">2. 袪邪褋锌褉械写械谢械薪懈械 锌芯 谢邪屑锌邪屑 / 谢懈薪懈褟屑</div>
+    <label>效褌芯 褉邪褋锌褉械写械谢褟械屑?</label>
     <select id="splitMode" onchange="toggleSplitMode()">
-      <option value="lamps">По количеству ламп (шт.)</option>
-      <option value="lines">По длине световых линий (м)</option>
+      <option value="lamps">袩芯 泻芯谢懈褔械褋褌胁褍 谢邪屑锌 (褕褌.)</option>
+      <option value="lines">袩芯 写谢懈薪械 褋胁械褌芯胁褘褏 谢懈薪懈泄 (屑)</option>
     </select>
     <div id="blockLamps">
-      <label>Количество ламп (шт.)</label>
-      <input id="lampCount" type="number" step="1" placeholder="Например, 12">
+      <label>袣芯谢懈褔械褋褌胁芯 谢邪屑锌 (褕褌.)</label>
+      <input id="lampCount" type="number" step="1" placeholder="袧邪锌褉懈屑械褉, 12">
     </div>
     <div id="blockLines" style="display:none">
-      <label>Длина световых линий (м погонных)</label>
-      <input id="lineLength" type="number" step="0.1" placeholder="Например, 10">
+      <label>袛谢懈薪邪 褋胁械褌芯胁褘褏 谢懈薪懈泄 (屑 锌芯谐芯薪薪褘褏)</label>
+      <input id="lineLength" type="number" step="0.1" placeholder="袧邪锌褉懈屑械褉, 10">
     </div>
-    <label>Коэффициент потерь на рассеивателе / фильтре, %</label>
-    <input id="lossPercent" type="number" step="1" min="0" max="99" placeholder="0 = без потерь, 20 = теряется 20%">
-    <div class="hint">Сколько света <b>теряется</b> на экране (в процентах).<br>Например: матовый рассеиватель — 20%, сетка — 40%, плотный фильтр — 60%.</div>
+    <label>袣芯褝褎褎懈褑懈械薪褌 锌芯褌械褉褜 薪邪 褉邪褋褋械懈胁邪褌械谢械 / 褎懈谢褜褌褉械, %</label>
+    <input id="lossPercent" type="number" step="1" min="0" max="99" placeholder="0 = 斜械蟹 锌芯褌械褉褜, 20 = 褌械褉褟械褌褋褟 20%">
+    <div class="hint">小泻芯谢褜泻芯 褋胁械褌邪 <b>褌械褉褟械褌褋褟</b> 薪邪 褝泻褉邪薪械 (胁 锌褉芯褑械薪褌邪褏).<br>袧邪锌褉懈屑械褉: 屑邪褌芯胁褘泄 褉邪褋褋械懈胁邪褌械谢褜 鈥� 20%, 褋械褌泻邪 鈥� 40%, 锌谢芯褌薪褘泄 褎懈谢褜褌褉 鈥� 60%.</div>
     <div class="quick">
-      <button onclick="setLoss(0)">Без потерь (0%)</button>
-      <button onclick="setLoss(10)">Прозрачный (10%)</button>
-      <button onclick="setLoss(20)">Матовый (20%)</button>
-      <button onclick="setLoss(40)">Сетка (40%)</button>
-      <button onclick="setLoss(60)">Плотный (60%)</button>
+      <button onclick="setLoss(0)">袘械蟹 锌芯褌械褉褜 (0%)</button>
+      <button onclick="setLoss(10)">袩褉芯蟹褉邪褔薪褘泄 (10%)</button>
+      <button onclick="setLoss(20)">袦邪褌芯胁褘泄 (20%)</button>
+      <button onclick="setLoss(40)">小械褌泻邪 (40%)</button>
+      <button onclick="setLoss(60)">袩谢芯褌薪褘泄 (60%)</button>
     </div>
-    <button class="secondary" onclick="calcSplit()">2. Распределить поток</button>
+    <button class="secondary" onclick="calcSplit()">2. 袪邪褋锌褉械写械谢懈褌褜 锌芯褌芯泻</button>
   </div>
 
-  <button id="saveBtn" class="save" onclick="saveResult()" style="display:none">💾 Сохранить результат в файл</button>
+  <button id="saveBtn" class="save" onclick="saveResult()" style="display:none">馃捑 小芯褏褉邪薪懈褌褜 褉械蟹褍谢褜褌邪褌 胁 褎邪泄谢</button>
   <div id="res" class="res"></div>
 
   <div id="journalBlock">
     <div class="log-header">
-      <h3>📋 Журнал расчётов</h3>
+      <h3>馃搵 袞褍褉薪邪谢 褉邪褋褔褢褌芯胁</h3>
       <div class="log-actions">
-        <button class="download" onclick="downloadJournal()">⬇ Скачать всё</button>
-        <button onclick="clearJournal()">🗑 Очистить</button>
+        <button class="download" onclick="downloadJournal()">猬� 小泻邪褔邪褌褜 胁褋褢</button>
+        <button onclick="clearJournal()">馃棏 袨褔懈褋褌懈褌褜</button>
       </div>
     </div>
     <div id="journalList"></div>
   </div>
-  </main>
-  <main id="professionalPanel" class="mode-panel">
-    <section class="panel-intro">
-      <div class="section-kicker">ИНЖЕНЕРНЫЙ РАСЧЁТ</div>
-      <h2>Профессиональный режим</h2>
-      <p>Предварительный расчёт методом коэффициента использования. Для точного проекта потребуются фотометрические файлы IES/LDT и проверка по выбранному нормативу.</p>
-    </section>
-    <section class="pro-card">
-      <h3>01 · Нормативная основа</h3>
-      <label for="proStandard">Система нормирования</label>
-      <select id="proStandard">
-        <option value="sp">Россия · СП 52.13330 / ГОСТ Р 55710</option>
-        <option value="en">Европа · EN 12464-1</option>
-        <option value="custom">Собственное проектное значение</option>
-      </select>
-      <div class="hint">Выбор фиксирует контекст проекта. Нормативную освещённость для конкретной задачи укажи в поле ниже и проверь по актуальной редакции документа.</div>
-    </section>
-    <section class="pro-card">
-      <h3>02 · Геометрия помещения</h3>
-      <div class="pro-grid">
-        <div><label for="proA">Ширина, м</label><input id="proA" type="number" min="0.1" step="0.1" value="5"></div>
-        <div><label for="proB">Длина, м</label><input id="proB" type="number" min="0.1" step="0.1" value="8"></div>
-        <div><label for="proH">Высота помещения, м</label><input id="proH" type="number" min="0.1" step="0.1" value="3"></div>
-        <div><label for="proWp">Рабочая плоскость, м</label><input id="proWp" type="number" min="0" step="0.05" value="0.8"></div>
-        <div><label for="proMount">Высота установки светильника, м</label><input id="proMount" type="number" min="0.1" step="0.1" value="3"></div>
-        <div><label for="proE">Требуемая освещённость, лк</label><input id="proE" type="number" min="1" step="10" value="300"></div>
-      </div>
-      <div class="hint">Высота установки задаётся от пола. Расчётный индекс использует расстояние от светильника до рабочей плоскости.</div>
-    </section>
-    <section class="pro-card">
-      <h3>03 · Светотехнические параметры</h3>
-      <div class="pro-grid">
-        <div><label for="proUF">Коэффициент использования (η)</label><input id="proUF" type="number" min="0.01" max="1" step="0.01" value="0.65"></div>
-        <div><label for="proMF">Коэффициент эксплуатации (MF)</label><input id="proMF" type="number" min="0.1" max="1" step="0.01" value="0.8"></div>
-        <div><label for="proFlux">Поток одного светильника, лм</label><input id="proFlux" type="number" min="1" step="100" value="4000"></div>
-        <div><label for="proCount">Количество светильников (если известно)</label><input id="proCount" type="number" min="1" step="1" placeholder="Автоподбор"></div>
-      </div>
-      <div class="hint">η вводится по фотометрическим данным/таблице производителя. MF учитывает снижение светового потока и загрязнение в течение эксплуатации.</div>
-    </section>
-    <button class="primary-action" type="button" onclick="calcProfessional()">Рассчитать профессиональный предварительный подбор</button>
-    <div id="proResult" class="pro-result" aria-live="polite">
-      <div class="result-placeholder">Заполни параметры и запусти расчёт — здесь появятся результаты.</div>
-    </div>
-    <section class="pro-card pro-next">
-      <h3>Следующий этап развития</h3>
-      <ul>
-        <li>Импорт фотометрии светильников IES/LDT</li>
-        <li>Точечный расчёт и карта освещённости</li>
-        <li>Проверка равномерности Emin/Eср и UGR при наличии данных</li>
-        <li>Схема размещения светильников и технический отчёт</li>
-      </ul>
-      <p class="hint">Эти функции пока не реализованы; текущий профессиональный режим выполняет только предварительную оценку светового потока.</p>
-    </section>
   </main>
 
 <script>
@@ -342,22 +261,22 @@ const data = {
 };
 const indices = [0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5, 3.0, 3.5, 4.0, 5.0];
 
-// Контроль соответствия: 17 индексов и 17 коэффициентов в каждом столбце таблицы.
+// 袣芯薪褌褉芯谢褜 褋芯芯褌胁械褌褋褌胁懈褟: 17 懈薪写械泻褋芯胁 懈 17 泻芯褝褎褎懈褑懈械薪褌芯胁 胁 泻邪卸写芯屑 褋褌芯谢斜褑械 褌邪斜谢懈褑褘.
 for (const fixtureType of Object.keys(data)) {
   for (const [reflectionKey, values] of Object.entries(data[fixtureType])) {
     if (values.length !== indices.length) {
-      throw new Error(`Таблица коэффициентов ${fixtureType}/${reflectionKey}: ожидалось ${indices.length} значений, получено ${values.length}`);
+      throw new Error(`孝邪斜谢懈褑邪 泻芯褝褎褎懈褑懈械薪褌芯胁 ${fixtureType}/${reflectionKey}: 芯卸懈写邪谢芯褋褜 ${indices.length} 蟹薪邪褔械薪懈泄, 锌芯谢褍褔械薪芯 ${values.length}`);
     }
   }
 }
 const reflLabels = {
-  "70_50_30": "70 / 50 / 30 — белый потолок, светлые стены, пол средней светлоты",
-  "70_50_10": "70 / 50 / 10 — белый потолок, светлые стены, тёмный пол",
-  "70_30_30": "70 / 30 / 30 — белый потолок, стены среднего тона, пол средней светлоты",
-  "70_30_10": "70 / 30 / 10 — белый потолок, стены среднего тона, тёмный пол",
-  "50_50_10": "50 / 50 / 10 — светлый потолок, светлые стены, тёмный пол",
-  "50_30_10": "50 / 30 / 10 — светлый потолок, стены среднего тона, тёмный пол",
-  "30_10_10": "30 / 10 / 10 — тёмный потолок, тёмные стены и тёмный пол"
+  "70_50_30": "70 / 50 / 30 鈥� 斜械谢褘泄 锌芯褌芯谢芯泻, 褋胁械褌谢褘械 褋褌械薪褘, 锌芯谢 褋褉械写薪械泄 褋胁械褌谢芯褌褘",
+  "70_50_10": "70 / 50 / 10 鈥� 斜械谢褘泄 锌芯褌芯谢芯泻, 褋胁械褌谢褘械 褋褌械薪褘, 褌褢屑薪褘泄 锌芯谢",
+  "70_30_30": "70 / 30 / 30 鈥� 斜械谢褘泄 锌芯褌芯谢芯泻, 褋褌械薪褘 褋褉械写薪械谐芯 褌芯薪邪, 锌芯谢 褋褉械写薪械泄 褋胁械褌谢芯褌褘",
+  "70_30_10": "70 / 30 / 10 鈥� 斜械谢褘泄 锌芯褌芯谢芯泻, 褋褌械薪褘 褋褉械写薪械谐芯 褌芯薪邪, 褌褢屑薪褘泄 锌芯谢",
+  "50_50_10": "50 / 50 / 10 鈥� 褋胁械褌谢褘泄 锌芯褌芯谢芯泻, 褋胁械褌谢褘械 褋褌械薪褘, 褌褢屑薪褘泄 锌芯谢",
+  "50_30_10": "50 / 30 / 10 鈥� 褋胁械褌谢褘泄 锌芯褌芯谢芯泻, 褋褌械薪褘 褋褉械写薪械谐芯 褌芯薪邪, 褌褢屑薪褘泄 锌芯谢",
+  "30_10_10": "30 / 10 / 10 鈥� 褌褢屑薪褘泄 锌芯褌芯谢芯泻, 褌褢屑薪褘械 褋褌械薪褘 懈 褌褢屑薪褘泄 锌芯谢"
 };
 const selectType = document.getElementById('type');
 const selectRefl = document.getElementById('refl');
@@ -376,7 +295,7 @@ function updateReflOptions() {
     opt.textContent = reflLabels[key];
     selectRefl.appendChild(opt);
   }
-  // Сохраняем выбранное отражение при переключении типа светильника.
+  // 小芯褏褉邪薪褟械屑 胁褘斜褉邪薪薪芯械 芯褌褉邪卸械薪懈械 锌褉懈 锌械褉械泻谢褞褔械薪懈懈 褌懈锌邪 褋胁械褌懈谢褜薪懈泻邪.
   if (previousReflection && data[type][previousReflection]) {
     selectRefl.value = previousReflection;
   }
@@ -386,8 +305,8 @@ function updateFixtureDropState() {
   const isSuspended = selectType.value === 'podves';
   dropInput.disabled = !isSuspended;
   document.getElementById('fixtureDropHint').textContent = isSuspended
-    ? 'Укажи расстояние от потолка до светящейся части светильника. Значение задаётся в метрах.'
-    : 'Поле доступно только для подвесного светильника. Для потолочного светильника опуск принимается равным 0 м.';
+    ? '校泻邪卸懈 褉邪褋褋褌芯褟薪懈械 芯褌 锌芯褌芯谢泻邪 写芯 褋胁械褌褟褖械泄褋褟 褔邪褋褌懈 褋胁械褌懈谢褜薪懈泻邪. 袟薪邪褔械薪懈械 蟹邪写邪褢褌褋褟 胁 屑械褌褉邪褏.'
+    : '袩芯谢械 写芯褋褌褍锌薪芯 褌芯谢褜泻芯 写谢褟 锌芯写胁械褋薪芯谐芯 褋胁械褌懈谢褜薪懈泻邪. 袛谢褟 锌芯褌芯谢芯褔薪芯谐芯 褋胁械褌懈谢褜薪懈泻邪 芯锌褍褋泻 锌褉懈薪懈屑邪械褌褋褟 褉邪胁薪褘屑 0 屑.';
 }
 selectType.addEventListener('change', () => {
   updateReflOptions();
@@ -400,18 +319,18 @@ function updateUnitPlaceholders() {
   const unit = document.getElementById('unit').value;
   const isCm = unit === 'cm';
   
-  document.getElementById('label-a').textContent = 'Ширина A ' + (isCm ? '(см)' : '(м)');
-  document.getElementById('label-b').textContent = 'Длина B ' + (isCm ? '(см)' : '(м)');
-  document.getElementById('label-h').textContent = 'Высота H ' + (isCm ? '(см)' : '(м)');
+  document.getElementById('label-a').textContent = '楔懈褉懈薪邪 A ' + (isCm ? '(褋屑)' : '(屑)');
+  document.getElementById('label-b').textContent = '袛谢懈薪邪 B ' + (isCm ? '(褋屑)' : '(屑)');
+  document.getElementById('label-h').textContent = '袙褘褋芯褌邪 H ' + (isCm ? '(褋屑)' : '(屑)');
 
   if (isCm) {
-    document.getElementById('a').placeholder = "Например, 500";
-    document.getElementById('b').placeholder = "Например, 800";
-    document.getElementById('h').placeholder = "Например, 300";
+    document.getElementById('a').placeholder = "袧邪锌褉懈屑械褉, 500";
+    document.getElementById('b').placeholder = "袧邪锌褉懈屑械褉, 800";
+    document.getElementById('h').placeholder = "袧邪锌褉懈屑械褉, 300";
   } else {
-    document.getElementById('a').placeholder = "Например, 5.0";
-    document.getElementById('b').placeholder = "Например, 8.0";
-    document.getElementById('h').placeholder = "Например, 3.0";
+    document.getElementById('a').placeholder = "袧邪锌褉懈屑械褉, 5.0";
+    document.getElementById('b').placeholder = "袧邪锌褉懈屑械褉, 8.0";
+    document.getElementById('h').placeholder = "袧邪锌褉懈屑械褉, 3.0";
   }
 }
 
@@ -427,7 +346,7 @@ function toggleSplitMode() {
 }
 function setLoss(v) {
   document.getElementById('lossPercent').value = v;
-  invalidateHouseholdResult('Параметры распределения изменены. Повторно выполни расчёт.');
+  invalidateHouseholdResult('袩邪褉邪屑械褌褉褘 褉邪褋锌褉械写械谢械薪懈褟 懈蟹屑械薪械薪褘. 袩芯胁褌芯褉薪芯 胁褘锌芯谢薪懈 褉邪褋褔褢褌.');
 }
 function interp(x, xs, ys) {
   if (x < xs[0] || x > xs[xs.length - 1]) return NaN;
@@ -450,7 +369,7 @@ function calcTotal() {
   const type = selectType.value;
   const fixtureDropInput = document.getElementById('fixtureDrop').value.trim();
   if (type === 'podves' && fixtureDropInput === '') {
-    resDiv.textContent = 'Укажи опуск подвесного светильника от потолка. Если светильник почти вплотную к потолку, введи 0 м.';
+    resDiv.textContent = '校泻邪卸懈 芯锌褍褋泻 锌芯写胁械褋薪芯谐芯 褋胁械褌懈谢褜薪懈泻邪 芯褌 锌芯褌芯谢泻邪. 袝褋谢懈 褋胁械褌懈谢褜薪懈泻 锌芯褔褌懈 胁锌谢芯褌薪褍褞 泻 锌芯褌芯谢泻褍, 胁胁械写懈 0 屑.';
     saveBtn.style.display = 'none';
     document.getElementById('splitBlock').style.display = 'none';
     lastTotal = null;
@@ -463,7 +382,7 @@ function calcTotal() {
 
   const values = [a, b, h, E, workPlane, fixtureDrop];
   if (values.some(value => !Number.isFinite(value))) {
-    resDiv.textContent = 'Проверь введённые значения: используй только корректные числа.';
+    resDiv.textContent = '袩褉芯胁械褉褜 胁胁械写褢薪薪褘械 蟹薪邪褔械薪懈褟: 懈褋锌芯谢褜蟹褍泄 褌芯谢褜泻芯 泻芯褉褉械泻褌薪褘械 褔懈褋谢邪.';
     saveBtn.style.display = 'none';
     document.getElementById('splitBlock').style.display = 'none';
     lastTotal = null;
@@ -471,7 +390,7 @@ function calcTotal() {
     return;
   }
   if ([a, b, h, E].some(value => value <= 0) || workPlane < 0 || fixtureDrop < 0) {
-    resDiv.textContent = 'Размеры помещения и освещённость должны быть больше нуля; рабочая плоскость и опуск светильника не могут быть отрицательными.';
+    resDiv.textContent = '袪邪蟹屑械褉褘 锌芯屑械褖械薪懈褟 懈 芯褋胁械褖褢薪薪芯褋褌褜 写芯谢卸薪褘 斜褘褌褜 斜芯谢褜褕械 薪褍谢褟; 褉邪斜芯褔邪褟 锌谢芯褋泻芯褋褌褜 懈 芯锌褍褋泻 褋胁械褌懈谢褜薪懈泻邪 薪械 屑芯谐褍褌 斜褘褌褜 芯褌褉懈褑邪褌械谢褜薪褘屑懈.';
     saveBtn.style.display = 'none';
     document.getElementById('splitBlock').style.display = 'none';
     lastTotal = null;
@@ -479,7 +398,7 @@ function calcTotal() {
     return;
   }
   if (E > 700) {
-    resDiv.textContent = 'Освещённость E не может быть больше 700 лк. Максимум — 700.';
+    resDiv.textContent = '袨褋胁械褖褢薪薪芯褋褌褜 E 薪械 屑芯卸械褌 斜褘褌褜 斜芯谢褜褕械 700 谢泻. 袦邪泻褋懈屑褍屑 鈥� 700.';
     saveBtn.style.display = 'none';
     document.getElementById('splitBlock').style.display = 'none';
     lastTotal = null;
@@ -496,7 +415,7 @@ function calcTotal() {
   const S = a * b;
   const hCalc = h - workPlane - fixtureDrop;
   if (hCalc <= 0) {
-    resDiv.textContent = 'Расчётная высота должна быть больше нуля: высота комнаты минус рабочая плоскость и опуск светильника.';
+    resDiv.textContent = '袪邪褋褔褢褌薪邪褟 胁褘褋芯褌邪 写芯谢卸薪邪 斜褘褌褜 斜芯谢褜褕械 薪褍谢褟: 胁褘褋芯褌邪 泻芯屑薪邪褌褘 屑懈薪褍褋 褉邪斜芯褔邪褟 锌谢芯褋泻芯褋褌褜 懈 芯锌褍褋泻 褋胁械褌懈谢褜薪懈泻邪.';
     saveBtn.style.display = 'none';
     document.getElementById('splitBlock').style.display = 'none';
     lastTotal = null;
@@ -505,7 +424,7 @@ function calcTotal() {
   }
   const I = (a * b) / (hCalc * (a + b));
   if (I < indices[0] || I > indices[indices.length - 1]) {
-    resDiv.textContent = `Индекс помещения I = ${I.toFixed(2)} находится за пределами таблицы (${indices[0].toFixed(1)}–${indices[indices.length - 1].toFixed(1)}). Расчёт остановлен: не следует автоматически подставлять крайний коэффициент.`;
+    resDiv.textContent = `袠薪写械泻褋 锌芯屑械褖械薪懈褟 I = ${I.toFixed(2)} 薪邪褏芯写懈褌褋褟 蟹邪 锌褉械写械谢邪屑懈 褌邪斜谢懈褑褘 (${indices[0].toFixed(1)}鈥�${indices[indices.length - 1].toFixed(1)}). 袪邪褋褔褢褌 芯褋褌邪薪芯胁谢械薪: 薪械 褋谢械写褍械褌 邪胁褌芯屑邪褌懈褔械褋泻懈 锌芯写褋褌邪胁谢褟褌褜 泻褉邪泄薪懈泄 泻芯褝褎褎懈褑懈械薪褌.`;
     saveBtn.style.display = 'none';
     document.getElementById('splitBlock').style.display = 'none';
     lastTotal = null;
@@ -514,7 +433,7 @@ function calcTotal() {
   }
   const uoyArray = data[type][refl];
   if (!uoyArray || uoyArray.length !== indices.length) {
-    resDiv.textContent = 'Ошибка таблицы коэффициентов. Проверь данные расчёта.';
+    resDiv.textContent = '袨褕懈斜泻邪 褌邪斜谢懈褑褘 泻芯褝褎褎懈褑懈械薪褌芯胁. 袩褉芯胁械褉褜 写邪薪薪褘械 褉邪褋褔褢褌邪.';
     saveBtn.style.display = 'none';
     document.getElementById('splitBlock').style.display = 'none';
     lastTotal = null;
@@ -524,7 +443,7 @@ function calcTotal() {
   const uoy = interp(I, indices, uoyArray);
 
   if (!Number.isFinite(S) || !Number.isFinite(I) || !Number.isFinite(uoy) || uoy <= 0) {
-    resDiv.textContent = 'Не удалось выполнить расчёт. Проверь размеры помещения.';
+    resDiv.textContent = '袧械 褍写邪谢芯褋褜 胁褘锌芯谢薪懈褌褜 褉邪褋褔褢褌. 袩褉芯胁械褉褜 褉邪蟹屑械褉褘 锌芯屑械褖械薪懈褟.';
     saveBtn.style.display = 'none';
     document.getElementById('splitBlock').style.display = 'none';
     lastTotal = null;
@@ -533,7 +452,7 @@ function calcTotal() {
   }
   const NC = (E * 1.25 * S) / uoy;
   if (!Number.isFinite(NC)) {
-    resDiv.textContent = 'Результат выходит за допустимый числовой диапазон. Проверь размеры помещения.';
+    resDiv.textContent = '袪械蟹褍谢褜褌邪褌 胁褘褏芯写懈褌 蟹邪 写芯锌褍褋褌懈屑褘泄 褔懈褋谢芯胁芯泄 写懈邪锌邪蟹芯薪. 袩褉芯胁械褉褜 褉邪蟹屑械褉褘 锌芯屑械褖械薪懈褟.';
     saveBtn.style.display = 'none';
     document.getElementById('splitBlock').style.display = 'none';
     lastTotal = null;
@@ -544,18 +463,18 @@ function calcTotal() {
   lastTotal = { a, b, h, hCalc, workPlane, fixtureDrop, E, type, refl, S, I, uoy, NC, unit };
   lastSplit = null;
   
-  resDiv.innerHTML = '<div class="total">Общий требуемый световой поток для помещения:<br><b>' + NC.toFixed(0) + ' лм</b></div>Площадь S = <b>' + S.toFixed(2) + ' м²</b><br>Расчётная высота над рабочей плоскостью = <b>' + hCalc.toFixed(2) + ' м</b><br>Индекс помещения I = <b>' + I.toFixed(2) + '</b><br>Коэффициент uoy = <b>' + uoy.toFixed(3) + '</b>';
+  resDiv.innerHTML = '<div class="total">袨斜褖懈泄 褌褉械斜褍械屑褘泄 褋胁械褌芯胁芯泄 锌芯褌芯泻 写谢褟 锌芯屑械褖械薪懈褟:<br><b>' + NC.toFixed(0) + ' 谢屑</b></div>袩谢芯褖邪写褜 S = <b>' + S.toFixed(2) + ' 屑虏</b><br>袪邪褋褔褢褌薪邪褟 胁褘褋芯褌邪 薪邪写 褉邪斜芯褔械泄 锌谢芯褋泻芯褋褌褜褞 = <b>' + hCalc.toFixed(2) + ' 屑</b><br>袠薪写械泻褋 锌芯屑械褖械薪懈褟 I = <b>' + I.toFixed(2) + '</b><br>袣芯褝褎褎懈褑懈械薪褌 uoy = <b>' + uoy.toFixed(3) + '</b>';
   document.getElementById('splitBlock').style.display = 'block';
   saveBtn.style.display = 'block';
 }
 function calcSplit() {
-  if (!lastTotal) { resDiv.innerHTML = '<p style="color:#ef4444">Сначала нажми «1. Рассчитать общий поток»</p>'; return; }
+  if (!lastTotal) { resDiv.innerHTML = '<p style="color:#ef4444">小薪邪褔邪谢邪 薪邪卸屑懈 芦1. 袪邪褋褋褔懈褌邪褌褜 芯斜褖懈泄 锌芯褌芯泻禄</p>'; return; }
   const { S, I, uoy, NC, type, refl, a, b, h, hCalc, E, unit } = lastTotal;
   const mode = document.getElementById('splitMode').value;
   const lossInput = document.getElementById('lossPercent').value.trim();
   const lossPercent = lossInput === '' ? 0 : Number(lossInput);
   if (!Number.isFinite(lossPercent) || lossPercent < 0 || lossPercent >= 100) {
-    resDiv.textContent = 'Потери должны быть в диапазоне от 0 до 99%.';
+    resDiv.textContent = '袩芯褌械褉懈 写芯谢卸薪褘 斜褘褌褜 胁 写懈邪锌邪蟹芯薪械 芯褌 0 写芯 99%.';
     saveBtn.style.display = 'none';
     lastSplit = null;
     return;
@@ -565,14 +484,14 @@ function calcSplit() {
   const NC_effective = NC / tau;
   let splitInfo = null;
   let splitHtml = '';
-  let filterHtml = lossPercent > 0 ? '<div class="filter">🔻 <b>Потери на рассеивателе/фильтре:</b> ' + lossPercent.toFixed(0) + '%<br>Проходит света: <b>' + tauPercent.toFixed(0) + '%</b><br>Требуемый поток с учётом потерь: <b>' + NC_effective.toFixed(0) + ' лм</b><br><span style="font-size:13px;opacity:0.8">' + NC.toFixed(0) + ' лм ÷ ' + tau.toFixed(2) + ' = ' + NC_effective.toFixed(0) + ' лм</span></div>' : '<div class="hint" style="margin:8px 0">✅ Потерь нет (0%) — фильтр не учитывается.</div>';
+  let filterHtml = lossPercent > 0 ? '<div class="filter">馃敾 <b>袩芯褌械褉懈 薪邪 褉邪褋褋械懈胁邪褌械谢械/褎懈谢褜褌褉械:</b> ' + lossPercent.toFixed(0) + '%<br>袩褉芯褏芯写懈褌 褋胁械褌邪: <b>' + tauPercent.toFixed(0) + '%</b><br>孝褉械斜褍械屑褘泄 锌芯褌芯泻 褋 褍褔褢褌芯屑 锌芯褌械褉褜: <b>' + NC_effective.toFixed(0) + ' 谢屑</b><br><span style="font-size:13px;opacity:0.8">' + NC.toFixed(0) + ' 谢屑 梅 ' + tau.toFixed(2) + ' = ' + NC_effective.toFixed(0) + ' 谢屑</span></div>' : '<div class="hint" style="margin:8px 0">鉁� 袩芯褌械褉褜 薪械褌 (0%) 鈥� 褎懈谢褜褌褉 薪械 褍褔懈褌褘胁邪械褌褋褟.</div>';
   if (mode === 'lamps') {
     const lampInput = document.getElementById('lampCount').value.trim();
     const lampCount = lampInput === '' ? NaN : Number(lampInput);
     if (Number.isInteger(lampCount) && lampCount > 0) {
       const perLamp = NC_effective / lampCount;
       splitInfo = { mode: 'lamps', lampCount, perLamp, lossPercent, tauPercent, NC_effective };
-      splitHtml = '<div class="recommend">👉 <b>Требуемый поток на 1 лампу' + (lossPercent > 0 ? ' (с учётом потерь)' : '') + ':</b><br><b>' + perLamp.toFixed(0) + ' лм</b><br><span style="font-size:13px;opacity:0.8">' + NC_effective.toFixed(0) + ' лм ÷ ' + lampCount + ' шт. = ' + perLamp.toFixed(0) + ' лм</span></div>';
+      splitHtml = '<div class="recommend">馃憠 <b>孝褉械斜褍械屑褘泄 锌芯褌芯泻 薪邪 1 谢邪屑锌褍' + (lossPercent > 0 ? ' (褋 褍褔褢褌芯屑 锌芯褌械褉褜)' : '') + ':</b><br><b>' + perLamp.toFixed(0) + ' 谢屑</b><br><span style="font-size:13px;opacity:0.8">' + NC_effective.toFixed(0) + ' 谢屑 梅 ' + lampCount + ' 褕褌. = ' + perLamp.toFixed(0) + ' 谢屑</span></div>';
     }
   } else {
     const lineInput = document.getElementById('lineLength').value.trim();
@@ -580,12 +499,12 @@ function calcSplit() {
     if (Number.isFinite(lineLength) && lineLength > 0) {
       const perMeter = NC_effective / lineLength;
       splitInfo = { mode: 'lines', lineLength, perMeter, lossPercent, tauPercent, NC_effective };
-      splitHtml = '<div class="recommend">👉 <b>Требуемый поток на 1 метр линии' + (lossPercent > 0 ? ' (с учётом потерь)' : '') + ':</b><br><b>' + perMeter.toFixed(0) + ' лм/м</b><br><span style="font-size:13px;opacity:0.8">' + NC_effective.toFixed(0) + ' лм ÷ ' + lineLength + ' м = ' + perMeter.toFixed(0) + ' лм/м</span></div>';
+      splitHtml = '<div class="recommend">馃憠 <b>孝褉械斜褍械屑褘泄 锌芯褌芯泻 薪邪 1 屑械褌褉 谢懈薪懈懈' + (lossPercent > 0 ? ' (褋 褍褔褢褌芯屑 锌芯褌械褉褜)' : '') + ':</b><br><b>' + perMeter.toFixed(0) + ' 谢屑/屑</b><br><span style="font-size:13px;opacity:0.8">' + NC_effective.toFixed(0) + ' 谢屑 梅 ' + lineLength + ' 屑 = ' + perMeter.toFixed(0) + ' 谢屑/屑</span></div>';
     }
   }
-  if (!splitInfo) splitHtml = '<span style="font-size:13px;opacity:0.7">Укажи количество ламп или длину линии.</span>';
+  if (!splitInfo) splitHtml = '<span style="font-size:13px;opacity:0.7">校泻邪卸懈 泻芯谢懈褔械褋褌胁芯 谢邪屑锌 懈谢懈 写谢懈薪褍 谢懈薪懈懈.</span>';
   lastSplit = { ...lastTotal, splitInfo };
-  resDiv.innerHTML = '<div class="total">Общий требуемый световой поток для помещения:<br><b>' + NC.toFixed(0) + ' лм</b></div>Площадь S = <b>' + S.toFixed(2) + ' м²</b><br>Расчётная высота над рабочей плоскостью = <b>' + hCalc.toFixed(2) + ' м</b><br>Индекс помещения I = <b>' + I.toFixed(2) + '</b><br>Коэффициент uoy = <b>' + uoy.toFixed(3) + '</b>' + filterHtml + splitHtml;
+  resDiv.innerHTML = '<div class="total">袨斜褖懈泄 褌褉械斜褍械屑褘泄 褋胁械褌芯胁芯泄 锌芯褌芯泻 写谢褟 锌芯屑械褖械薪懈褟:<br><b>' + NC.toFixed(0) + ' 谢屑</b></div>袩谢芯褖邪写褜 S = <b>' + S.toFixed(2) + ' 屑虏</b><br>袪邪褋褔褢褌薪邪褟 胁褘褋芯褌邪 薪邪写 褉邪斜芯褔械泄 锌谢芯褋泻芯褋褌褜褞 = <b>' + hCalc.toFixed(2) + ' 屑</b><br>袠薪写械泻褋 锌芯屑械褖械薪懈褟 I = <b>' + I.toFixed(2) + '</b><br>袣芯褝褎褎懈褑懈械薪褌 uoy = <b>' + uoy.toFixed(3) + '</b>' + filterHtml + splitHtml;
   saveBtn.style.display = 'block';
   addToJournal(lastSplit);
 }
@@ -594,7 +513,7 @@ try {
   const storedJournal = JSON.parse(localStorage.getItem('calcJournal') || '[]');
   journal = Array.isArray(storedJournal) ? storedJournal : [];
 } catch (error) {
-  console.warn('Не удалось прочитать журнал расчётов:', error);
+  console.warn('袧械 褍写邪谢芯褋褜 锌褉芯褔懈褌邪褌褜 卸褍褉薪邪谢 褉邪褋褔褢褌芯胁:', error);
   journal = [];
 }
 function addToJournal(result) {
@@ -620,22 +539,22 @@ function renderJournal() {
   if (journal.length === 0) { block.style.display = 'none'; return; }
   block.style.display = 'block';
   list.innerHTML = journal.map(item => {
-    const typeName = item.type === 'potol' ? 'Потолочные' : 'Подвесные';
+    const typeName = item.type === 'potol' ? '袩芯褌芯谢芯褔薪褘械' : '袩芯写胁械褋薪褘械';
     const reflShort = item.refl.replace(/_/g, '/');
     const dispA = item.unit === 'cm' ? (item.a * 100).toFixed(0) : item.a;
     const dispB = item.unit === 'cm' ? (item.b * 100).toFixed(0) : item.b;
     const dispH = item.unit === 'cm' ? (item.h * 100).toFixed(0) : item.h;
-    const unitLabel = item.unit === 'cm' ? 'см' : 'м';
+    const unitLabel = item.unit === 'cm' ? '褋屑' : '屑';
     
-    let splitText = item.lampCount ? `👉 ${item.lampCount} ламп × ${Math.round(item.perLamp)} лм` : (item.lineLength ? `👉 ${item.lineLength} м × ${Math.round(item.perMeter)} лм/м` : '');
+    let splitText = item.lampCount ? `馃憠 ${item.lampCount} 谢邪屑锌 脳 ${Math.round(item.perLamp)} 谢屑` : (item.lineLength ? `馃憠 ${item.lineLength} 屑 脳 ${Math.round(item.perMeter)} 谢屑/屑` : '');
     return `<div class="log-item" onclick="loadFromJournal(${item.id})">
-      <button class="delete-btn" onclick="event.stopPropagation(); deleteEntry(${item.id})" title="Удалить">✕</button>
+      <button class="delete-btn" onclick="event.stopPropagation(); deleteEntry(${item.id})" title="校写邪谢懈褌褜">鉁�</button>
       <div class="log-date">${item.date}</div>
-      <b>${dispA}×${dispB}×${dispH} ${unitLabel}</b> · ${item.E} лк · ${typeName}<br>
-      Требуемый поток: <b>${Math.round(item.NC)} лм</b><br>
-      ${item.lossPercent > 0 ? `Потери ${item.lossPercent}% → с учётом: ${Math.round(item.NC_effective)} лм<br>` : ''}
+      <b>${dispA}脳${dispB}脳${dispH} ${unitLabel}</b> 路 ${item.E} 谢泻 路 ${typeName}<br>
+      孝褉械斜褍械屑褘泄 锌芯褌芯泻: <b>${Math.round(item.NC)} 谢屑</b><br>
+      ${item.lossPercent > 0 ? `袩芯褌械褉懈 ${item.lossPercent}% 鈫� 褋 褍褔褢褌芯屑: ${Math.round(item.NC_effective)} 谢屑<br>` : ''}
       ${splitText}
-      <div class="load-hint">🔄 Нажмите, чтобы загрузить расчёт</div>
+      <div class="load-hint">馃攧 袧邪卸屑懈褌械, 褔褌芯斜褘 蟹邪谐褉褍蟹懈褌褜 褉邪褋褔褢褌</div>
     </div>`;
   }).join('');
 }
@@ -677,32 +596,32 @@ function deleteEntry(id) {
   renderJournal();
 }
 function clearJournal() {
-  if (confirm('Удалить все записи из журнала?')) {
+  if (confirm('校写邪谢懈褌褜 胁褋械 蟹邪锌懈褋懈 懈蟹 卸褍褉薪邪谢邪?')) {
     journal = [];
     localStorage.removeItem('calcJournal');
     renderJournal();
   }
 }
 
-// === УЛУЧШЕННОЕ СОХРАНЕНИЕ (Web Share API + BOM) ===
+// === 校袥校效楔袝袧袧袨袝 小袨啸袪袗袧袝袧袠袝 (Web Share API + BOM) ===
 function createFileAndShare(text, filename, title) {
-  // Добавляем BOM (Byte Order Mark) для правильной кодировки кириллицы в старых приложениях
+  // 袛芯斜邪胁谢褟械屑 BOM (Byte Order Mark) 写谢褟 锌褉邪胁懈谢褜薪芯泄 泻芯写懈褉芯胁泻懈 泻懈褉懈谢谢懈褑褘 胁 褋褌邪褉褘褏 锌褉懈谢芯卸械薪懈褟褏
   const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
   const blob = new Blob([bom, text], { type: 'text/plain;charset=utf-8' });
   const file = new File([blob], filename, { type: 'text/plain' });
 
-  // Проверяем, поддерживает ли устройство Web Share API для файлов (мобильные телефоны)
+  // 袩褉芯胁械褉褟械屑, 锌芯写写械褉卸懈胁邪械褌 谢懈 褍褋褌褉芯泄褋褌胁芯 Web Share API 写谢褟 褎邪泄谢芯胁 (屑芯斜懈谢褜薪褘械 褌械谢械褎芯薪褘)
   if (navigator.canShare && navigator.canShare({ files: [file] })) {
     navigator.share({
       files: [file],
       title: title,
-      text: 'Файл с расчётом освещения'
+      text: '肖邪泄谢 褋 褉邪褋褔褢褌芯屑 芯褋胁械褖械薪懈褟'
     }).catch(err => {
-      console.log('Ошибка при отправке:', err);
+      console.log('袨褕懈斜泻邪 锌褉懈 芯褌锌褉邪胁泻械:', err);
       fallbackDownload(blob, filename);
     });
   } else {
-    // Если не поддерживает (ПК или старые браузеры) — скачиваем как обычно
+    // 袝褋谢懈 薪械 锌芯写写械褉卸懈胁邪械褌 (袩袣 懈谢懈 褋褌邪褉褘械 斜褉邪褍蟹械褉褘) 鈥� 褋泻邪褔懈胁邪械屑 泻邪泻 芯斜褘褔薪芯
     fallbackDownload(blob, filename);
   }
 }
@@ -720,153 +639,103 @@ function fallbackDownload(blob, filename) {
 
 function downloadJournal() {
   if (journal.length === 0) return;
-  let text = '=== ЖУРНАЛ РАСЧЁТОВ ОСВЕЩЕНИЯ ===\nВсего записей: ' + journal.length + '\n\n';
+  let text = '=== 袞校袪袧袗袥 袪袗小效衼孝袨袙 袨小袙袝些袝袧袠携 ===\n袙褋械谐芯 蟹邪锌懈褋械泄: ' + journal.length + '\n\n';
   journal.forEach((item, index) => {
-    const typeName = item.type === 'potol' ? 'Потолочные' : 'Подвесные';
+    const typeName = item.type === 'potol' ? '袩芯褌芯谢芯褔薪褘械' : '袩芯写胁械褋薪褘械';
     const reflName = reflLabels[item.refl];
-    const unitLabel = item.unit === 'cm' ? 'см' : 'м';
+    const unitLabel = item.unit === 'cm' ? '褋屑' : '屑';
     const dispA = item.unit === 'cm' ? (item.a * 100).toFixed(0) : item.a;
     const dispB = item.unit === 'cm' ? (item.b * 100).toFixed(0) : item.b;
     const dispH = item.unit === 'cm' ? (item.h * 100).toFixed(0) : item.h;
 
-    text += `--- Запись №${index + 1} (${item.date}) ---\n`;
-    text += `Размеры: ${dispA} × ${dispB} × ${dispH} ${unitLabel} | Площадь: ${item.S.toFixed(2)} м²\n`;
-    text += `Рабочая плоскость от пола: ${Number(item.workPlane ?? 0).toFixed(2)} м\n`;
-    text += `Опуск светильника от потолка: ${Number(item.fixtureDrop ?? 0).toFixed(2)} м\n`;
-    text += `Расчётная высота над рабочей плоскостью: ${Number(item.hCalc ?? (item.h - (item.workPlane ?? 0) - (item.fixtureDrop ?? 0))).toFixed(2)} м\n`;
-    text += `Освещённость E: ${item.E} лк\n`;
-    text += `Тип: ${typeName} | Отражение: ${reflName}\n`;
-    text += `Индекс I: ${item.I.toFixed(2)} | uoy: ${item.uoy.toFixed(3)}\n`;
-    text += `Требуемый поток: ${item.NC.toFixed(0)} лм\n`;
+    text += `--- 袟邪锌懈褋褜 鈩�${index + 1} (${item.date}) ---\n`;
+    text += `袪邪蟹屑械褉褘: ${dispA} 脳 ${dispB} 脳 ${dispH} ${unitLabel} | 袩谢芯褖邪写褜: ${item.S.toFixed(2)} 屑虏\n`;
+    text += `袪邪斜芯褔邪褟 锌谢芯褋泻芯褋褌褜 芯褌 锌芯谢邪: ${Number(item.workPlane ?? 0).toFixed(2)} 屑\n`;
+    text += `袨锌褍褋泻 褋胁械褌懈谢褜薪懈泻邪 芯褌 锌芯褌芯谢泻邪: ${Number(item.fixtureDrop ?? 0).toFixed(2)} 屑\n`;
+    text += `袪邪褋褔褢褌薪邪褟 胁褘褋芯褌邪 薪邪写 褉邪斜芯褔械泄 锌谢芯褋泻芯褋褌褜褞: ${Number(item.hCalc ?? (item.h - (item.workPlane ?? 0) - (item.fixtureDrop ?? 0))).toFixed(2)} 屑\n`;
+    text += `袨褋胁械褖褢薪薪芯褋褌褜 E: ${item.E} 谢泻\n`;
+    text += `孝懈锌: ${typeName} | 袨褌褉邪卸械薪懈械: ${reflName}\n`;
+    text += `袠薪写械泻褋 I: ${item.I.toFixed(2)} | uoy: ${item.uoy.toFixed(3)}\n`;
+    text += `孝褉械斜褍械屑褘泄 锌芯褌芯泻: ${item.NC.toFixed(0)} 谢屑\n`;
     if (item.lossPercent > 0) {
-      text += `Потери на фильтре: ${item.lossPercent}% (проходит ${100 - item.lossPercent}%)\n`;
-      text += `С учётом потерь: ${item.NC_effective.toFixed(0)} лм\n`;
+      text += `袩芯褌械褉懈 薪邪 褎懈谢褜褌褉械: ${item.lossPercent}% (锌褉芯褏芯写懈褌 ${100 - item.lossPercent}%)\n`;
+      text += `小 褍褔褢褌芯屑 锌芯褌械褉褜: ${item.NC_effective.toFixed(0)} 谢屑\n`;
     }
-    if (item.lampCount) text += `Распределение: ${item.lampCount} ламп → ${item.perLamp.toFixed(0)} лм на лампу\n`;
-    else if (item.lineLength) text += `Распределение: ${item.lineLength} м линии → ${item.perMeter.toFixed(0)} лм/м\n`;
+    if (item.lampCount) text += `袪邪褋锌褉械写械谢械薪懈械: ${item.lampCount} 谢邪屑锌 鈫� ${item.perLamp.toFixed(0)} 谢屑 薪邪 谢邪屑锌褍\n`;
+    else if (item.lineLength) text += `袪邪褋锌褉械写械谢械薪懈械: ${item.lineLength} 屑 谢懈薪懈懈 鈫� ${item.perMeter.toFixed(0)} 谢屑/屑\n`;
     text += '\n';
   });
   const d = new Date();
   const pad = n => String(n).padStart(2, '0');
   const filename = 'journal_osveschenie_' + d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()) + '.txt';
   
-  createFileAndShare(text, filename, 'Журнал расчётов');
+  createFileAndShare(text, filename, '袞褍褉薪邪谢 褉邪褋褔褢褌芯胁');
 }
 
 function saveResult() {
   const r = lastSplit || lastTotal;
   if (!r) return;
-  const typeName = r.type === 'potol' ? 'Потолочные' : 'Подвесные';
+  const typeName = r.type === 'potol' ? '袩芯褌芯谢芯褔薪褘械' : '袩芯写胁械褋薪褘械';
   const reflName = reflLabels[r.refl];
   const date = new Date().toLocaleString('ru-RU');
-  const unitLabel = r.unit === 'cm' ? 'см' : 'м';
+  const unitLabel = r.unit === 'cm' ? '褋屑' : '屑';
   const dispA = r.unit === 'cm' ? (r.a * 100).toFixed(0) : r.a;
   const dispB = r.unit === 'cm' ? (r.b * 100).toFixed(0) : r.b;
   const dispH = r.unit === 'cm' ? (r.h * 100).toFixed(0) : r.h;
 
   let text = '';
-  text += '=== РЕЗУЛЬТАТ РАСЧЁТА ОСВЕЩЕНИЯ ===\n';
-  text += 'Дата расчёта: ' + date + '\n\n';
-  text += '--- ИСХОДНЫЕ ДАННЫЕ ---\n';
-  text += 'Ширина a: ' + dispA + ' ' + unitLabel + '\nДлина b: ' + dispB + ' ' + unitLabel + '\nВысота помещения H: ' + dispH + ' ' + unitLabel + '\nРабочая плоскость от пола: ' + (r.workPlane ?? 0) + ' м\nОпуск светильника от потолка: ' + (r.fixtureDrop ?? 0) + ' м\nРасчётная высота над рабочей плоскостью: ' + (r.hCalc ?? r.h).toFixed(2) + ' м\nОсвещённость E: ' + r.E + ' лк\nТип светильника: ' + typeName + '\nКоэффициент отражения: ' + reflName + '\n\n';
-  text += '--- РЕЗУЛЬТАТЫ ---\n';
-  text += 'Общий требуемый световой поток: ' + r.NC.toFixed(0) + ' лм\nПлощадь помещения S: ' + r.S.toFixed(2) + ' м²\nИндекс помещения I: ' + r.I.toFixed(2) + '\nКоэффициент uoy: ' + r.uoy.toFixed(3) + '\n';
+  text += '=== 袪袝袟校袥鞋孝袗孝 袪袗小效衼孝袗 袨小袙袝些袝袧袠携 ===\n';
+  text += '袛邪褌邪 褉邪褋褔褢褌邪: ' + date + '\n\n';
+  text += '--- 袠小啸袨袛袧蝎袝 袛袗袧袧蝎袝 ---\n';
+  text += '楔懈褉懈薪邪 a: ' + dispA + ' ' + unitLabel + '\n袛谢懈薪邪 b: ' + dispB + ' ' + unitLabel + '\n袙褘褋芯褌邪 锌芯屑械褖械薪懈褟 H: ' + dispH + ' ' + unitLabel + '\n袪邪斜芯褔邪褟 锌谢芯褋泻芯褋褌褜 芯褌 锌芯谢邪: ' + (r.workPlane ?? 0) + ' 屑\n袨锌褍褋泻 褋胁械褌懈谢褜薪懈泻邪 芯褌 锌芯褌芯谢泻邪: ' + (r.fixtureDrop ?? 0) + ' 屑\n袪邪褋褔褢褌薪邪褟 胁褘褋芯褌邪 薪邪写 褉邪斜芯褔械泄 锌谢芯褋泻芯褋褌褜褞: ' + (r.hCalc ?? r.h).toFixed(2) + ' 屑\n袨褋胁械褖褢薪薪芯褋褌褜 E: ' + r.E + ' 谢泻\n孝懈锌 褋胁械褌懈谢褜薪懈泻邪: ' + typeName + '\n袣芯褝褎褎懈褑懈械薪褌 芯褌褉邪卸械薪懈褟: ' + reflName + '\n\n';
+  text += '--- 袪袝袟校袥鞋孝袗孝蝎 ---\n';
+  text += '袨斜褖懈泄 褌褉械斜褍械屑褘泄 褋胁械褌芯胁芯泄 锌芯褌芯泻: ' + r.NC.toFixed(0) + ' 谢屑\n袩谢芯褖邪写褜 锌芯屑械褖械薪懈褟 S: ' + r.S.toFixed(2) + ' 屑虏\n袠薪写械泻褋 锌芯屑械褖械薪懈褟 I: ' + r.I.toFixed(2) + '\n袣芯褝褎褎懈褑懈械薪褌 uoy: ' + r.uoy.toFixed(3) + '\n';
   if (r.splitInfo) {
-    text += '\n--- ПОТЕРИ НА ФИЛЬТРЕ / РАССЕИВАТЕЛЕ ---\n';
-    text += 'Коэффициент потерь: ' + r.splitInfo.lossPercent.toFixed(0) + '%\nПроходит света: ' + r.splitInfo.tauPercent.toFixed(0) + '%\nТребуемый поток с учётом потерь: ' + r.splitInfo.NC_effective.toFixed(0) + ' лм\n';
-    text += '\n--- РАСПРЕДЕЛЕНИЕ ПОТОКА ---\n';
+    text += '\n--- 袩袨孝袝袪袠 袧袗 肖袠袥鞋孝袪袝 / 袪袗小小袝袠袙袗孝袝袥袝 ---\n';
+    text += '袣芯褝褎褎懈褑懈械薪褌 锌芯褌械褉褜: ' + r.splitInfo.lossPercent.toFixed(0) + '%\n袩褉芯褏芯写懈褌 褋胁械褌邪: ' + r.splitInfo.tauPercent.toFixed(0) + '%\n孝褉械斜褍械屑褘泄 锌芯褌芯泻 褋 褍褔褢褌芯屑 锌芯褌械褉褜: ' + r.splitInfo.NC_effective.toFixed(0) + ' 谢屑\n';
+    text += '\n--- 袪袗小袩袪袝袛袝袥袝袧袠袝 袩袨孝袨袣袗 ---\n';
     if (r.splitInfo.mode === 'lamps') {
-      text += 'Способ: по количеству ламп\nКоличество ламп: ' + r.splitInfo.lampCount + ' шт.\nТребуемый поток на 1 лампу: ' + r.splitInfo.perLamp.toFixed(0) + ' лм\n';
+      text += '小锌芯褋芯斜: 锌芯 泻芯谢懈褔械褋褌胁褍 谢邪屑锌\n袣芯谢懈褔械褋褌胁芯 谢邪屑锌: ' + r.splitInfo.lampCount + ' 褕褌.\n孝褉械斜褍械屑褘泄 锌芯褌芯泻 薪邪 1 谢邪屑锌褍: ' + r.splitInfo.perLamp.toFixed(0) + ' 谢屑\n';
     } else {
-      text += 'Способ: по длине световых линий\nДлина линии: ' + r.splitInfo.lineLength + ' м\nТребуемый поток на 1 метр линии: ' + r.splitInfo.perMeter.toFixed(0) + ' лм/м\n';
+      text += '小锌芯褋芯斜: 锌芯 写谢懈薪械 褋胁械褌芯胁褘褏 谢懈薪懈泄\n袛谢懈薪邪 谢懈薪懈懈: ' + r.splitInfo.lineLength + ' 屑\n孝褉械斜褍械屑褘泄 锌芯褌芯泻 薪邪 1 屑械褌褉 谢懈薪懈懈: ' + r.splitInfo.perMeter.toFixed(0) + ' 谢屑/屑\n';
     }
   } else {
-    text += '\n--- РАСПРЕДЕЛЕНИЕ ПОТОКА ---\nНе выполнено (шаг 2 пропущен)\n';
+    text += '\n--- 袪袗小袩袪袝袛袝袥袝袧袠袝 袩袨孝袨袣袗 ---\n袧械 胁褘锌芯谢薪械薪芯 (褕邪谐 2 锌褉芯锌褍褖械薪)\n';
   }
-  text += '\n--- ИСПОЛЬЗОВАННЫЕ ФОРМУЛЫ ---\nS = a · b\nhрасч = H − высота рабочей плоскости − опуск светильника\nI = (a · b) / (hрасч · (a + b))\nNC = (E · 1.25 · S) / uoy\nNC_effective = NC / (1 - потери/100)\nПоток на 1 лампу = NC_effective / количество ламп\nПоток на 1 м линии = NC_effective / длина линии\n';
+  text += '\n--- 袠小袩袨袥鞋袟袨袙袗袧袧蝎袝 肖袨袪袦校袥蝎 ---\nS = a 路 b\nh褉邪褋褔 = H 鈭� 胁褘褋芯褌邪 褉邪斜芯褔械泄 锌谢芯褋泻芯褋褌懈 鈭� 芯锌褍褋泻 褋胁械褌懈谢褜薪懈泻邪\nI = (a 路 b) / (h褉邪褋褔 路 (a + b))\nNC = (E 路 1.25 路 S) / uoy\nNC_effective = NC / (1 - 锌芯褌械褉懈/100)\n袩芯褌芯泻 薪邪 1 谢邪屑锌褍 = NC_effective / 泻芯谢懈褔械褋褌胁芯 谢邪屑锌\n袩芯褌芯泻 薪邪 1 屑 谢懈薪懈懈 = NC_effective / 写谢懈薪邪 谢懈薪懈懈\n';
   const d = new Date();
   const pad = n => String(n).padStart(2, '0');
   const filename = 'osveschenie_' + d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()) + '_' + pad(d.getHours()) + '-' + pad(d.getMinutes()) + '.txt';
   
-  createFileAndShare(text, filename, 'Результат расчёта освещения');
+  createFileAndShare(text, filename, '袪械蟹褍谢褜褌邪褌 褉邪褋褔褢褌邪 芯褋胁械褖械薪懈褟');
 }
 
 
-function setAppMode(mode) {
-  const household = mode === 'household';
-  document.getElementById('householdPanel').classList.toggle('active', household);
-  document.getElementById('professionalPanel').classList.toggle('active', !household);
-  document.getElementById('householdModeBtn').classList.toggle('active', household);
-  document.getElementById('professionalModeBtn').classList.toggle('active', !household);
-  try { localStorage.setItem('calcMode', mode); } catch (e) {}
-}
-function calcProfessional() {
-  const read = id => Number(document.getElementById(id).value);
-  const a=read('proA'), b=read('proB'), roomH=read('proH'), wp=read('proWp');
-  const mount=read('proMount'), E=read('proE'), eta=read('proUF'), MF=read('proMF'), flux=read('proFlux');
-  const countInput=document.getElementById('proCount').value.trim();
-  const count=countInput === '' ? null : Number(countInput);
-  const vals=[a,b,roomH,mount,E,eta,MF,flux,wp];
-  const out=document.getElementById('proResult');
-  if(vals.some(v=>!Number.isFinite(v)) || [a,b,roomH,mount,E,eta,MF,flux].some(v=>v<=0) || wp<0 || mount>roomH || wp>=mount || eta>1 || MF>1 || (count!==null && (!Number.isInteger(count)||count<1))) {
-    out.innerHTML='<div class="pro-note">Проверь данные: все размеры и освещённость должны быть положительными; рабочая плоскость должна быть ниже светильника, светильник — не выше потолка; η и MF должны быть не больше 1.</div>';
-    return;
-  }
-  const S=a*b, hm=mount-wp, K=(a*b)/(hm*(a+b));
-  const total=(E*S)/(eta*MF);
-  const required=Math.ceil(total/flux);
-  const chosen=count===null?required:count;
-  const actual=(chosen*flux*eta*MF)/S;
-  const spacing=Math.sqrt(S/chosen);
-  const norm=document.getElementById('proStandard').selectedOptions[0].textContent;
-  const countWarning = chosen < required
-    ? `<div class="pro-note" role="alert" style="border-left:4px solid #ef4444;padding-left:10px;color:#fecaca"><b>Недостаточно светильников.</b> Указано ${chosen} шт., требуется не менее ${required} шт. Оценочная освещённость составит ${Math.round(actual)} лк вместо ${Math.round(E)} лк (недостаток ${Math.max(0, E - actual).toFixed(0)} лк).</div>`
-    : `<div class="pro-note" role="status" style="border-left:4px solid #22c55e;padding-left:10px">Количество ${chosen} шт. обеспечивает расчётную оценку ${Math.round(actual)} лк при заданных η и MF.</div>`;
-  out.innerHTML=`
-    <div class="section-kicker">РЕЗУЛЬТАТ ПРЕДВАРИТЕЛЬНОГО РАСЧЁТА</div>
-    <div class="pro-kpis">
-      <div class="pro-kpi"><span>Требуемый суммарный поток</span><strong>${Math.round(total).toLocaleString('ru-RU')} лм</strong></div>
-      <div class="pro-kpi"><span>Расчётное количество</span><strong>${required} шт.</strong></div>
-      <div class="pro-kpi"><span>Индекс помещения K</span><strong>${K.toFixed(2)}</strong></div>
-      <div class="pro-kpi"><span>Оценка E при ${chosen} шт.</span><strong>${Math.round(actual)} лк</strong></div>
-    </div>
-    ${countWarning}
-    <div>Площадь: <b>${S.toFixed(2)} м²</b><br>Высота над рабочей плоскостью: <b>${hm.toFixed(2)} м</b><br>Суммарный поток установленных светильников: <b>${(chosen*flux).toLocaleString('ru-RU')} лм</b><br>Оценочный шаг размещения по площади: <b>${spacing.toFixed(2)} м</b><br>Нормативный контекст: <b>${norm}</b></div>
-    <div class="pro-note">Оценка выполнена по упрощённой формуле Φ = E × S / (η × MF). Шаг размещения — ориентировочная оценка, не схема расстановки. Результат не подтверждает равномерность, ограничение UGR или соответствие нормативу. Для проектного заключения нужны данные IES/LDT, геометрия и проверка актуальных требований.</div>`;
-}
-function invalidateHouseholdResult(message = 'Исходные данные изменены. Нажми «1. Рассчитать общий поток», чтобы получить актуальный результат.') {
+function invalidateHouseholdResult(message = '袠褋褏芯写薪褘械 写邪薪薪褘械 懈蟹屑械薪械薪褘. 袧邪卸屑懈 芦1. 袪邪褋褋褔懈褌邪褌褜 芯斜褖懈泄 锌芯褌芯泻禄, 褔褌芯斜褘 锌芯谢褍褔懈褌褜 邪泻褌褍邪谢褜薪褘泄 褉械蟹褍谢褜褌邪褌.') {
   lastTotal = null;
   lastSplit = null;
   saveBtn.style.display = 'none';
   document.getElementById('splitBlock').style.display = 'none';
   resDiv.textContent = message;
 }
-function invalidateProfessionalResult() {
-  document.getElementById('proResult').innerHTML = '<div class="result-placeholder">Параметры изменены. Запусти расчёт повторно, чтобы увидеть актуальный результат.</div>';
-}
-// Любое изменение расчётного поля аннулирует предыдущий результат, чтобы его нельзя было сохранить или распределить повторно.
+// 袥褞斜芯械 懈蟹屑械薪械薪懈械 褉邪褋褔褢褌薪芯谐芯 锌芯谢褟 邪薪薪褍谢懈褉褍械褌 锌褉械写褘写褍褖懈泄 褉械蟹褍谢褜褌邪褌, 褔褌芯斜褘 械谐芯 薪械谢褜蟹褟 斜褘谢芯 褋芯褏褉邪薪懈褌褜 懈谢懈 褉邪褋锌褉械写械谢懈褌褜 锌芯胁褌芯褉薪芯.
 document.querySelectorAll('#householdPanel input, #householdPanel select').forEach(element => {
   const eventName = element.tagName === 'SELECT' ? 'change' : 'input';
   element.addEventListener(eventName, () => invalidateHouseholdResult());
 });
-document.querySelectorAll('#professionalPanel input, #professionalPanel select').forEach(element => {
-  const eventName = element.tagName === 'SELECT' ? 'change' : 'input';
-  element.addEventListener(eventName, invalidateProfessionalResult);
-});
-(function restoreAppMode(){try{setAppMode(localStorage.getItem('calcMode')==='professional'?'professional':'household');}catch(e){setAppMode('household');}})();
 
 function toggleTheme() {
   const body = document.body;
   const btn = document.getElementById('themeBtn');
   if (body.classList.contains('dark')) {
-    body.classList.remove('dark'); btn.textContent = '🌙'; localStorage.setItem('theme', 'light');
+    body.classList.remove('dark'); btn.textContent = '馃寵'; localStorage.setItem('theme', 'light');
   } else {
-    body.classList.add('dark'); btn.textContent = '☀️'; localStorage.setItem('theme', 'dark');
+    body.classList.add('dark'); btn.textContent = '鈽€锔�'; localStorage.setItem('theme', 'dark');
   }
 }
 (function() {
   const saved = localStorage.getItem('theme');
-  if (saved === 'dark') { document.body.classList.add('dark'); document.getElementById('themeBtn').textContent = '☀️'; }
+  if (saved === 'dark') { document.body.classList.add('dark'); document.getElementById('themeBtn').textContent = '鈽€锔�'; }
   renderJournal();
   updateUnitPlaceholders();
   
@@ -893,7 +762,7 @@ function installPWA() {
   deferredPrompt.userChoice.then((choice) => { if (choice.outcome === 'accepted') installBtn.style.display = 'none'; deferredPrompt = null; });
 }
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => { navigator.serviceWorker.register('service-worker.js').then(reg => console.log('SW зарегистрирован')).catch(err => console.log('SW ошибка:', err)); });
+  window.addEventListener('load', () => { navigator.serviceWorker.register('service-worker.js').then(reg => console.log('SW 蟹邪褉械谐懈褋褌褉懈褉芯胁邪薪')).catch(err => console.log('SW 芯褕懈斜泻邪:', err)); });
 }
 </script>
 </body>
