@@ -1,0 +1,60 @@
+name: Unzip Archive
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '*.zip' # Запускать только при изменении ZIP-файлов в корне
+
+jobs:
+  unzip-and-commit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Даёт право делать коммиты в репозиторий
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Важно для корректной работы с историей git
+
+      - name: Find ZIP file
+        id: find_zip
+        run: |
+          ZIP_FILE=$(find . -maxdepth 1 -name "*.zip" | head -n 1)
+          if [ -z "$ZIP_FILE" ]; then
+            echo "❌ ZIP-файл не найден"
+            exit 1
+          fi
+          echo "Найден файл: $ZIP_FILE"
+          echo "zip_path=$ZIP_FILE" >> "$GITHUB_OUTPUT"
+
+      - name: Unzip archive
+        run: |
+          # Распаковываем во временную папку
+          mkdir -p /tmp/extracted
+          unzip -q "${{ steps.find_zip.outputs.zip_path }}" -d /tmp/extracted
+          
+          # Если внутри архива одна корневая папка, перемещаем её содержимое наверх
+          CONTENTS=$(ls /tmp/extracted)
+          COUNT=$(echo "$CONTENTS" | wc -l)
+          if [ "$COUNT" -eq 1 ] && [ -d "/tmp/extracted/$CONTENTS" ]; then
+            mv /tmp/extracted/"$CONTENTS"/* /tmp/extracted/ 2>/dev/null || true
+            mv /tmp/extracted/"$CONTENTS"/.[!.]* /tmp/extracted/ 2>/dev/null || true
+            rmdir /tmp/extracted/"$CONTENTS" 2>/dev/null || true
+          fi
+
+      - name: Commit extracted files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Копируем распакованные файлы в корень репозитория
+          cp -r /tmp/extracted/* .
+          # Удаляем исходный ZIP-архив, чтобы он не попал в коммит (опционально)
+          rm "${{ steps.find_zip.outputs.zip_path }}"
+          
+          git add .
+          git commit -m "Auto-unzip: распакован архив ${{ steps.find_zip.outputs.zip_path }}" || echo "Нечего коммитить"
+          git push
