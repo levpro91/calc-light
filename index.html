@@ -468,44 +468,128 @@ function calcTotal() {
   saveBtn.style.display = 'block';
 }
 function calcSplit() {
-  if (!lastTotal) { resDiv.innerHTML = '<p style="color:#ef4444">Сначала нажми «1. Рассчитать общий поток»</p>'; return; }
+  if (!lastTotal) {
+    resDiv.innerHTML = '<p style="color:#ef4444">Сначала нажми «1. Рассчитать общий поток»</p>';
+    return;
+  }
+
   const { S, I, uoy, NC, type, refl, a, b, h, hCalc, E, unit } = lastTotal;
   const mode = document.getElementById('splitMode').value;
+
   const lossInput = document.getElementById('lossPercent').value.trim();
   const lossPercent = lossInput === '' ? 0 : Number(lossInput);
+
+  // Проверка потерь
   if (!Number.isFinite(lossPercent) || lossPercent < 0 || lossPercent >= 100) {
     resDiv.textContent = 'Потери должны быть в диапазоне от 0 до 99%.';
     saveBtn.style.display = 'none';
     lastSplit = null;
     return;
   }
+
+  // Проверка количества ламп или длины линии
+  let lampCount = null;
+  let lineLength = null;
+
+  if (mode === 'lamps') {
+    const lampInput = document.getElementById('lampCount').value.trim();
+    lampCount = lampInput === '' ? NaN : Number(lampInput);
+
+    if (!Number.isInteger(lampCount) || lampCount <= 0) {
+      resDiv.textContent = 'Укажи корректное количество ламп: целое число больше нуля.';
+      saveBtn.style.display = 'none';
+      lastSplit = null;
+      return;
+    }
+  } else if (mode === 'lines') {
+    const lineInput = document.getElementById('lineLength').value.trim();
+    lineLength = lineInput === '' ? NaN : Number(lineInput);
+
+    if (!Number.isFinite(lineLength) || lineLength <= 0) {
+      resDiv.textContent = 'Укажи корректную длину световой линии: число больше нуля.';
+      saveBtn.style.display = 'none';
+      lastSplit = null;
+      return;
+    }
+  } else {
+    resDiv.textContent = 'Выбери способ распределения светового потока.';
+    saveBtn.style.display = 'none';
+    lastSplit = null;
+    return;
+  }
+
   const tauPercent = 100 - lossPercent;
   const tau = tauPercent / 100;
   const NC_effective = NC / tau;
-  let splitInfo = null;
+
+  let splitInfo;
   let splitHtml = '';
-  let filterHtml = lossPercent > 0 ? '<div class="filter">🔻 <b>Потери на рассеивателе/фильтре:</b> ' + lossPercent.toFixed(0) + '%<br>Проходит света: <b>' + tauPercent.toFixed(0) + '%</b><br>Требуемый поток с учётом потерь: <b>' + NC_effective.toFixed(0) + ' лм</b><br><span style="font-size:13px;opacity:0.8">' + NC.toFixed(0) + ' лм ÷ ' + tau.toFixed(2) + ' = ' + NC_effective.toFixed(0) + ' лм</span></div>' : '<div class="hint" style="margin:8px 0">✅ Потерь нет (0%) — фильтр не учитывается.</div>';
+
+  const filterHtml = lossPercent > 0
+    ? '<div class="filter">🔻 <b>Потери на рассеивателе/фильтре:</b> ' +
+      lossPercent.toFixed(0) + '%<br>Проходит света: <b>' +
+      tauPercent.toFixed(0) + '%</b><br>Требуемый поток с учётом потерь: <b>' +
+      NC_effective.toFixed(0) + ' лм</b><br><span style="font-size:13px;opacity:0.8">' +
+      NC.toFixed(0) + ' лм ÷ ' + tau.toFixed(2) + ' = ' +
+      NC_effective.toFixed(0) + ' лм</span></div>'
+    : '<div class="hint" style="margin:8px 0">✅ Потерь нет (0%) — фильтр не учитывается.</div>';
+
   if (mode === 'lamps') {
-    const lampInput = document.getElementById('lampCount').value.trim();
-    const lampCount = lampInput === '' ? NaN : Number(lampInput);
-    if (Number.isInteger(lampCount) && lampCount > 0) {
-      const perLamp = NC_effective / lampCount;
-      splitInfo = { mode: 'lamps', lampCount, perLamp, lossPercent, tauPercent, NC_effective };
-      splitHtml = '<div class="recommend">👉 <b>Требуемый поток на 1 лампу' + (lossPercent > 0 ? ' (с учётом потерь)' : '') + ':</b><br><b>' + perLamp.toFixed(0) + ' лм</b><br><span style="font-size:13px;opacity:0.8">' + NC_effective.toFixed(0) + ' лм ÷ ' + lampCount + ' шт. = ' + perLamp.toFixed(0) + ' лм</span></div>';
-    }
+    const perLamp = NC_effective / lampCount;
+
+    splitInfo = {
+      mode: 'lamps',
+      lampCount,
+      perLamp,
+      lossPercent,
+      tauPercent,
+      NC_effective
+    };
+
+    splitHtml =
+      '<div class="recommend">👉 <b>Требуемый поток на 1 лампу' +
+      (lossPercent > 0 ? ' (с учётом потерь)' : '') +
+      ':</b><br><b>' + perLamp.toFixed(0) +
+      ' лм</b><br><span style="font-size:13px;opacity:0.8">' +
+      NC_effective.toFixed(0) + ' лм ÷ ' + lampCount +
+      ' шт. = ' + perLamp.toFixed(0) + ' лм</span></div>';
+
   } else {
-    const lineInput = document.getElementById('lineLength').value.trim();
-    const lineLength = lineInput === '' ? NaN : Number(lineInput);
-    if (Number.isFinite(lineLength) && lineLength > 0) {
-      const perMeter = NC_effective / lineLength;
-      splitInfo = { mode: 'lines', lineLength, perMeter, lossPercent, tauPercent, NC_effective };
-      splitHtml = '<div class="recommend">👉 <b>Требуемый поток на 1 метр линии' + (lossPercent > 0 ? ' (с учётом потерь)' : '') + ':</b><br><b>' + perMeter.toFixed(0) + ' лм/м</b><br><span style="font-size:13px;opacity:0.8">' + NC_effective.toFixed(0) + ' лм ÷ ' + lineLength + ' м = ' + perMeter.toFixed(0) + ' лм/м</span></div>';
-    }
+    const perMeter = NC_effective / lineLength;
+
+    splitInfo = {
+      mode: 'lines',
+      lineLength,
+      perMeter,
+      lossPercent,
+      tauPercent,
+      NC_effective
+    };
+
+    splitHtml =
+      '<div class="recommend">👉 <b>Требуемый поток на 1 метр линии' +
+      (lossPercent > 0 ? ' (с учётом потерь)' : '') +
+      ':</b><br><b>' + perMeter.toFixed(0) +
+      ' лм/м</b><br><span style="font-size:13px;opacity:0.8">' +
+      NC_effective.toFixed(0) + ' лм ÷ ' + lineLength +
+      ' м = ' + perMeter.toFixed(0) + ' лм/м</span></div>';
   }
-  if (!splitInfo) splitHtml = '<span style="font-size:13px;opacity:0.7">Укажи количество ламп или длину линии.</span>';
+
+  // Сохраняем результат только после успешной проверки всех полей
   lastSplit = { ...lastTotal, splitInfo };
-  resDiv.innerHTML = '<div class="total">Общий требуемый световой поток для помещения:<br><b>' + NC.toFixed(0) + ' лм</b></div>Площадь S = <b>' + S.toFixed(2) + ' м²</b><br>Расчётная высота над рабочей плоскостью = <b>' + hCalc.toFixed(2) + ' м</b><br>Индекс помещения I = <b>' + I.toFixed(2) + '</b><br>Коэффициент uoy = <b>' + uoy.toFixed(3) + '</b>' + filterHtml + splitHtml;
+
+  resDiv.innerHTML =
+    '<div class="total">Общий требуемый световой поток для помещения:<br><b>' +
+    NC.toFixed(0) + ' лм</b></div>' +
+    'Площадь S = <b>' + S.toFixed(2) + ' м²</b><br>' +
+    'Расчётная высота над рабочей плоскостью = <b>' + hCalc.toFixed(2) + ' м</b><br>' +
+    'Индекс помещения I = <b>' + I.toFixed(2) + '</b><br>' +
+    'Коэффициент uoy = <b>' + uoy.toFixed(3) + '</b>' +
+    filterHtml + splitHtml;
+
   saveBtn.style.display = 'block';
+
+  // В журнал попадают только успешно рассчитанные результаты
   addToJournal(lastSplit);
 }
 let journal = [];
