@@ -804,8 +804,14 @@ function invalidateHouseholdResult(message = 'Исходные данные из
 }
 // Любое изменение расчётного поля аннулирует предыдущий результат, чтобы его нельзя было сохранить или распределить повторно.
 document.querySelectorAll('#householdPanel input, #householdPanel select').forEach(element => {
+  // Поля второго шага не должны сбрасывать результат первого шага
+  if (element.closest('#splitBlock')) return;
+
   const eventName = element.tagName === 'SELECT' ? 'change' : 'input';
-  element.addEventListener(eventName, () => invalidateHouseholdResult());
+
+  element.addEventListener(eventName, () => {
+    invalidateHouseholdResult();
+  });
 });
 
 function toggleTheme() {
