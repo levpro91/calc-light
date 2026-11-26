@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Расчёт освещения</title>
+<meta name="theme-color" content="#081321">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-512.png">
+<link rel="apple-touch-icon" href="icon-512.png">
+<style>
+  :root { --bg:#f4f6f8; --text:#222; --label:#333; --input-bg:#fff; --input-border:#ccc; --hint:#777; --btn:#0a58ca; --btn-hover:#084298; --btn-save:#198754; --btn-save-hover:#146c43; --btn-secondary:#6c757d; --btn-secondary-hover:#5a6268; --quick-bg:#e9ecef; --quick-text:#333; --quick-border:#ccc; --quick-hover:#d6d9dc; --res-bg:#fff; --res-text:#222; --res-b:#0a58ca; --total-bg:#d1e7dd; --total-b:#146c43; --recommend-bg:#fff3cd; --recommend-border:#ffc107; --recommend-b:#856404; --filter-bg:#f8d7da; --filter-border:#dc3545; --filter-b:#842029; --hr:#ddd; --shadow:none; --log-bg:#eef2f6; --log-item-bg:#fff; --log-item-border:#ddd; --log-item-hover:#e0e7ff; --danger:#dc3545; --danger-hover:#bb2d3b; --ios-hint-bg:#0a58ca; }
+  body.dark { --bg:#121212; --text:#e0e0e0; --label:#b0b0b0; --input-bg:#1e1e1e; --input-border:#333; --hint:#888; --btn:#3b82f6; --btn-hover:#2563eb; --btn-save:#16a34a; --btn-save-hover:#15803d; --btn-secondary:#4b5563; --btn-secondary-hover:#374151; --quick-bg:#2a2a2a; --quick-text:#e0e0e0; --quick-border:#444; --quick-hover:#3a3a3a; --res-bg:#1e1e1e; --res-text:#e0e0e0; --res-b:#60a5fa; --total-bg:#14532d; --total-b:#86efac; --recommend-bg:#422006; --recommend-border:#eab308; --recommend-b:#fde047; --filter-bg:#450a0a; --filter-border:#ef4444; --filter-b:#fca5a5; --hr:#333; --shadow:0 0 0 1px #333; --log-bg:#1a1a1a; --log-item-bg:#222; --log-item-border:#333; --log-item-hover:#2d2d2d; --danger:#ef4444; --danger-hover:#dc2626; --ios-hint-bg:#2563eb; }
+  body{font-family:sans-serif;max-width:540px;margin:30px auto;padding:0 16px;background:var(--bg);color:var(--text);transition:background .3s,color .3s}
+  label{display:block;margin-top:12px;font-size:14px;color:var(--label)}
+  input,select{width:100%;padding:10px;margin-top:4px;font-size:16px;box-sizing:border-box;border:1px solid var(--input-border);border-radius:4px;background:var(--input-bg);color:var(--text)}
+  select{font-size:14px;line-height:1.4} .hint{font-size:12px;color:var(--hint);margin-top:4px;line-height:1.4}
+  button{width:100%;padding:12px;font-size:16px;margin-top:12px;cursor:pointer;background:var(--btn);color:#fff;border:none;border-radius:4px}
+  button:hover{background:var(--btn-hover)} button.save{background:var(--btn-save)} button.save:hover{background:var(--btn-save-hover)} button.secondary{background:var(--btn-secondary)} button.secondary:hover{background:var(--btn-secondary-hover)}
+  .quick{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap} .quick button{width:auto;padding:6px 10px;font-size:12px;margin-top:0;background:var(--quick-bg);color:var(--quick-text);border:1px solid var(--quick-border)} .quick button:hover{background:var(--quick-hover)}
+  .res{margin-top:20px;padding:16px;background:var(--res-bg);border-radius:8px;font-size:15px;line-height:1.8;color:var(--res-text);box-shadow:var(--shadow)}
+  .res b{color:var(--res-b);font-size:17px} .res .total{background:var(--total-bg);padding:14px;border-radius:6px;margin:0 0 14px 0;border-left:5px solid var(--total-b);font-size:16px} .res .total b{color:var(--total-b);font-size:24px;display:block;margin-top:6px}
+  .res .recommend{background:var(--recommend-bg);padding:12px;border-radius:6px;margin:10px 0;border-left:4px solid var(--recommend-border);font-size:15px} .res .recommend b{color:var(--recommend-b);font-size:19px}
+  .res .filter{background:var(--filter-bg);padding:12px;border-radius:6px;margin:10px 0;border-left:4px solid var(--filter-border);font-size:15px} .res .filter b{color:var(--filter-b);font-size:19px}
+  .flex{display:flex;gap:10px} .flex > div{flex:1} hr{border:none;border-top:1px solid var(--hr);margin:20px 0}
+  #splitBlock{display:none;margin-top:16px;padding-top:12px;border-top:1px dashed var(--hr)} #installBtn{display:none;background:var(--btn);margin-top:12px;font-size:14px;padding:10px}
+  #journalBlock{display:none;margin-top:30px;padding:16px;background:var(--log-bg);border-radius:8px} .log-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:10px} .log-header h3{margin:0;font-size:16px;color:var(--text)} .log-actions{display:flex;gap:6px}
+  .log-actions button{width:auto;padding:6px 10px;font-size:12px;margin-top:0;background:var(--danger);border:none} .log-actions button:hover{background:var(--danger-hover)} .log-actions button.download{background:var(--btn)} .log-actions button.download:hover{background:var(--btn-hover)}
+  .log-item{background:var(--log-item-bg);border:1px solid var(--log-item-border);border-radius:6px;padding:12px;margin-bottom:10px;position:relative;font-size:13px;line-height:1.5;cursor:pointer;transition:background .2s,transform .1s}
+  .log-item:hover{background:var(--log-item-hover)} .log-item:active{transform:scale(0.99)}
+  .log-item b{font-size:14px} .log-item .log-date{font-size:11px;color:var(--hint);margin-bottom:4px}
+  .log-item .delete-btn{position:absolute;top:8px;right:8px;background:transparent;color:var(--danger);border:none;width:auto;padding:4px 8px;font-size:16px;cursor:pointer;margin:0;z-index:2} .log-item .delete-btn:hover{color:var(--danger-hover);background:transparent}
+  .log-item .load-hint{font-size:11px;color:var(--hint);margin-top:6px;font-style:italic}
+  .theme-toggle{position:fixed;top:16px;right:16px;width:48px;height:48px;border-radius:50%;background:var(--input-bg);border:1px solid var(--input-border);color:var(--text);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:1000;box-shadow:0 2px 8px rgba(0,0,0,0.15);transition:background .3s,border .3s;padding:0;margin:0} .theme-toggle:hover{transform:scale(1.08)} body.dark .theme-toggle{box-shadow:0 2px 8px rgba(0,0,0,0.5)}
+  #iosHint { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--ios-hint-bg); color: #fff; padding: 14px 16px; text-align: center; font-size: 14px; z-index: 2000; box-shadow: 0 -2px 10px rgba(0,0,0,0.2); border-radius: 12px 12px 0 0; animation: slideUp 0.4s ease-out; }
+  #iosHint b { color: #fff; text-decoration: underline; }
+  #iosHint .close-hint { position: absolute; top: 8px; right: 12px; font-size: 20px; cursor: pointer; opacity: 0.8; background: none; border: none; color: #fff; padding: 0; margin: 0; width: auto; }
+  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+  /* Обновлённая визуальная система */
+  :root {
+    --bg:#081321; --text:#e8f1fb; --label:#c2d1e2; --input-bg:#101f31; --input-border:#2b4058;
+    --hint:#91a7bd; --btn:#16a6c7; --btn-hover:#0785a4; --btn-save:#0d9b83; --btn-save-hover:#087b69;
+    --btn-secondary:#263c55; --btn-secondary-hover:#34516f; --quick-bg:#142a3e; --quick-text:#cceaf2;
+    --quick-border:#2d526a; --quick-hover:#1c3b53; --res-bg:#102238; --res-text:#e8f1fb; --res-b:#35c4dc;
+    --total-bg:#103b45; --total-b:#20c4b0; --recommend-bg:#392f1d; --recommend-border:#d89b36;
+    --recommend-b:#ffd28a; --filter-bg:#3a2028; --filter-border:#df6476; --filter-b:#ffb2bd;
+    --hr:#263b50; --shadow:0 14px 34px rgba(0,0,0,.22); --log-bg:#0d1c2c; --log-item-bg:#13263a;
+    --log-item-border:#2a4058; --log-item-hover:#19344b; --danger:#e16a78; --danger-hover:#c84d60;
+    --ios-hint-bg:#087f9c;
+  }
+  body{max-width:760px;margin:0 auto;padding:24px 18px 48px;background:var(--bg);color:var(--text);font-family:Arial,"Segoe UI",Roboto,"Noto Sans",system-ui,sans-serif}
+  body.dark{--bg:#050d17;--text:#e8f1fb;--label:#c2d1e2;--input-bg:#0d1a29;--input-border:#263b50;--hint:#8198af;--btn:#18a9c9;--btn-hover:#0785a4}
+
+  /* Светлая тема — альтернативный режим переключателя */
+  body:not(.dark){
+    --bg:#f3f7fa;--text:#1b2b3b;--label:#33485e;--input-bg:#fff;--input-border:#c8d4df;
+    --hint:#64788c;--btn:#0785a4;--btn-hover:#066d88;--btn-save:#0d9b83;--btn-save-hover:#087b69;
+    --btn-secondary:#52677d;--btn-secondary-hover:#40556a;--quick-bg:#e8f1f6;--quick-text:#263e52;
+    --quick-border:#c9d8e3;--quick-hover:#dceaf2;--res-bg:#fff;--res-text:#1b2b3b;--res-b:#0785a4;
+    --total-bg:#e0f4f1;--total-b:#0d9b83;--recommend-bg:#fff4df;--recommend-border:#d89b36;
+    --recommend-b:#805a17;--filter-bg:#fff0f1;--filter-border:#df6476;--filter-b:#9c3444;
+    --hr:#d5e0e9;--shadow:0 10px 26px rgba(24,52,75,.09);--log-bg:#edf3f7;
+    --log-item-bg:#fff;--log-item-border:#d5e0e9;--log-item-hover:#eaf4f8;--danger:#c84d60;
+    --danger-hover:#a83d50;--ios-hint-bg:#087f9c;
+  }
+  body:not(.dark) .app-hero h1{color:#172b3e}
+  body:not(.dark) .app-hero p{color:#5b7187}
+  body:not(.dark) #householdPanel>label,body:not(.dark) #householdPanel .flex label{color:#33485e}
+  body:not(.dark) .res,#journalBlock{border-color:#d5e0e9}
+  body:not(.dark) .theme-toggle{background:#fff;border-color:#c8d4df;color:#1b2b3b}
+  body:not(.dark) .reflection-help{background:#f0f6fa;color:#263e52;border-color:#c9d8e3}
+  body:not(.dark) .reflection-help-title{color:#087f9c}
+  body:not(.dark) .reflection-level b{color:#20384d}
+  body:not(.dark) .reflection-level small,body:not(.dark) .reflection-help p{color:#526a80}
+  body:not(.dark) .reflection-disclaimer{color:#64788c}
+  .app-hero{padding:22px 4px 16px}
+  .eyebrow,.section-kicker{font-size:10px;letter-spacing:.19em;font-weight:800;color:#42c5d7}
+  .app-hero h1{font-size:clamp(27px,6vw,38px);letter-spacing:-.04em;margin:8px 0 5px;color:#f4f8ff}
+  .app-hero p{margin:0;color:#91a7bd;font-size:14px}
+  #householdPanel>label,#householdPanel .flex label{font-weight:650;color:#c5d5e6}
+  label{font-weight:600}
+  input,select{border-radius:10px;padding:13px 14px;border-width:1px;min-height:46px;outline:none;transition:border-color .18s,box-shadow .18s}
+  input:focus,select:focus{border-color:#25b9d1;box-shadow:0 0 0 3px rgba(37,185,209,.14)}
+  button{border-radius:10px;font-weight:700;min-height:46px;transition:transform .15s,background .15s,box-shadow .15s}
+  button:active{transform:translateY(1px)}
+  #householdPanel>button:not(.theme-toggle),#householdPanel #splitBlock>button{box-shadow:0 7px 18px rgba(5,145,180,.15)}
+  .quick{gap:8px}.quick button{border-radius:8px}
+  .res,#journalBlock{border:1px solid #233b54;box-shadow:var(--shadow);border-radius:16px}
+  .res{padding:20px}
+  .res .total{border-radius:12px}
+  #journalBlock{padding:18px}
+  .log-item{border-radius:11px}
+  .theme-toggle{top:14px;right:14px;width:42px;height:42px;min-height:42px;border-radius:12px;background:#102238;border-color:#29435d}
+  .reflection-help{margin-top:10px;padding:14px;border:1px solid #29465f;border-radius:12px;background:#0e2032;color:#dce9f5;font-size:13px;line-height:1.5}
+  .reflection-help-title{font-weight:800;color:#55c9d8;margin-bottom:10px}
+  .reflection-levels{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .reflection-level{display:flex;align-items:center;gap:9px;min-width:0}
+  .reflection-swatch{width:30px;height:30px;flex:0 0 30px;border-radius:8px;border:1px solid #60758a;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+  .reflection-70{background:#f4f2e9}.reflection-50{background:#c9c7bb}.reflection-30{background:#77766f}.reflection-10{background:#292b30}
+  .reflection-level b,.reflection-level small{display:block}
+  .reflection-level b{font-size:12px;color:#e8f1fb}
+  .reflection-level small{font-size:11px;color:#9fb4c8;line-height:1.35}
+  .reflection-help p{margin:12px 0 5px;color:#c5d5e5}
+  .reflection-disclaimer{display:block;color:#8fa6bc;font-size:11px;line-height:1.45}
+  @media(max-width:520px){body{padding:14px 13px 36px}.app-hero{padding-top:54px}.res{padding:15px}}
+
+</style>
+</head>
+<body class="dark">
+  <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()" title="Переключить тему">☀️</button>
+  <header class="app-hero">
+    <div class="eyebrow">LIGHTING CALCULATOR</div>
+    <h1>Расчёт освещения</h1>
+    <p>Подбор светового потока для помещений</p>
+  </header>
+<button id="installBtn" onclick="installPWA()">📲 Установить приложение</button>
+
+  <div id="iosHint">
+    <button class="close-hint" onclick="closeIosHint()">✕</button>
+    Чтобы установить приложение:<br>
+    нажмите <b>«Поделиться»</b> (квадрат со стрелкой) и выберите <b>«На экран „Домой“»</b>
+  </div>
+
+  <main id="householdPanel">
+  <!-- Выбор единиц измерения -->
+  <label>Единицы измерения размеров</label>
+  <select id="unit" onchange="updateUnitPlaceholders()">
+    <option value="m">Метры (м)</option>
+    <option value="cm">Сантиметры (см)</option>
+  </select>
+
+  <div class="flex">
+    <div><label id="label-a">Ширина A (м)</label><input id="a" type="number" step="0.1" placeholder="Например, 5.0"></div>
+    <div><label id="label-b">Длина B (м)</label><input id="b" type="number" step="0.1" placeholder="Например, 8.0"></div>
+  </div>
+  <div class="flex">
+    <div><label id="label-h">Высота помещения H (м)</label><input id="h" type="number" step="0.1" placeholder="Например, 3.0"></div>
+    <div>
+      <label>Освещённость E (лк)</label>
+      <input id="E" type="number" step="10" min="1" max="700" placeholder="300">
+      <div class="hint">Диапазон: 1–700 лк</div>
+    </div>
+  </div>
+  <label>Тип помещения (автоподстановка E)</label>
+  <select id="roomType" onchange="applyRoomE()">
+    <option value="">— выбери помещение —</option>
+    <optgroup label="Прихожая / Коридор">
+      <option value="110">Холл-прихожая (100–120)</option>
+      <option value="110">Холл более 10 м² (100–120)</option>
+      <option value="75">Коридор проходной (50–100)</option>
+    </optgroup>
+    <optgroup label="Гостиная / Столовая">
+      <option value="225">Гостиная (200–250)</option>
+      <option value="175">Столовая — общая (150–200)</option>
+      <option value="275">Столовая — над столом (250–300)</option>
+    </optgroup>
+    <optgroup label="Кухня">
+      <option value="225">Кухня — общая (200–250)</option>
+      <option value="275">Кухня — рабочий стол (250–300)</option>
+      <option value="375">Кухня — рабочий стол макс (300–500)</option>
+    </optgroup>
+    <optgroup label="Кабинет">
+      <option value="175">Кабинет — общая (150–200)</option>
+      <option value="275">Кабинет — рабочий стол (250–300)</option>
+      <option value="375">Кабинет — рабочий стол макс (300–500)</option>
+    </optgroup>
+    <optgroup label="Спальня / Детская">
+      <option value="135">Спальня (120–150)</option>
+      <option value="225">Детская — общая (200–250)</option>
+      <option value="400">Детская — рабочий стол (300–500)</option>
+    </optgroup>
+    <optgroup label="Ванная / Санузел">
+      <option value="250">Ванная более 8–10 м² (200–300)</option>
+      <option value="175">Санузел гостевой (150–200)</option>
+    </optgroup>
+    <optgroup label="Специальные помещения">
+      <option value="135">Лестница в интерьере (120–150)</option>
+      <option value="175">Бассейн (150–200)</option>
+      <option value="135">Бойлерная (120–150)</option>
+      <option value="75">Винный погреб (30–120)</option>
+      <option value="150">Бильярдная — общая (150)</option>
+      <option value="650">Бильярдная — над столом (500–800)</option>
+      <option value="40">Сауна, Хамам (30–50)</option>
+      <option value="250">Гардеробная (200–300)</option>
+      <option value="50">Подвал (50)</option>
+    </optgroup>
+  </select>
+  <div class="hint">Выбери помещение — калькулятор подставит среднее значение E. Можно поправить вручную.</div>
+
+  <label for="type">Тип светильника</label>
+  <select id="type">
+    <option value="potol">Потолочный</option>
+    <option value="podves">Подвесной</option>
+  </select>
+
+  <label for="fixtureDrop">Опуск светильника от потолка (м)</label>
+  <input id="fixtureDrop" type="number" min="0" step="0.05" value="0" disabled aria-describedby="fixtureDropHint">
+  <div class="hint" id="fixtureDropHint">Поле станет доступно после выбора подвесного светильника. Для потолочного светильника опуск принимается равным 0 м.</div>
+
+  <label for="workPlane">Рабочая плоскость от пола (м)</label>
+  <input id="workPlane" type="number" min="0" step="0.05" value="0">
+  <div class="hint">Значение задаётся в метрах независимо от выбранных единиц размеров комнаты. Для пола как рабочей поверхности укажи 0 м.</div>
+
+
+
+  <label>Коэффициент отражения</label>
+  <select id="refl"></select>
+  <div class="reflection-help" role="note">
+    <div class="reflection-help-title">Как выбрать по цвету отделки</div>
+    <div class="reflection-levels">
+      <div class="reflection-level"><span class="reflection-swatch reflection-70"></span><span><b>70% — очень светлое</b><small>Белый, молочный, почти белый</small></span></div>
+      <div class="reflection-level"><span class="reflection-swatch reflection-50"></span><span><b>50% — светлое</b><small>Светло-бежевый, пастельный, светло-серый</small></span></div>
+      <div class="reflection-level"><span class="reflection-swatch reflection-30"></span><span><b>30% — среднее</b><small>Серый, цветное дерево, насыщенные оттенки</small></span></div>
+      <div class="reflection-level"><span class="reflection-swatch reflection-10"></span><span><b>10% — тёмное</b><small>Графит, тёмное дерево, тёмно-коричневый</small></span></div>
+    </div>
+    <p>Порядок значений: <b>потолок / стены / пол</b>. Ориентируйся на ближайший вариант отделки. Если сомневаешься между двумя, выбери более тёмный — это даст более осторожную оценку.</p>
+    <small class="reflection-disclaimer">Это ориентиры, а не точное измерение: фактическое отражение зависит от материала, фактуры и блеска поверхности.</small>
+  </div>
+
+  <button onclick="calcTotal()">1. Рассчитать общий поток</button>
+
+  <div id="splitBlock">
+    <div style="font-weight:bold;font-size:15px;margin-top:16px;color:var(--btn)">2. Распределение по лампам / линиям</div>
+    <label>Что распределяем?</label>
+    <select id="splitMode" onchange="toggleSplitMode()">
+      <option value="lamps">По количеству ламп (шт.)</option>
+      <option value="lines">По длине световых линий (м)</option>
+    </select>
+    <div id="blockLamps">
+      <label>Количество ламп (шт.)</label>
+      <input id="lampCount" type="number" step="1" placeholder="Например, 12">
+    </div>
+    <div id="blockLines" style="display:none">
+      <label>Длина световых линий (м погонных)</label>
+      <input id="lineLength" type="number" step="0.1" placeholder="Например, 10">
+    </div>
+    <label>Коэффициент потерь на рассеивателе / фильтре, %</label>
+    <input id="lossPercent" type="number" step="1" min="0" max="99" placeholder="0 = без потерь, 20 = теряется 20%">
+    <div class="hint">Сколько света <b>теряется</b> на экране (в процентах).<br>Например: матовый рассеиватель — 20%, сетка — 40%, плотный фильтр — 60%.</div>
+    <div class="quick">
+      <button onclick="setLoss(0)">Без потерь (0%)</button>
+      <button onclick="setLoss(10)">Прозрачный (10%)</button>
+      <button onclick="setLoss(20)">Матовый (20%)</button>
+      <button onclick="setLoss(40)">Сетка (40%)</button>
+      <button onclick="setLoss(60)">Плотный (60%)</button>
+    </div>
+    <button class="secondary" onclick="calcSplit()">2. Распределить поток</button>
+  </div>
+
+  <button id="saveBtn" class="save" onclick="saveResult()" style="display:none">💾 Сохранить результат в файл</button>
+  <div id="res" class="res"></div>
+
+  <div id="journalBlock">
+    <div class="log-header">
+      <h3>📋 Журнал расчётов</h3>
+      <div class="log-actions">
+        <button class="download" onclick="downloadJournal()">⬇ Скачать всё</button>
+        <button onclick="clearJournal()">🗑 Очистить</button>
+      </div>
+    </div>
+    <div id="journalList"></div>
+  </div>
+  </main>
+
+<script>
+const data = {
+  potol: {
+    "70_50_30": [0.26,0.30,0.34,0.38,0.40,0.43,0.46,0.48,0.54,0.57,0.60,0.62,0.64,0.68,0.70,0.72,0.75],
+    "70_50_10": [0.25,0.28,0.32,0.36,0.38,0.41,0.43,0.46,0.49,0.52,0.54,0.56,0.58,0.60,0.62,0.64,0.66],
+    "70_30_30": [0.20,0.24,0.28,0.31,0.34,0.37,0.39,0.42,0.47,0.51,0.54,0.57,0.59,0.63,0.66,0.68,0.72],
+    "70_30_10": [0.19,0.23,0.27,0.30,0.33,0.35,0.37,0.40,0.44,0.47,0.50,0.52,0.54,0.57,0.59,0.61,0.64],
+    "50_50_10": [0.17,0.20,0.22,0.24,0.26,0.28,0.30,0.32,0.34,0.36,0.38,0.39,0.40,0.42,0.43,0.45,0.46],
+    "50_30_10": [0.13,0.16,0.19,0.21,0.23,0.25,0.26,0.28,0.31,0.33,0.35,0.37,0.38,0.40,0.41,0.42,0.44],
+    "30_10_10": [0.06,0.08,0.10,0.11,0.12,0.13,0.14,0.15,0.17,0.18,0.19,0.20,0.21,0.22,0.23,0.24,0.25]
+  },
+  podves: {
+    "70_50_30": [0.19,0.24,0.27,0.31,0.34,0.37,0.40,0.43,0.48,0.52,0.55,0.58,0.60,0.64,0.67,0.69,0.73],
+    "70_50_10": [0.18,0.22,0.26,0.29,0.32,0.35,0.37,0.41,0.44,0.48,0.50,0.52,0.54,0.57,0.60,0.61,0.64],
+    "70_30_30": [0.15,0.18,0.22,0.25,0.28,0.32,0.34,0.38,0.42,0.46,0.50,0.53,0.55,0.59,0.62,0.65,0.69],
+    "70_30_10": [0.14,0.18,0.21,0.25,0.28,0.30,0.33,0.36,0.40,0.43,0.46,0.49,0.51,0.54,0.56,0.58,0.62],
+    "50_50_10": [0.11,0.14,0.16,0.18,0.20,0.22,0.24,0.26,0.29,0.31,0.33,0.35,0.36,0.39,0.40,0.42,0.44],
+    "50_30_10": [0.09,0.11,0.13,0.16,0.18,0.20,0.21,0.24,0.26,0.29,0.31,0.33,0.34,0.36,0.39,0.40,0.42],
+    "30_10_10": [0.04,0.05,0.06,0.07,0.08,0.09,0.11,0.12,0.14,0.15,0.16,0.17,0.18,0.20,0.21,0.22,0.24]
+  }
+};
+const indices = [0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5, 3.0, 3.5, 4.0, 5.0];
+
+// Контроль соответствия: 17 индексов и 17 коэффициентов в каждом столбце таблицы.
+for (const fixtureType of Object.keys(data)) {
+  for (const [reflectionKey, values] of Object.entries(data[fixtureType])) {
+    if (values.length !== indices.length) {
+      throw new Error(`Таблица коэффициентов ${fixtureType}/${reflectionKey}: ожидалось ${indices.length} значений, получено ${values.length}`);
+    }
+  }
+}
+const reflLabels = {
+  "70_50_30": "70 / 50 / 30 — белый потолок, светлые стены, пол средней светлоты",
+  "70_50_10": "70 / 50 / 10 — белый потолок, светлые стены, тёмный пол",
+  "70_30_30": "70 / 30 / 30 — белый потолок, стены среднего тона, пол средней светлоты",
+  "70_30_10": "70 / 30 / 10 — белый потолок, стены среднего тона, тёмный пол",
+  "50_50_10": "50 / 50 / 10 — светлый потолок, светлые стены, тёмный пол",
+  "50_30_10": "50 / 30 / 10 — светлый потолок, стены среднего тона, тёмный пол",
+  "30_10_10": "30 / 10 / 10 — тёмный потолок, тёмные стены и тёмный пол"
+};
+const selectType = document.getElementById('type');
+const selectRefl = document.getElementById('refl');
+const saveBtn = document.getElementById('saveBtn');
+const resDiv = document.getElementById('res');
+let lastTotal = null;
+let lastSplit = null;
+
+function updateReflOptions() {
+  const type = selectType.value;
+  const previousReflection = selectRefl.value;
+  selectRefl.innerHTML = '';
+  for (const key in data[type]) {
+    const opt = document.createElement('option');
+    opt.value = key;
+    opt.textContent = reflLabels[key];
+    selectRefl.appendChild(opt);
+  }
+  // Сохраняем выбранное отражение при переключении типа светильника.
+  if (previousReflection && data[type][previousReflection]) {
+    selectRefl.value = previousReflection;
+  }
+}
+function updateFixtureDropState() {
+  const dropInput = document.getElementById('fixtureDrop');
+  const isSuspended = selectType.value === 'podves';
+  dropInput.disabled = !isSuspended;
+  document.getElementById('fixtureDropHint').textContent = isSuspended
+    ? 'Укажи расстояние от потолка до светящейся части светильника. Значение задаётся в метрах.'
+    : 'Поле доступно только для подвесного светильника. Для потолочного светильника опуск принимается равным 0 м.';
+}
+selectType.addEventListener('change', () => {
+  updateReflOptions();
+  updateFixtureDropState();
+});
+updateReflOptions();
+updateFixtureDropState();
+
+function updateUnitPlaceholders() {
+  const unit = document.getElementById('unit').value;
+  const isCm = unit === 'cm';
+  
+  document.getElementById('label-a').textContent = 'Ширина A ' + (isCm ? '(см)' : '(м)');
+  document.getElementById('label-b').textContent = 'Длина B ' + (isCm ? '(см)' : '(м)');
+  document.getElementById('label-h').textContent = 'Высота H ' + (isCm ? '(см)' : '(м)');
+
+  if (isCm) {
+    document.getElementById('a').placeholder = "Например, 500";
+    document.getElementById('b').placeholder = "Например, 800";
+    document.getElementById('h').placeholder = "Например, 300";
+  } else {
+    document.getElementById('a').placeholder = "Например, 5.0";
+    document.getElementById('b').placeholder = "Например, 8.0";
+    document.getElementById('h').placeholder = "Например, 3.0";
+  }
+}
+
+function applyRoomE() {
+  const val = document.getElementById('roomType').value;
+  if (val) document.getElementById('E').value = val;
+}
+function toggleSplitMode() {
+  const mode = document.getElementById('splitMode').value;
+  document.getElementById('blockLamps').style.display = mode === 'lamps' ? 'block' : 'none';
+  document.getElementById('blockLines').style.display = mode === 'lines' ? 'block' : 'none';
+  lastSplit = null;
+}
+function setLoss(v) {
+  document.getElementById('lossPercent').value = v;
+  invalidateHouseholdResult('Параметры распределения изменены. Повторно выполни расчёт.');
+}
+function interp(x, xs, ys) {
+  if (x < xs[0] || x > xs[xs.length - 1]) return NaN;
+  if (x === xs[0]) return ys[0];
+  if (x === xs[xs.length - 1]) return ys[ys.length - 1];
+  for (let i = 0; i < xs.length - 1; i++) {
+    if (x >= xs[i] && x <= xs[i + 1]) {
+      const t = (x - xs[i]) / (xs[i + 1] - xs[i]);
+      return ys[i] + t * (ys[i + 1] - ys[i]);
+    }
+  }
+}
+function calcTotal() {
+  const unit = document.getElementById('unit').value;
+  let a = +document.getElementById('a').value;
+  let b = +document.getElementById('b').value;
+  let h = +document.getElementById('h').value;
+  const E = +document.getElementById('E').value;
+  const workPlane = Number(document.getElementById('workPlane').value);
+  const type = selectType.value;
+  const fixtureDropInput = document.getElementById('fixtureDrop').value.trim();
+  if (type === 'podves' && fixtureDropInput === '') {
+    resDiv.textContent = 'Укажи опуск подвесного светильника от потолка. Если светильник почти вплотную к потолку, введи 0 м.';
+    saveBtn.style.display = 'none';
+    document.getElementById('splitBlock').style.display = 'none';
+    lastTotal = null;
+    lastSplit = null;
+    return;
+  }
+  const enteredFixtureDrop = fixtureDropInput === '' ? 0 : Number(fixtureDropInput);
+  const fixtureDrop = type === 'podves' ? enteredFixtureDrop : 0;
+  const refl = selectRefl.value;
+
+  const values = [a, b, h, E, workPlane, fixtureDrop];
+  if (values.some(value => !Number.isFinite(value))) {
+    resDiv.textContent = 'Проверь введённые значения: используй только корректные числа.';
+    saveBtn.style.display = 'none';
+    document.getElementById('splitBlock').style.display = 'none';
+    lastTotal = null;
+    lastSplit = null;
+    return;
+  }
+  if ([a, b, h, E].some(value => value <= 0) || workPlane < 0 || fixtureDrop < 0) {
+    resDiv.textContent = 'Размеры помещения и освещённость должны быть больше нуля; рабочая плоскость и опуск светильника не могут быть отрицательными.';
+    saveBtn.style.display = 'none';
+    document.getElementById('splitBlock').style.display = 'none';
+    lastTotal = null;
+    lastSplit = null;
+    return;
+  }
+  if (E > 700) {
+    resDiv.textContent = 'Освещённость E не может быть больше 700 лк. Максимум — 700.';
+    saveBtn.style.display = 'none';
+    document.getElementById('splitBlock').style.display = 'none';
+    lastTotal = null;
+    lastSplit = null;
+    return;
+  }
+
+  if (unit === 'cm') {
+    a = a / 100;
+    b = b / 100;
+    h = h / 100;
+  }
+
+  const S = a * b;
+  const hCalc = h - workPlane - fixtureDrop;
+  if (hCalc <= 0) {
+    resDiv.textContent = 'Расчётная высота должна быть больше нуля: высота комнаты минус рабочая плоскость и опуск светильника.';
+    saveBtn.style.display = 'none';
+    document.getElementById('splitBlock').style.display = 'none';
+    lastTotal = null;
+    lastSplit = null;
+    return;
+  }
+  const I = (a * b) / (hCalc * (a + b));
+  if (I < indices[0] || I > indices[indices.length - 1]) {
+    resDiv.textContent = `Индекс помещения I = ${I.toFixed(2)} находится за пределами таблицы (${indices[0].toFixed(1)}–${indices[indices.length - 1].toFixed(1)}). Расчёт остановлен: не следует автоматически подставлять крайний коэффициент.`;
+    saveBtn.style.display = 'none';
+    document.getElementById('splitBlock').style.display = 'none';
+    lastTotal = null;
+    lastSplit = null;
+    return;
+  }
+  const uoyArray = data[type][refl];
+  if (!uoyArray || uoyArray.length !== indices.length) {
+    resDiv.textContent = 'Ошибка таблицы коэффициентов. Проверь данные расчёта.';
+    saveBtn.style.display = 'none';
+    document.getElementById('splitBlock').style.display = 'none';
+    lastTotal = null;
+    lastSplit = null;
+    return;
+  }
+  const uoy = interp(I, indices, uoyArray);
+
+  if (!Number.isFinite(S) || !Number.isFinite(I) || !Number.isFinite(uoy) || uoy <= 0) {
+    resDiv.textContent = 'Не удалось выполнить расчёт. Проверь размеры помещения.';
+    saveBtn.style.display = 'none';
+    document.getElementById('splitBlock').style.display = 'none';
+    lastTotal = null;
+    lastSplit = null;
+    return;
+  }
+  const NC = (E * 1.25 * S) / uoy;
+  if (!Number.isFinite(NC)) {
+    resDiv.textContent = 'Результат выходит за допустимый числовой диапазон. Проверь размеры помещения.';
+    saveBtn.style.display = 'none';
+    document.getElementById('splitBlock').style.display = 'none';
+    lastTotal = null;
+    lastSplit = null;
+    return;
+  }
+
+  lastTotal = { a, b, h, hCalc, workPlane, fixtureDrop, E, type, refl, S, I, uoy, NC, unit };
+  lastSplit = null;
+  
+  resDiv.innerHTML = '<div class="total">Общий требуемый световой поток для помещения:<br><b>' + NC.toFixed(0) + ' лм</b></div>Площадь S = <b>' + S.toFixed(2) + ' м²</b><br>Расчётная высота над рабочей плоскостью = <b>' + hCalc.toFixed(2) + ' м</b><br>Индекс помещения I = <b>' + I.toFixed(2) + '</b><br>Коэффициент uoy = <b>' + uoy.toFixed(3) + '</b>';
+  document.getElementById('splitBlock').style.display = 'block';
+  saveBtn.style.display = 'block';
+}
+function calcSplit() {
+  if (!lastTotal) {
+    resDiv.innerHTML = '<p style="color:#ef4444">Сначала нажми «1. Рассчитать общий поток»</p>';
+    return;
+  }
+
+  const { S, I, uoy, NC, type, refl, a, b, h, hCalc, E, unit } = lastTotal;
+  const mode = document.getElementById('splitMode').value;
+
+  const lossInput = document.getElementById('lossPercent').value.trim();
+  const lossPercent = lossInput === '' ? 0 : Number(lossInput);
+
+  // Проверка потерь
+  if (!Number.isFinite(lossPercent) || lossPercent < 0 || lossPercent >= 100) {
+    resDiv.textContent = 'Потери должны быть в диапазоне от 0 до 99%.';
+    saveBtn.style.display = 'none';
+    lastSplit = null;
+    return;
+  }
+
+  // Проверка количества ламп или длины линии
+  let lampCount = null;
+  let lineLength = null;
+
+  if (mode === 'lamps') {
+    const lampInput = document.getElementById('lampCount').value.trim();
+    lampCount = lampInput === '' ? NaN : Number(lampInput);
+
+    if (!Number.isInteger(lampCount) || lampCount <= 0) {
+      resDiv.textContent = 'Укажи корректное количество ламп: целое число больше нуля.';
+      saveBtn.style.display = 'none';
+      lastSplit = null;
+      return;
+    }
+  } else if (mode === 'lines') {
+    const lineInput = document.getElementById('lineLength').value.trim();
+    lineLength = lineInput === '' ? NaN : Number(lineInput);
+
+    if (!Number.isFinite(lineLength) || lineLength <= 0) {
+      resDiv.textContent = 'Укажи корректную длину световой линии: число больше нуля.';
+      saveBtn.style.display = 'none';
+      lastSplit = null;
+      return;
+    }
+  } else {
+    resDiv.textContent = 'Выбери способ распределения светового потока.';
+    saveBtn.style.display = 'none';
+    lastSplit = null;
+    return;
+  }
+
+  const tauPercent = 100 - lossPercent;
+  const tau = tauPercent / 100;
+  const NC_effective = NC / tau;
+
+  let splitInfo;
+  let splitHtml = '';
+
+  const filterHtml = lossPercent > 0
+    ? '<div class="filter">🔻 <b>Потери на рассеивателе/фильтре:</b> ' +
+      lossPercent.toFixed(0) + '%<br>Проходит света: <b>' +
+      tauPercent.toFixed(0) + '%</b><br>Требуемый поток с учётом потерь: <b>' +
+      NC_effective.toFixed(0) + ' лм</b><br><span style="font-size:13px;opacity:0.8">' +
+      NC.toFixed(0) + ' лм ÷ ' + tau.toFixed(2) + ' = ' +
+      NC_effective.toFixed(0) + ' лм</span></div>'
+    : '<div class="hint" style="margin:8px 0">✅ Потерь нет (0%) — фильтр не учитывается.</div>';
+
+  if (mode === 'lamps') {
+    const perLamp = NC_effective / lampCount;
+
+    splitInfo = {
+      mode: 'lamps',
+      lampCount,
+      perLamp,
+      lossPercent,
+      tauPercent,
+      NC_effective
+    };
+
+    splitHtml =
+      '<div class="recommend">👉 <b>Требуемый поток на 1 лампу' +
+      (lossPercent > 0 ? ' (с учётом потерь)' : '') +
+      ':</b><br><b>' + perLamp.toFixed(0) +
+      ' лм</b><br><span style="font-size:13px;opacity:0.8">' +
+      NC_effective.toFixed(0) + ' лм ÷ ' + lampCount +
+      ' шт. = ' + perLamp.toFixed(0) + ' лм</span></div>';
+
+  } else {
+    const perMeter = NC_effective / lineLength;
+
+    splitInfo = {
+      mode: 'lines',
+      lineLength,
+      perMeter,
+      lossPercent,
+      tauPercent,
+      NC_effective
+    };
+
+    splitHtml =
+      '<div class="recommend">👉 <b>Требуемый поток на 1 метр линии' +
+      (lossPercent > 0 ? ' (с учётом потерь)' : '') +
+      ':</b><br><b>' + perMeter.toFixed(0) +
+      ' лм/м</b><br><span style="font-size:13px;opacity:0.8">' +
+      NC_effective.toFixed(0) + ' лм ÷ ' + lineLength +
+      ' м = ' + perMeter.toFixed(0) + ' лм/м</span></div>';
+  }
+
+  // Сохраняем результат только после успешной проверки всех полей
+  lastSplit = { ...lastTotal, splitInfo };
+
+  resDiv.innerHTML =
+    '<div class="total">Общий требуемый световой поток для помещения:<br><b>' +
+    NC.toFixed(0) + ' лм</b></div>' +
+    'Площадь S = <b>' + S.toFixed(2) + ' м²</b><br>' +
+    'Расчётная высота над рабочей плоскостью = <b>' + hCalc.toFixed(2) + ' м</b><br>' +
+    'Индекс помещения I = <b>' + I.toFixed(2) + '</b><br>' +
+    'Коэффициент uoy = <b>' + uoy.toFixed(3) + '</b>' +
+    filterHtml + splitHtml;
+
+  saveBtn.style.display = 'block';
+
+  // В журнал попадают только успешно рассчитанные результаты
+  addToJournal(lastSplit);
+}
+let journal = [];
+try {
+  const storedJournal = JSON.parse(localStorage.getItem('calcJournal') || '[]');
+  journal = Array.isArray(storedJournal) ? storedJournal : [];
+} catch (error) {
+  console.warn('Не удалось прочитать журнал расчётов:', error);
+  journal = [];
+}
+function addToJournal(result) {
+  const isDuplicate = journal.some(item => item.a === result.a && item.b === result.b && item.h === result.h && item.workPlane === result.workPlane && item.fixtureDrop === result.fixtureDrop && item.E === result.E && item.type === result.type && item.refl === result.refl && item.lampCount === (result.splitInfo?.lampCount || null) && item.lineLength === (result.splitInfo?.lineLength || null) && item.lossPercent === (result.splitInfo?.lossPercent || 0));
+  if (isDuplicate) return;
+  const newEntry = {
+    id: Date.now(), date: new Date().toLocaleString('ru-RU'),
+    a: result.a, b: result.b, h: result.h, workPlane: result.workPlane, fixtureDrop: result.fixtureDrop, hCalc: result.hCalc, E: result.E, type: result.type, refl: result.refl,
+    S: result.S, I: result.I, uoy: result.uoy, NC: result.NC,
+    unit: result.unit,
+    lossPercent: result.splitInfo?.lossPercent || 0, NC_effective: result.splitInfo?.NC_effective || result.NC,
+    lampCount: result.splitInfo?.lampCount || null, perLamp: result.splitInfo?.perLamp || null,
+    lineLength: result.splitInfo?.lineLength || null, perMeter: result.splitInfo?.perMeter || null
+  };
+  journal.unshift(newEntry);
+  if (journal.length > 20) journal.pop();
+  localStorage.setItem('calcJournal', JSON.stringify(journal));
+  renderJournal();
+}
+function renderJournal() {
+  const block = document.getElementById('journalBlock');
+  const list = document.getElementById('journalList');
+  if (journal.length === 0) { block.style.display = 'none'; return; }
+  block.style.display = 'block';
+  list.innerHTML = journal.map(item => {
+    const typeName = item.type === 'potol' ? 'Потолочные' : 'Подвесные';
+    const reflShort = item.refl.replace(/_/g, '/');
+    const dispA = item.unit === 'cm' ? (item.a * 100).toFixed(0) : item.a;
+    const dispB = item.unit === 'cm' ? (item.b * 100).toFixed(0) : item.b;
+    const dispH = item.unit === 'cm' ? (item.h * 100).toFixed(0) : item.h;
+    const unitLabel = item.unit === 'cm' ? 'см' : 'м';
+    
+    let splitText = item.lampCount ? `👉 ${item.lampCount} ламп × ${Math.round(item.perLamp)} лм` : (item.lineLength ? `👉 ${item.lineLength} м × ${Math.round(item.perMeter)} лм/м` : '');
+    return `<div class="log-item" onclick="loadFromJournal(${item.id})">
+      <button class="delete-btn" onclick="event.stopPropagation(); deleteEntry(${item.id})" title="Удалить">✕</button>
+      <div class="log-date">${item.date}</div>
+      <b>${dispA}×${dispB}×${dispH} ${unitLabel}</b> · ${item.E} лк · ${typeName}<br>
+      Требуемый поток: <b>${Math.round(item.NC)} лм</b><br>
+      ${item.lossPercent > 0 ? `Потери ${item.lossPercent}% → с учётом: ${Math.round(item.NC_effective)} лм<br>` : ''}
+      ${splitText}
+      <div class="load-hint">🔄 Нажмите, чтобы загрузить расчёт</div>
+    </div>`;
+  }).join('');
+}
+function loadFromJournal(id) {
+  const item = journal.find(x => x.id === id);
+  if (!item) return;
+  
+  document.getElementById('unit').value = item.unit || 'm';
+  updateUnitPlaceholders();
+  
+  document.getElementById('a').value = item.unit === 'cm' ? (item.a * 100).toFixed(1) : item.a;
+  document.getElementById('b').value = item.unit === 'cm' ? (item.b * 100).toFixed(1) : item.b;
+  document.getElementById('h').value = item.unit === 'cm' ? (item.h * 100).toFixed(1) : item.h;
+  document.getElementById('workPlane').value = item.workPlane ?? 0;
+  document.getElementById('E').value = item.E;
+  
+  document.getElementById('type').value = item.type;
+  updateReflOptions();
+  updateFixtureDropState();
+  document.getElementById('fixtureDrop').value = item.fixtureDrop ?? 0;
+  document.getElementById('refl').value = item.refl;
+  
+  const mode = item.lampCount ? 'lamps' : (item.lineLength ? 'lines' : 'lamps');
+  document.getElementById('splitMode').value = mode;
+  toggleSplitMode();
+  if (item.lampCount) document.getElementById('lampCount').value = item.lampCount;
+  if (item.lineLength) document.getElementById('lineLength').value = item.lineLength;
+  document.getElementById('lossPercent').value = item.lossPercent || 0;
+  
+  calcTotal();
+  if (mode === 'lamps' && item.lampCount) calcSplit();
+  else if (mode === 'lines' && item.lineLength) calcSplit();
+  
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function deleteEntry(id) {
+  journal = journal.filter(item => item.id !== id);
+  localStorage.setItem('calcJournal', JSON.stringify(journal));
+  renderJournal();
+}
+function clearJournal() {
+  if (confirm('Удалить все записи из журнала?')) {
+    journal = [];
+    localStorage.removeItem('calcJournal');
+    renderJournal();
+  }
+}
+
+// === УЛУЧШЕННОЕ СОХРАНЕНИЕ (Web Share API + BOM) ===
+function createFileAndShare(text, filename, title) {
+  // Добавляем BOM (Byte Order Mark) для правильной кодировки кириллицы в старых приложениях
+  const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
+  const blob = new Blob([bom, text], { type: 'text/plain;charset=utf-8' });
+  const file = new File([blob], filename, { type: 'text/plain' });
+
+  // Проверяем, поддерживает ли устройство Web Share API для файлов (мобильные телефоны)
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    navigator.share({
+      files: [file],
+      title: title,
+      text: 'Файл с расчётом освещения'
+    }).catch(err => {
+      console.log('Ошибка при отправке:', err);
+      fallbackDownload(blob, filename);
+    });
+  } else {
+    // Если не поддерживает (ПК или старые браузеры) — скачиваем как обычно
+    fallbackDownload(blob, filename);
+  }
+}
+
+function fallbackDownload(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
+function downloadJournal() {
+  if (journal.length === 0) return;
+  let text = '=== ЖУРНАЛ РАСЧЁТОВ ОСВЕЩЕНИЯ ===\nВсего записей: ' + journal.length + '\n\n';
+  journal.forEach((item, index) => {
+    const typeName = item.type === 'potol' ? 'Потолочные' : 'Подвесные';
+    const reflName = reflLabels[item.refl];
+    const unitLabel = item.unit === 'cm' ? 'см' : 'м';
+    const dispA = item.unit === 'cm' ? (item.a * 100).toFixed(0) : item.a;
+    const dispB = item.unit === 'cm' ? (item.b * 100).toFixed(0) : item.b;
+    const dispH = item.unit === 'cm' ? (item.h * 100).toFixed(0) : item.h;
+
+    text += `--- Запись №${index + 1} (${item.date}) ---\n`;
+    text += `Размеры: ${dispA} × ${dispB} × ${dispH} ${unitLabel} | Площадь: ${item.S.toFixed(2)} м²\n`;
+    text += `Рабочая плоскость от пола: ${Number(item.workPlane ?? 0).toFixed(2)} м\n`;
+    text += `Опуск светильника от потолка: ${Number(item.fixtureDrop ?? 0).toFixed(2)} м\n`;
+    text += `Расчётная высота над рабочей плоскостью: ${Number(item.hCalc ?? (item.h - (item.workPlane ?? 0) - (item.fixtureDrop ?? 0))).toFixed(2)} м\n`;
+    text += `Освещённость E: ${item.E} лк\n`;
+    text += `Тип: ${typeName} | Отражение: ${reflName}\n`;
+    text += `Индекс I: ${item.I.toFixed(2)} | uoy: ${item.uoy.toFixed(3)}\n`;
+    text += `Требуемый поток: ${item.NC.toFixed(0)} лм\n`;
+    if (item.lossPercent > 0) {
+      text += `Потери на фильтре: ${item.lossPercent}% (проходит ${100 - item.lossPercent}%)\n`;
+      text += `С учётом потерь: ${item.NC_effective.toFixed(0)} лм\n`;
+    }
+    if (item.lampCount) text += `Распределение: ${item.lampCount} ламп → ${item.perLamp.toFixed(0)} лм на лампу\n`;
+    else if (item.lineLength) text += `Распределение: ${item.lineLength} м линии → ${item.perMeter.toFixed(0)} лм/м\n`;
+    text += '\n';
+  });
+  const d = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  const filename = 'journal_osveschenie_' + d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()) + '.txt';
+  
+  createFileAndShare(text, filename, 'Журнал расчётов');
+}
+
+function saveResult() {
+  const r = lastSplit || lastTotal;
+  if (!r) return;
+  const typeName = r.type === 'potol' ? 'Потолочные' : 'Подвесные';
+  const reflName = reflLabels[r.refl];
+  const date = new Date().toLocaleString('ru-RU');
+  const unitLabel = r.unit === 'cm' ? 'см' : 'м';
+  const dispA = r.unit === 'cm' ? (r.a * 100).toFixed(0) : r.a;
+  const dispB = r.unit === 'cm' ? (r.b * 100).toFixed(0) : r.b;
+  const dispH = r.unit === 'cm' ? (r.h * 100).toFixed(0) : r.h;
+
+  let text = '';
+  text += '=== РЕЗУЛЬТАТ РАСЧЁТА ОСВЕЩЕНИЯ ===\n';
+  text += 'Дата расчёта: ' + date + '\n\n';
+  text += '--- ИСХОДНЫЕ ДАННЫЕ ---\n';
+  text += 'Ширина a: ' + dispA + ' ' + unitLabel + '\nДлина b: ' + dispB + ' ' + unitLabel + '\nВысота помещения H: ' + dispH + ' ' + unitLabel + '\nРабочая плоскость от пола: ' + (r.workPlane ?? 0) + ' м\nОпуск светильника от потолка: ' + (r.fixtureDrop ?? 0) + ' м\nРасчётная высота над рабочей плоскостью: ' + (r.hCalc ?? r.h).toFixed(2) + ' м\nОсвещённость E: ' + r.E + ' лк\nТип светильника: ' + typeName + '\nКоэффициент отражения: ' + reflName + '\n\n';
+  text += '--- РЕЗУЛЬТАТЫ ---\n';
+  text += 'Общий требуемый световой поток: ' + r.NC.toFixed(0) + ' лм\nПлощадь помещения S: ' + r.S.toFixed(2) + ' м²\nИндекс помещения I: ' + r.I.toFixed(2) + '\nКоэффициент uoy: ' + r.uoy.toFixed(3) + '\n';
+  if (r.splitInfo) {
+    text += '\n--- ПОТЕРИ НА ФИЛЬТРЕ / РАССЕИВАТЕЛЕ ---\n';
+    text += 'Коэффициент потерь: ' + r.splitInfo.lossPercent.toFixed(0) + '%\nПроходит света: ' + r.splitInfo.tauPercent.toFixed(0) + '%\nТребуемый поток с учётом потерь: ' + r.splitInfo.NC_effective.toFixed(0) + ' лм\n';
+    text += '\n--- РАСПРЕДЕЛЕНИЕ ПОТОКА ---\n';
+    if (r.splitInfo.mode === 'lamps') {
+      text += 'Способ: по количеству ламп\nКоличество ламп: ' + r.splitInfo.lampCount + ' шт.\nТребуемый поток на 1 лампу: ' + r.splitInfo.perLamp.toFixed(0) + ' лм\n';
+    } else {
+      text += 'Способ: по длине световых линий\nДлина линии: ' + r.splitInfo.lineLength + ' м\nТребуемый поток на 1 метр линии: ' + r.splitInfo.perMeter.toFixed(0) + ' лм/м\n';
+    }
+  } else {
+    text += '\n--- РАСПРЕДЕЛЕНИЕ ПОТОКА ---\nНе выполнено (шаг 2 пропущен)\n';
+  }
+  text += '\n--- ИСПОЛЬЗОВАННЫЕ ФОРМУЛЫ ---\nS = a · b\nhрасч = H − высота рабочей плоскости − опуск светильника\nI = (a · b) / (hрасч · (a + b))\nNC = (E · 1.25 · S) / uoy\nNC_effective = NC / (1 - потери/100)\nПоток на 1 лампу = NC_effective / количество ламп\nПоток на 1 м линии = NC_effective / длина линии\n';
+  const d = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  const filename = 'osveschenie_' + d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()) + '_' + pad(d.getHours()) + '-' + pad(d.getMinutes()) + '.txt';
+  
+  createFileAndShare(text, filename, 'Результат расчёта освещения');
+}
+
+
+function invalidateHouseholdResult(message = 'Исходные данные изменены. Нажми «1. Рассчитать общий поток», чтобы получить актуальный результат.') {
+  lastTotal = null;
+  lastSplit = null;
+  saveBtn.style.display = 'none';
+  document.getElementById('splitBlock').style.display = 'none';
+  resDiv.textContent = message;
+}
+// Любое изменение расчётного поля аннулирует предыдущий результат, чтобы его нельзя было сохранить или распределить повторно.
+document.querySelectorAll('#householdPanel input, #householdPanel select').forEach(element => {
+  // Поля второго шага не должны сбрасывать результат первого шага
+  if (element.closest('#splitBlock')) return;
+
+  const eventName = element.tagName === 'SELECT' ? 'change' : 'input';
+
+  element.addEventListener(eventName, () => {
+    invalidateHouseholdResult();
+  });
+});
+
+function toggleTheme() {
+  const body = document.body;
+  const btn = document.getElementById('themeBtn');
+  if (body.classList.contains('dark')) {
+    body.classList.remove('dark'); btn.textContent = '🌙'; localStorage.setItem('theme', 'light');
+  } else {
+    body.classList.add('dark'); btn.textContent = '☀️'; localStorage.setItem('theme', 'dark');
+  }
+}
+(function() {
+  const saved = localStorage.getItem('theme');
+  if (saved === 'light') { document.body.classList.remove('dark'); document.getElementById('themeBtn').textContent = '🌙'; } else { document.body.classList.add('dark'); document.getElementById('themeBtn').textContent = '☀️'; }
+  renderJournal();
+  updateUnitPlaceholders();
+  
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const isStandalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+  const hintClosed = localStorage.getItem('iosHintClosed');
+  const iosHintEl = document.getElementById('iosHint');
+  if (isIOS && !isStandalone && !hintClosed) {
+    setTimeout(() => { iosHintEl.style.display = 'block'; }, 1500);
+  }
+})();
+function closeIosHint() {
+  document.getElementById('iosHint').style.display = 'none';
+  localStorage.setItem('iosHintClosed', 'true');
+}
+let deferredPrompt;
+const installBtn = document.getElementById('installBtn');
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault(); deferredPrompt = e; installBtn.style.display = 'block';
+});
+function installPWA() {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then((choice) => { if (choice.outcome === 'accepted') installBtn.style.display = 'none'; deferredPrompt = null; });
+}
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => { navigator.serviceWorker.register('service-worker.js').then(reg => console.log('SW зарегистрирован')).catch(err => console.log('SW ошибка:', err)); });
+}
+</script>
+</body>
+</html>
