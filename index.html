@@ -51,6 +51,29 @@
   }
   body{max-width:760px;margin:0 auto;padding:24px 18px 48px;background:var(--bg);color:var(--text);font-family:Arial,"Segoe UI",Roboto,"Noto Sans",system-ui,sans-serif}
   body.dark{--bg:#050d17;--text:#e8f1fb;--label:#c2d1e2;--input-bg:#0d1a29;--input-border:#263b50;--hint:#8198af;--btn:#18a9c9;--btn-hover:#0785a4}
+
+  /* Светлая тема — альтернативный режим переключателя */
+  body:not(.dark){
+    --bg:#f3f7fa;--text:#1b2b3b;--label:#33485e;--input-bg:#fff;--input-border:#c8d4df;
+    --hint:#64788c;--btn:#0785a4;--btn-hover:#066d88;--btn-save:#0d9b83;--btn-save-hover:#087b69;
+    --btn-secondary:#52677d;--btn-secondary-hover:#40556a;--quick-bg:#e8f1f6;--quick-text:#263e52;
+    --quick-border:#c9d8e3;--quick-hover:#dceaf2;--res-bg:#fff;--res-text:#1b2b3b;--res-b:#0785a4;
+    --total-bg:#e0f4f1;--total-b:#0d9b83;--recommend-bg:#fff4df;--recommend-border:#d89b36;
+    --recommend-b:#805a17;--filter-bg:#fff0f1;--filter-border:#df6476;--filter-b:#9c3444;
+    --hr:#d5e0e9;--shadow:0 10px 26px rgba(24,52,75,.09);--log-bg:#edf3f7;
+    --log-item-bg:#fff;--log-item-border:#d5e0e9;--log-item-hover:#eaf4f8;--danger:#c84d60;
+    --danger-hover:#a83d50;--ios-hint-bg:#087f9c;
+  }
+  body:not(.dark) .app-hero h1{color:#172b3e}
+  body:not(.dark) .app-hero p{color:#5b7187}
+  body:not(.dark) #householdPanel>label,body:not(.dark) #householdPanel .flex label{color:#33485e}
+  body:not(.dark) .res,#journalBlock{border-color:#d5e0e9}
+  body:not(.dark) .theme-toggle{background:#fff;border-color:#c8d4df;color:#1b2b3b}
+  body:not(.dark) .reflection-help{background:#f0f6fa;color:#263e52;border-color:#c9d8e3}
+  body:not(.dark) .reflection-help-title{color:#087f9c}
+  body:not(.dark) .reflection-level b{color:#20384d}
+  body:not(.dark) .reflection-level small,body:not(.dark) .reflection-help p{color:#526a80}
+  body:not(.dark) .reflection-disclaimer{color:#64788c}
   .app-hero{padding:22px 4px 16px}
   .eyebrow,.section-kicker{font-size:10px;letter-spacing:.19em;font-weight:800;color:#42c5d7}
   .app-hero h1{font-size:clamp(27px,6vw,38px);letter-spacing:-.04em;margin:8px 0 5px;color:#f4f8ff}
@@ -84,8 +107,8 @@
 
 </style>
 </head>
-<body>
-  <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()" title="Переключить тему">🌙</button>
+<body class="dark">
+  <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()" title="Переключить тему">☀️</button>
   <header class="app-hero">
     <div class="eyebrow">LIGHTING CALCULATOR</div>
     <h1>Расчёт освещения</h1>
@@ -119,20 +142,6 @@
       <div class="hint">Диапазон: 1–700 лк</div>
     </div>
   </div>
-  <label for="type">Тип светильника</label>
-  <select id="type">
-    <option value="potol">Потолочный</option>
-    <option value="podves">Подвесной</option>
-  </select>
-
-  <label for="fixtureDrop">Опуск светильника от потолка (м)</label>
-  <input id="fixtureDrop" type="number" min="0" step="0.05" value="0" disabled aria-describedby="fixtureDropHint">
-  <div class="hint" id="fixtureDropHint">Поле станет доступно после выбора подвесного светильника. Для потолочного светильника опуск принимается равным 0 м.</div>
-
-  <label for="workPlane">Рабочая плоскость от пола (м)</label>
-  <input id="workPlane" type="number" min="0" step="0.05" value="0.8">
-  <div class="hint">Значение задаётся в метрах независимо от выбранных единиц размеров комнаты. Для пола как рабочей поверхности укажи 0 м.</div>
-
   <label>Тип помещения (автоподстановка E)</label>
   <select id="roomType" onchange="applyRoomE()">
     <option value="">— выбери помещение —</option>
@@ -178,6 +187,22 @@
     </optgroup>
   </select>
   <div class="hint">Выбери помещение — калькулятор подставит среднее значение E. Можно поправить вручную.</div>
+
+  <label for="type">Тип светильника</label>
+  <select id="type">
+    <option value="potol">Потолочный</option>
+    <option value="podves">Подвесной</option>
+  </select>
+
+  <label for="fixtureDrop">Опуск светильника от потолка (м)</label>
+  <input id="fixtureDrop" type="number" min="0" step="0.05" value="0" disabled aria-describedby="fixtureDropHint">
+  <div class="hint" id="fixtureDropHint">Поле станет доступно после выбора подвесного светильника. Для потолочного светильника опуск принимается равным 0 м.</div>
+
+  <label for="workPlane">Рабочая плоскость от пола (м)</label>
+  <input id="workPlane" type="number" min="0" step="0.05" value="0">
+  <div class="hint">Значение задаётся в метрах независимо от выбранных единиц размеров комнаты. Для пола как рабочей поверхности укажи 0 м.</div>
+
+
 
   <label>Коэффициент отражения</label>
   <select id="refl"></select>
@@ -825,7 +850,7 @@ function toggleTheme() {
 }
 (function() {
   const saved = localStorage.getItem('theme');
-  if (saved === 'dark') { document.body.classList.add('dark'); document.getElementById('themeBtn').textContent = '☀️'; }
+  if (saved === 'light') { document.body.classList.remove('dark'); document.getElementById('themeBtn').textContent = '🌙'; } else { document.body.classList.add('dark'); document.getElementById('themeBtn').textContent = '☀️'; }
   renderJournal();
   updateUnitPlaceholders();
   
