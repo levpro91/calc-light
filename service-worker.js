@@ -1,4 +1,6 @@
+
 const CACHE_NAME = 'calc-osveschenie-v23';
+
 const APP_SHELL = [
   './',
   './index.html',
@@ -7,7 +9,7 @@ const APP_SHELL = [
   './icon-512.png'
 ];
 
-// Установка: заранее сохраняем оболочку приложения для работы офлайн.
+// Установка новой версии
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -16,12 +18,15 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// Активация новой версии: удаляем устаревшие кэши и сразу берём страницы под контроль.
+// Удаление старых кэшей
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys()
       .then((keys) => Promise.all(
-        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
+        keys.filter((key) =>
+          key.startsWith('calc-osveschenie-') &&
+          key !== CACHE_NAME
+        ).map((key) => caches.delete(key))
       ))
       .then(() => self.clients.claim())
   );
@@ -31,37 +36,51 @@ self.addEventListener('fetch', (event) => {
   const request = event.request;
   const url = new URL(request.url);
 
-  // Не перехватываем POST и запросы к сторонним доменам.
-  if (request.method !== 'GET' || url.origin !== self.location.origin) return;
+  if (
+    request.method !== 'GET' ||
+    url.origin !== self.location.origin
+  ) return;
 
-  // HTML всегда сначала проверяем в сети, чтобы пользователи получали свежую версию.
-  // Если сети нет, используем сохранённую копию.
-  if (request.mode === 'navigate' || url.pathname.endsWith('/index.html') || url.pathname.endsWith('/')) {
+  const isHTML =
+    request.mode === 'navigate' ||
+    url.pathname.endsWith('/index.html') ||
+    url.pathname.endsWith('/');
+
+  const isCSS = url.pathname.endsWith('.css');
+
+  // HTML и CSS: сначала сеть, затем кэш
+  if (isHTML || isCSS) {
     event.respondWith(
       fetch(request)
-        .then((response) => {
+        .then(async (response) => {
           if (response && response.ok) {
-            const copy = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
+            const cache = await caches.open(CACHE_NAME);
+            await cache.put(request, response.clone());
           }
           return response;
         })
         .catch(async () => {
           const cached = await caches.match(request);
-          return cached || caches.match('./index.html');
+          if (cached) return cached;
+          if (isHTML) return caches.match('./index.html');
+          return Response.error();
         })
     );
     return;
   }
 
-  // Для ресурсов приложения: кэш сначала, сеть — если файла ещё нет в кэше.
+  // Остальные ресурсы: сначала кэш
   event.respondWith(
-    caches.match(request).then((cached) => cached || fetch(request).then((response) => {
-      if (response && response.ok) {
-        const copy = response.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
-      }
-      return response;
-    }))
+    caches.match(request).then((cached) => {
+      if (cached) return cached;
+
+      return fetch(request).then(async (response) => {
+        if (response && response.ok) {
+          const cache = await caches.open(CACHE_NAME);
+          await cache.put(request, response.clone());
+        }
+        return response;
+      });
+    })
   );
 });
